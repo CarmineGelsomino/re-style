@@ -48,7 +48,4 @@
 
 ## Decisioni aperte
 - Nome definitivo tema
-- Palette definitiva
-- Font definitivi
-- Necessità o meno di style variations
 - Eventuali template custom shop/category/blog oltre ai base
