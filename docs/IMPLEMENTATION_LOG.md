@@ -331,3 +331,98 @@ classic theme components with accessible navigation behavior.
 - Revisit mobile navigation if the real menu depth grows beyond the current
   CSS-only approach.
 - Continue with design-system and asset layer migration in the next task.
+
+---
+
+## T004
+
+### Objective
+
+Convert the static homepage into a real `front-page.php` implementation with
+reusable classic theme partials and a maintainable structure.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `front-page.php`
+- `sito-statico/index.html`
+- `sito-statico/assets/js/main.js`
+- `assets/js/theme.js`
+- current assets inventory under `assets/`
+
+### Files Created/Modified
+
+- `front-page.php`
+- `functions.php`
+- `inc/enqueue.php`
+- `inc/front-page-data.php`
+- `assets/css/front-page.css`
+- `assets/js/theme.js`
+- `template-parts/site/icon-sprite.php`
+- `template-parts/site/floating-actions.php`
+- `template-parts/front-page/hero.php`
+- `template-parts/front-page/services.php`
+- `template-parts/front-page/shop-categories.php`
+- `template-parts/front-page/history.php`
+- `template-parts/front-page/location-hours.php`
+- `template-parts/front-page/gallery.php`
+- `template-parts/front-page/video-tips.php`
+- `template-parts/front-page/contacts.php`
+- `template-parts/front-page/faq.php`
+- `template-parts/front-page/newsletter.php`
+- copied available static images into `assets/img/`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The homepage is now orchestrated by `front-page.php`, while each major static
+  section lives in its own partial under `template-parts/front-page/`.
+- A lightweight PHP data helper centralizes the current homepage defaults so the
+  template files stay readable and hardcoding is reduced.
+- Existing available static images were copied into the theme asset directory so
+  homepage sections now use theme-owned asset paths.
+- Minimal homepage-only JavaScript was introduced only for interactions that are
+  materially useful to the experience: service modal, gallery hover rotation and
+  FAQ disclosure.
+- Video tips are rendered visually but not made playable yet because the
+  referenced cover images and video files are missing from the repository.
+- CTA links prefer native or context-aware destinations where possible, such as
+  the WooCommerce shop url when available.
+
+### Assumptions
+
+- Structured homepage content can remain theme-defined for now until a clearer
+  editorial model is requested.
+- The front page title is still valuable for document structure, so it is kept
+  as the page h1 for assistive technologies while the visual hero keeps the
+  marketing heading style from the prototype.
+- Placeholder social links and booking flows should remain conservative until
+  final destinations are confirmed.
+- Missing video media is a repository gap, not a reason to block homepage
+  integration.
+
+### Verification
+
+- `front-page.php` now renders a full homepage structure instead of generic page
+  content.
+- The homepage is split into focused partials with a clear section-per-file
+  organization.
+- Homepage assets now resolve from the theme `assets/img/` directory for the
+  currently available images.
+- The interaction script is guarded so it only activates when matching homepage
+  elements exist.
+- Documentation was updated to record the implementation compromise and new
+  baseline.
+
+### TODO / Residual Risks
+
+- Replace theme-defined homepage data with a more editorial WordPress-native
+  model only if future requirements justify it.
+- Revisit video tips once the missing cover images and mp4 assets are available.
+- Continue with broader design-system cleanup so shared homepage styles can be
+  merged more elegantly with the rest of the theme.
+- Validate runtime behavior in a real WordPress environment with the front page
+  assigned in Reading settings.

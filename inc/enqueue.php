@@ -25,6 +25,15 @@ if ( ! function_exists( 're_style_enqueue_assets' ) ) {
 			$theme->get( 'Version' )
 		);
 
+		if ( is_front_page() ) {
+			wp_enqueue_style(
+				're-style-front-page',
+				get_template_directory_uri() . '/assets/css/front-page.css',
+				array( 're-style-main' ),
+				$theme->get( 'Version' )
+			);
+		}
+
 		wp_enqueue_script(
 			're-style-theme',
 			get_template_directory_uri() . '/assets/js/theme.js',

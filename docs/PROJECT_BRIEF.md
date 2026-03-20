@@ -56,6 +56,7 @@ The scaffold currently includes:
 - fallback templates: `index.php`, `home.php`, `page.php`, `single.php`,
   `archive.php`, `search.php`, `404.php`
 - content partials under `template-parts/content/`
+- front-page partials under `template-parts/front-page/`
 - site-level partials for topbar and footer menu columns
 - initial `theme.json`
 - base asset folders under `assets/`
@@ -70,6 +71,15 @@ The global shell now also includes:
 - a reusable topbar partial for announcement messaging
 - CSS-only submenu disclosure based on semantic list markup and keyboard-safe
   `:focus-within` behavior
+
+The homepage baseline now includes:
+
+- a real `front-page.php` assembled from reusable front-page sections
+- a dedicated `inc/front-page-data.php` helper for lightweight structured
+  default content
+- local theme copies of the currently available homepage images
+- minimal homepage-only JS for service modal, gallery hover rotation and FAQ
+  disclosure
 
 ## Working Assumptions
 
@@ -205,6 +215,16 @@ Recommended behavior:
 - modal containers that are section-specific stay close to their section partial
 - repeated CTA styles stay in assets, not in section-specific business logic
 
+Current implementation status:
+
+- implemented: hero, services, shop categories, history, location/hours,
+  gallery, video tips, contacts, FAQ, newsletter
+- implemented as reusable site pieces: icon sprite and floating actions
+- current compromise: structured homepage copy is still theme-defined through a
+  PHP data helper instead of a richer editorial UI
+- current compromise: video cards are rendered visually, but playback is not yet
+  active because the referenced cover and mp4 assets are missing from the repo
+
 ### Information Page Mapping
 
 The current `sito-statico/informazioni.html` should become a native WordPress
@@ -321,18 +341,16 @@ Recommended asset grouping:
 
 Planned next tasks after the mapping phase:
 
-1. `T004` - Define the global design system migration: move prototype tokens to
+1. `T005` - Define the global design system migration: move prototype tokens to
    theme variables, enqueue fonts/assets correctly and split monolithic CSS.
-2. `T005` - Convert the homepage into `front-page.php` plus reusable
-   template-parts for hero, services, story, gallery, FAQ and newsletter.
-3. `T006` - Integrate WooCommerce baseline support, wrapper alignment and shop
+2. `T006` - Integrate WooCommerce baseline support, wrapper alignment and shop
    archive styling with minimal or no template overrides.
-4. `T007` - Implement WooCommerce single product, cart, checkout and account
+3. `T007` - Implement WooCommerce single product, cart, checkout and account
    styling using hooks/CSS first, documenting any override that proves
    necessary.
-5. `T008` - Convert the information area into native WordPress pages or focused
+4. `T008` - Convert the information area into native WordPress pages or focused
    page templates and define handling for legal/support content.
-6. `T009` - Run hardening pass on responsiveness, accessibility, encoding,
+5. `T009` - Run hardening pass on responsiveness, accessibility, encoding,
    missing assets/content placeholders and documentation updates.
 
 ## Open Decisions
