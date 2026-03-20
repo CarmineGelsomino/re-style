@@ -165,10 +165,38 @@ if ( ! function_exists( 're_style_get_front_page_defaults' ) ) {
 				'title'       => 'Consigli pratici per il tuo stile',
 				'description' => 'Scopri una selezione di consigli rapidi su capelli, barba e grooming quotidiano, pensati per aiutarti a mantenere il tuo look anche a casa.',
 				'items'       => array(
-					array( 'title' => 'Come sistemare il ciuffo' ),
-					array( 'title' => 'Cura quotidiana della barba' ),
-					array( 'title' => 'Il prodotto giusto per i capelli' ),
-					array( 'title' => 'Mantieni il taglio piu a lungo' ),
+					array(
+						'id'         => 'video-tip-title-1',
+						'title'      => 'Come sistemare il ciuffo',
+						'aria_label' => 'Apri video: Come sistemare il ciuffo',
+						'video_src'  => '/assets/video/videoconsiglio-1.mp4',
+						'cover'      => re_style_asset_url( 'assets/img/hero.webp' ),
+						'cover_alt'  => 'Copertina video: Come sistemare il ciuffo',
+					),
+					array(
+						'id'         => 'video-tip-title-2',
+						'title'      => 'Cura quotidiana della barba',
+						'aria_label' => 'Apri video: Cura quotidiana della barba',
+						'video_src'  => '/assets/video/videoconsiglio-2.mp4',
+						'cover'      => re_style_asset_url( 'assets/img/servizi.webp' ),
+						'cover_alt'  => 'Copertina video: Cura quotidiana della barba',
+					),
+					array(
+						'id'         => 'video-tip-title-3',
+						'title'      => 'Il prodotto giusto per i capelli',
+						'aria_label' => 'Apri video: Il prodotto giusto per i capelli',
+						'video_src'  => '/assets/video/videoconsiglio-3.mp4',
+						'cover'      => re_style_asset_url( 'assets/img/capelli-shop.webp' ),
+						'cover_alt'  => 'Copertina video: Il prodotto giusto per i capelli',
+					),
+					array(
+						'id'         => 'video-tip-title-4',
+						'title'      => 'Mantieni il taglio piu a lungo',
+						'aria_label' => 'Apri video: Mantieni il taglio piu a lungo',
+						'video_src'  => '/assets/video/videoconsiglio-4.mp4',
+						'cover'      => re_style_asset_url( 'assets/img/barba-shop.webp' ),
+						'cover_alt'  => 'Copertina video: Mantieni il taglio piu a lungo',
+					),
 				),
 			),
 			'contacts'   => array(
@@ -183,10 +211,10 @@ if ( ! function_exists( 're_style_get_front_page_defaults' ) ) {
 					'alt'   => 'Domenico Ferrara, fondatore di Re Style.',
 				),
 				'socials'     => array(
-					array( 'label' => 'Instagram', 'url' => '#' ),
-					array( 'label' => 'Facebook', 'url' => '#' ),
-					array( 'label' => 'TikTok', 'url' => '#' ),
-					array( 'label' => 'YouTube', 'url' => '#' ),
+					array( 'label' => 'Instagram', 'url' => '#', 'icon' => 'icon-instagram', 'class' => 'icon-social' ),
+					array( 'label' => 'Facebook', 'url' => '#', 'icon' => 'icon-facebook', 'class' => 'icon-social' ),
+					array( 'label' => 'TikTok', 'url' => '#', 'icon' => 'icon-tiktok', 'class' => 'icon-social' ),
+					array( 'label' => 'YouTube', 'url' => '#', 'icon' => 'icon-youtube', 'class' => 'icon-youtube' ),
 				),
 				'cta'         => array(
 					'label' => 'Prenota',
@@ -198,10 +226,14 @@ if ( ! function_exists( 're_style_get_front_page_defaults' ) ) {
 				'title'       => 'Domande frequenti',
 				'description' => 'Qui trovi le risposte alle domande piu comuni su prenotazioni, servizi, shop e assistenza.',
 				'items'       => array(
-					array( 'question' => 'E necessario prenotare?', 'answer' => 'Si, la prenotazione e consigliata per garantirti l orario piu comodo e ridurre i tempi di attesa.' ),
-					array( 'question' => 'Posso ricevere una consulenza prima del servizio?', 'answer' => 'Certo. Prima del servizio valutiamo insieme stile, tipologia di capello o barba e risultato desiderato.' ),
-					array( 'question' => 'Effettuate servizi per eventi o cerimonie?', 'answer' => 'Si, realizziamo servizi dedicati per eventi speciali, cerimonie e matrimoni con soluzioni personalizzate.' ),
-					array( 'question' => 'Posso acquistare i prodotti anche senza un servizio in salone?', 'answer' => 'Si, puoi acquistare i prodotti grooming selezionati anche senza prenotare un servizio.' ),
+					array( 'question' => 'E necessario prenotare?', 'answer' => 'Si, la prenotazione e consigliata per garantirti l orario piu comodo e ridurre i tempi di attesa, soprattutto nei giorni piu richiesti.' ),
+					array( 'question' => 'Posso ricevere una consulenza prima del servizio?', 'answer' => 'Certo. Prima del servizio valutiamo insieme stile, tipologia di capello o barba e risultato desiderato, cosi da consigliarti il trattamento piu adatto.' ),
+					array( 'question' => 'Effettuate servizi per eventi o cerimonie?', 'answer' => 'Si, realizziamo servizi dedicati per eventi speciali, cerimonie e matrimoni, con soluzioni personalizzate in base al look e all occasione.' ),
+					array( 'question' => 'Posso acquistare i prodotti anche senza un servizio in salone?', 'answer' => 'Si, puoi acquistare i prodotti grooming selezionati anche senza prenotare un servizio, per prenderti cura di capelli e barba anche a casa.' ),
+					array( 'question' => 'Che tipo di prodotti trovo nello shop?', 'answer' => 'Nello shop trovi prodotti per la cura dei capelli, della barba e una selezione di strumenti e dispositivi utili per la tua routine grooming quotidiana.' ),
+					array( 'question' => 'Gli orari cambiano durante i festivi?', 'answer' => 'Si, nei giorni festivi o in periodi particolari gli orari possono variare. Ti consigliamo di contattarci per avere una conferma aggiornata.' ),
+					array( 'question' => 'E possibile richiedere servizi a domicilio?', 'answer' => 'Si, alcuni servizi possono essere concordati a domicilio, soprattutto per eventi speciali. Disponibilita, costi e modalita vengono definiti in fase di contatto.' ),
+					array( 'question' => 'Come posso contattarvi rapidamente?', 'answer' => 'Puoi contattarci rapidamente tramite telefono, email o pulsante WhatsApp presente sul sito, cosi da ricevere assistenza o fissare un appuntamento.' ),
 				),
 			),
 			'newsletter' => array(
@@ -416,6 +448,16 @@ if ( ! function_exists( 're_style_front_page_data' ) ) {
 		$data['video_tips']['items']        = re_style_parse_single_value_lines( re_style_get_mod_value( 'video_tips_items', re_style_serialize_single_value_list( $defaults['video_tips']['items'], 'title' ) ), 'title' );
 		$data['video_tips']['items']        = ! empty( $data['video_tips']['items'] ) ? $data['video_tips']['items'] : $defaults['video_tips']['items'];
 
+		foreach ( $data['video_tips']['items'] as $index => $item ) {
+			$fallback = isset( $defaults['video_tips']['items'][ $index ] ) ? $defaults['video_tips']['items'][ $index ] : end( $defaults['video_tips']['items'] );
+
+			$data['video_tips']['items'][ $index ]['id']         = isset( $item['id'] ) ? $item['id'] : $fallback['id'];
+			$data['video_tips']['items'][ $index ]['aria_label'] = isset( $item['aria_label'] ) ? $item['aria_label'] : 'Apri video: ' . $item['title'];
+			$data['video_tips']['items'][ $index ]['video_src']  = isset( $item['video_src'] ) ? $item['video_src'] : $fallback['video_src'];
+			$data['video_tips']['items'][ $index ]['cover']      = isset( $item['cover'] ) ? $item['cover'] : $fallback['cover'];
+			$data['video_tips']['items'][ $index ]['cover_alt']  = isset( $item['cover_alt'] ) ? $item['cover_alt'] : 'Copertina video: ' . $item['title'];
+		}
+
 		$data['contacts']['label']          = re_style_get_mod_value( 'contacts_label', $defaults['contacts']['label'] );
 		$data['contacts']['title']          = re_style_get_mod_value( 'contacts_title', $defaults['contacts']['title'] );
 		$data['contacts']['description']    = re_style_get_mod_value( 'contacts_description', $defaults['contacts']['description'] );
@@ -428,6 +470,24 @@ if ( ! function_exists( 're_style_front_page_data' ) ) {
 		$data['contacts']['cta']['url']     = re_style_get_mod_value( 'contacts_cta_url', $defaults['contacts']['cta']['url'] );
 		$data['contacts']['socials']        = re_style_parse_pair_lines( re_style_get_mod_value( 'contacts_socials', re_style_serialize_pair_list( $defaults['contacts']['socials'], 'label', 'url' ) ), 'label', 'url' );
 		$data['contacts']['socials']        = ! empty( $data['contacts']['socials'] ) ? $data['contacts']['socials'] : $defaults['contacts']['socials'];
+
+		foreach ( $data['contacts']['socials'] as $index => $social ) {
+			$fallback_label = strtolower( isset( $social['label'] ) ? $social['label'] : '' );
+			$fallback_icon  = 'icon-instagram';
+			$fallback_class = 'icon-social';
+
+			if ( 'facebook' === $fallback_label ) {
+				$fallback_icon = 'icon-facebook';
+			} elseif ( 'tiktok' === $fallback_label ) {
+				$fallback_icon = 'icon-tiktok';
+			} elseif ( 'youtube' === $fallback_label ) {
+				$fallback_icon  = 'icon-youtube';
+				$fallback_class = 'icon-youtube';
+			}
+
+			$data['contacts']['socials'][ $index ]['icon']  = isset( $social['icon'] ) ? $social['icon'] : $fallback_icon;
+			$data['contacts']['socials'][ $index ]['class'] = isset( $social['class'] ) ? $social['class'] : $fallback_class;
+		}
 
 		$data['faq']['label']               = re_style_get_mod_value( 'faq_label', $defaults['faq']['label'] );
 		$data['faq']['title']               = re_style_get_mod_value( 'faq_title', $defaults['faq']['title'] );

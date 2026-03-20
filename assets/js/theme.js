@@ -8,6 +8,7 @@ const closeServiceModal = document.getElementById("closeServiceModal");
 
 if (serviceCards.length && serviceModal && serviceModalTitle && serviceModalDescription && closeServiceModal) {
     const closeModal = () => {
+        serviceModal.classList.remove("active");
         serviceModal.classList.remove("is-active");
         serviceModal.setAttribute("aria-hidden", "true");
         document.body.style.overflow = "";
@@ -17,6 +18,7 @@ if (serviceCards.length && serviceModal && serviceModalTitle && serviceModalDesc
         card.addEventListener("click", () => {
             serviceModalTitle.textContent = card.dataset.title || "";
             serviceModalDescription.textContent = card.dataset.description || "";
+            serviceModal.classList.add("active");
             serviceModal.classList.add("is-active");
             serviceModal.setAttribute("aria-hidden", "false");
             document.body.style.overflow = "hidden";
@@ -96,6 +98,7 @@ faqItems.forEach((item) => {
             const otherButton = otherItem.querySelector(".faq-question");
             const otherAnswer = otherItem.querySelector(".faq-answer");
 
+            otherItem.classList.remove("open");
             otherItem.classList.remove("is-open");
 
             if (otherButton) {
@@ -108,9 +111,58 @@ faqItems.forEach((item) => {
         });
 
         if (!isOpen) {
+            item.classList.add("open");
             item.classList.add("is-open");
             button.setAttribute("aria-expanded", "true");
             answer.setAttribute("aria-hidden", "false");
         }
     });
 });
+
+const videoTipTriggers = document.querySelectorAll(".video-tip-trigger");
+const videoModal = document.getElementById("videoModal");
+const closeVideoModal = document.getElementById("closeVideoModal");
+const videoModalPlayer = document.getElementById("videoModalPlayer");
+const videoModalSource = document.getElementById("videoModalSource");
+const videoModalTitle = document.getElementById("videoModalTitle");
+
+if (videoTipTriggers.length && videoModal && closeVideoModal && videoModalPlayer && videoModalSource && videoModalTitle) {
+    const openVideoModal = (src, title) => {
+        videoModalSource.src = src;
+        videoModalTitle.textContent = title;
+        videoModalPlayer.load();
+        videoModal.classList.add("active");
+        videoModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+    };
+
+    const closeVideo = () => {
+        videoModal.classList.remove("active");
+        videoModal.setAttribute("aria-hidden", "true");
+        videoModalPlayer.pause();
+        videoModalPlayer.currentTime = 0;
+        videoModalSource.src = "";
+        videoModalPlayer.load();
+        document.body.style.overflow = "";
+    };
+
+    videoTipTriggers.forEach((trigger) => {
+        trigger.addEventListener("click", () => {
+            openVideoModal(trigger.dataset.videoSrc || "", trigger.dataset.videoTitle || "");
+        });
+    });
+
+    closeVideoModal.addEventListener("click", closeVideo);
+
+    videoModal.addEventListener("click", (event) => {
+        if (event.target === videoModal) {
+            closeVideo();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && videoModal.classList.contains("active")) {
+            closeVideo();
+        }
+    });
+}

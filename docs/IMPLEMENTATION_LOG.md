@@ -616,3 +616,109 @@ keeping the implementation native to WordPress and WooCommerce.
   strategy is later chosen for the project.
 - Continue the broader WooCommerce baseline integration in a later task, since
   this fix intentionally stays focused on header parity.
+
+---
+
+## T007
+
+### Objective
+
+Bring the full homepage much closer to the static prototype by realigning the
+homepage partial markup, section classes, interactions and CSS values so the
+WordPress front page visually matches the original design more faithfully.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `sito-statico/index.html`
+- `sito-statico/assets/css/style.css`
+- `sito-statico/assets/js/main.js`
+- `front-page.php`
+- `assets/css/front-page.css`
+- `assets/js/theme.js`
+- `inc/front-page-data.php`
+- `template-parts/front-page/hero.php`
+- `template-parts/front-page/services.php`
+- `template-parts/front-page/shop-categories.php`
+- `template-parts/front-page/history.php`
+- `template-parts/front-page/location-hours.php`
+- `template-parts/front-page/gallery.php`
+- `template-parts/front-page/video-tips.php`
+- `template-parts/front-page/contacts.php`
+- `template-parts/front-page/faq.php`
+- `template-parts/front-page/newsletter.php`
+
+### Files Created/Modified
+
+- `assets/css/front-page.css`
+- `assets/js/theme.js`
+- `inc/front-page-data.php`
+- `template-parts/front-page/hero.php`
+- `template-parts/front-page/services.php`
+- `template-parts/front-page/shop-categories.php`
+- `template-parts/front-page/history.php`
+- `template-parts/front-page/location-hours.php`
+- `template-parts/front-page/gallery.php`
+- `template-parts/front-page/video-tips.php`
+- `template-parts/front-page/contacts.php`
+- `template-parts/front-page/faq.php`
+- `template-parts/front-page/newsletter.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- Homepage section partials now use class names and structure much closer to the
+  static prototype so the original CSS model can be mirrored more faithfully.
+- The homepage stylesheet was rewritten around the static homepage measurements,
+  section spacing, button styling, grid structure and typography rather than the
+  earlier simplified theme interpretation.
+- The front-page interaction script now supports the static-style service modal,
+  FAQ state classes and video modal behavior used by the updated markup.
+- Social links and video cards were brought closer to the original homepage
+  design through icon-based rendering and static-style card markup.
+- The static homepage scroll-snap behavior was restored only for the WordPress
+  front page through a dedicated body class, so the effect does not leak into
+  blog, page or WooCommerce views.
+- The floating WhatsApp and booking buttons were refined to match the static
+  prototype sizing, radius, shadow and hover/active feedback exactly.
+- The floating CTA finish pass also restored the full WhatsApp icon sprite path
+  and removed unintended link underlines from the booking tab.
+
+### Assumptions
+
+- Matching the static homepage more closely is the priority for this task, even
+  when that means reusing prototype class naming inside WordPress partials.
+- The missing original video cover assets are still absent from the repository,
+  so the video card layout was restored using available theme images as a visual
+  fallback instead of leaving the cards as generic placeholders.
+- This task remains scoped to homepage fidelity, so no global footer/shop
+  template refactors were introduced beyond what the homepage itself needs.
+
+### Verification
+
+- Recompared homepage sections against the static `index.html` and homepage CSS
+  while updating partial markup and class names.
+- Rechecked the updated homepage stylesheet to ensure section heights, grid
+  geometry, button treatments and typography now follow the static model much
+  more closely.
+- Rechecked the updated homepage script for service modal, video modal, gallery
+  rotation and FAQ disclosure compatibility with the new markup/state classes.
+- Reintroduced the static section snap-scrolling behavior in a homepage-only
+  scope and verified the selectors stay isolated from non-home templates.
+- Rechecked the floating CTA styles against the static CSS so the homepage side
+  booking tab and WhatsApp button now use the same dimensions and states.
+- Rechecked the floating CTA markup and icon sprite so the WhatsApp glyph is
+  visible again and both floating links render without stray text decoration.
+- Automated runtime verification in WordPress and PHP lint could not be run in
+  this environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- Validate the homepage in a real WordPress browser runtime to catch any final
+  spacing mismatches caused by core/editor output around the front page.
+- Replace the temporary fallback video covers with the original intended assets
+  if those files are later added to the repository.
+- If the user wants pixel-level parity after browser review, continue with a
+  screenshot-driven refinement pass limited to homepage differences only.

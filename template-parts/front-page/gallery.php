@@ -1,9 +1,9 @@
 <?php $section = $args['section']; ?>
-<section class="front-gallery" id="galleria" aria-label="<?php esc_attr_e( 'Galleria', 're-style' ); ?>">
+<section class="gallery" id="galleria" aria-label="<?php esc_attr_e( 'Galleria', 're-style' ); ?>">
 	<span class="section-label"><?php echo esc_html( $section['label'] ); ?></span>
 	<h2><?php echo esc_html( $section['title'] ); ?></h2>
 	<p><?php echo esc_html( $section['description'] ); ?></p>
-	<div class="front-gallery__grid">
+	<div class="gallery-grid">
 		<?php foreach ( $section['groups'] as $group ) : ?>
 			<?php
 			$images = array_map(

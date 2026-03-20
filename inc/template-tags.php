@@ -127,3 +127,20 @@ if ( ! function_exists( 're_style_get_header_action_links' ) ) {
 		);
 	}
 }
+
+if ( ! function_exists( 're_style_body_classes' ) ) {
+	/**
+	 * Adds contextual body classes used by theme styling.
+	 *
+	 * @param string[] $classes Existing body classes.
+	 * @return string[]
+	 */
+	function re_style_body_classes( $classes ) {
+		if ( is_front_page() ) {
+			$classes[] = 're-style-front-page';
+		}
+
+		return $classes;
+	}
+}
+add_filter( 'body_class', 're_style_body_classes' );
