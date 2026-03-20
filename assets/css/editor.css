@@ -1,13 +1,102 @@
-body {
-    font-family: "Raleway", sans-serif;
-    color: #1c1c1c;
+:root,
+.editor-styles-wrapper {
+    --re-style-color-background: var(--wp--preset--color--background, #f7f7f7);
+    --re-style-color-surface: var(--wp--preset--color--surface, #f0eadb);
+    --re-style-color-text: var(--wp--preset--color--text, #1c1c1c);
+    --re-style-color-accent: var(--wp--preset--color--accent, #d0b985);
+    --re-style-color-border: var(--wp--preset--color--border, #c8c8c8);
+    --re-style-color-muted: var(--wp--preset--color--muted, #8a8a8a);
+    --re-style-font-primary: var(--wp--preset--font-family--primary, "Poppins", sans-serif);
+    --re-style-font-secondary: var(--wp--preset--font-family--secondary, "Raleway", sans-serif);
+    --re-style-font-size-label: var(--wp--preset--font-size--label, 0.75rem);
+    --re-style-font-size-body: var(--wp--preset--font-size--body, 1rem);
+    --re-style-font-size-lead: var(--wp--preset--font-size--lead, 1.125rem);
+    --re-style-font-size-title: var(--wp--preset--font-size--title, 1.5rem);
+    --re-style-font-size-heading: var(--wp--preset--font-size--heading-xl, 2.5rem);
+    --re-style-font-size-display: var(--wp--preset--font-size--display, 4.5rem);
+    --re-style-space-gutter: var(--wp--preset--spacing--gutter, 1rem);
+    --re-style-space-section: var(--wp--preset--spacing--section, 4rem);
+    --re-style-space-stack: var(--wp--preset--spacing--stack, 1.5rem);
+    --re-style-content-width: 1200px;
+    --re-style-content-narrow: 760px;
+    --re-style-radius: 0.5rem;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: "Poppins", sans-serif;
+.editor-styles-wrapper {
+    padding: var(--re-style-space-section) var(--re-style-space-gutter);
+    background: var(--re-style-color-background);
+    color: var(--re-style-color-text);
+    font-family: var(--re-style-font-secondary);
+    font-size: var(--re-style-font-size-body);
+    line-height: 1.6;
+}
+
+.editor-styles-wrapper .is-root-container {
+    max-width: var(--re-style-content-narrow);
+}
+
+.editor-styles-wrapper p,
+.editor-styles-wrapper ul,
+.editor-styles-wrapper ol,
+.editor-styles-wrapper blockquote {
+    margin-block: 0 1.2em;
+}
+
+.editor-styles-wrapper h1,
+.editor-styles-wrapper h2,
+.editor-styles-wrapper h3,
+.editor-styles-wrapper h4,
+.editor-styles-wrapper h5,
+.editor-styles-wrapper h6 {
+    margin: 0 0 0.5em;
+    color: var(--re-style-color-text);
+    font-family: var(--re-style-font-primary);
+    line-height: 1.05;
+}
+
+.editor-styles-wrapper h1 {
+    font-size: clamp(2.5rem, 5vw, var(--re-style-font-size-display));
+}
+
+.editor-styles-wrapper h2 {
+    font-size: clamp(2rem, 4vw, var(--re-style-font-size-heading));
+}
+
+.editor-styles-wrapper h3 {
+    font-size: var(--re-style-font-size-title);
+}
+
+.editor-styles-wrapper a {
+    color: inherit;
+    text-underline-offset: 0.16em;
+}
+
+.editor-styles-wrapper .wp-block {
+    max-width: var(--re-style-content-narrow);
+}
+
+.editor-styles-wrapper .wp-block[data-align="wide"] {
+    max-width: var(--re-style-content-width);
+}
+
+.editor-styles-wrapper .wp-block-button__link,
+.editor-styles-wrapper .wp-element-button {
+    border-radius: var(--re-style-radius);
+    background: var(--re-style-color-text);
+    color: var(--re-style-color-accent);
+    font-family: var(--re-style-font-primary);
+    font-size: var(--re-style-font-size-body);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.editor-styles-wrapper blockquote {
+    margin-left: 0;
+    padding-left: var(--re-style-space-stack);
+    border-left: 3px solid var(--re-style-color-accent);
+}
+
+.editor-styles-wrapper :where(input, textarea, select) {
+    border: 1px solid var(--re-style-color-border);
+    border-radius: var(--re-style-radius);
 }

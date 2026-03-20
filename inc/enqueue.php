@@ -19,11 +19,20 @@ if ( ! function_exists( 're_style_enqueue_assets' ) ) {
 		$theme = wp_get_theme();
 
 		wp_enqueue_style(
+			're-style-fonts',
+			re_style_get_google_fonts_url(),
+			array(),
+			null
+		);
+
+		wp_enqueue_style(
 			're-style-main',
 			get_template_directory_uri() . '/assets/css/main.css',
-			array(),
+			array( 're-style-fonts' ),
 			$theme->get( 'Version' )
 		);
+
+		wp_add_inline_style( 're-style-main', re_style_get_design_tokens_css() );
 
 		if ( is_front_page() ) {
 			wp_enqueue_style(

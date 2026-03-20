@@ -426,3 +426,102 @@ reusable classic theme partials and a maintainable structure.
   merged more elegantly with the rest of the theme.
 - Validate runtime behavior in a real WordPress environment with the front page
   assigned in Reading settings.
+
+---
+
+## T005
+
+### Objective
+
+Establish the classic-theme design-token baseline by migrating the key static
+tokens into `theme.json`, bridging them to frontend/editor CSS and exposing
+native editing controls for core homepage sections.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `theme.json`
+- `functions.php`
+- `inc/theme-setup.php`
+- `inc/enqueue.php`
+- `inc/front-page-data.php`
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+- `assets/css/editor.css`
+- `sito-statico/assets/css/style.css`
+- `front-page.php`
+- `template-parts/front-page/hero.php`
+- `template-parts/front-page/services.php`
+- `template-parts/front-page/shop-categories.php`
+- `template-parts/front-page/history.php`
+- `template-parts/front-page/location-hours.php`
+- `template-parts/front-page/gallery.php`
+- `template-parts/front-page/video-tips.php`
+- `template-parts/front-page/contacts.php`
+- `template-parts/front-page/faq.php`
+- `template-parts/front-page/newsletter.php`
+
+### Files Created/Modified
+
+- `functions.php`
+- `theme.json`
+- `inc/customizer.php`
+- `inc/enqueue.php`
+- `inc/front-page-data.php`
+- `inc/theme-setup.php`
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+- `assets/css/editor.css`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The main palette, font stacks, font sizes and spacing presets now live in
+  `theme.json` because WordPress and the editor benefit directly from them.
+- Runtime overrides remain in PHP + CSS variables: Customizer settings write to
+  a single token bridge rather than duplicating values across multiple styles.
+- Global shell, reset, classic-template layout and homepage-specific component
+  behavior stay in CSS, where those concerns remain clearer and more
+  maintainable than forcing them into `theme.json`.
+- Frontend and editor now load the same Google Fonts through proper enqueue
+  hooks instead of relying on the static CSS `@import`.
+- Homepage content editing stays native and conservative: the Customizer now
+  covers core copy, links, images and line-based repeatable content without
+  adding extra dependencies or page builders.
+
+### Assumptions
+
+- The current editorial need is best served by Customizer controls and
+  line-based repeatable fields rather than a custom post type or custom-fields
+  dependency.
+- Gallery image rotation can remain theme-owned for now; this task exposes the
+  gallery section copy but not a media-driven gallery manager.
+- `theme.json` should stay selective inside this classic theme, so structural
+  CSS and bespoke homepage components are intentionally not moved wholesale.
+- Google Fonts remain acceptable at this stage because no local font files are
+  currently present in the repository.
+
+### Verification
+
+- Reviewed the static `:root` token set and mapped the primary palette,
+  typography and spacing values into the theme token system.
+- Added a Customizer panel for design tokens and homepage sections, with PHP
+  fallback data still powering the templates when no override is saved.
+- Updated frontend and editor stylesheets to consume the shared token aliases
+  rather than hardcoded duplicate values where it was sensible.
+- Confirmed the modified PHP files by manual source review after edit.
+- Attempted PHP lint, but the local environment does not provide a `php`
+  executable, so automated syntax verification could not be run here.
+
+### TODO / Residual Risks
+
+- Validate the Customizer controls and dynamic token output inside a real
+  WordPress install, especially editor rendering and image control storage.
+- Reassess whether any homepage repeatable content deserves a richer native
+  editorial model after real content entry begins.
+- Consider moving webfonts locally if performance, privacy or deployment rules
+  require it later.
+- Continue with WooCommerce baseline styling and wrapper alignment in `T006`.

@@ -20,7 +20,7 @@
     display: inline-block;
     margin-bottom: 0.875rem;
     font-family: var(--re-style-font-primary);
-    font-size: 0.875rem;
+    font-size: var(--re-style-font-size-label);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--re-style-color-muted);
@@ -35,7 +35,7 @@
     border: 1px solid transparent;
     border-radius: var(--re-style-radius);
     font-family: var(--re-style-font-primary);
-    font-size: 0.95rem;
+    font-size: var(--re-style-font-size-body);
     font-weight: 600;
     text-transform: uppercase;
     text-decoration: none;
@@ -80,7 +80,7 @@
 .front-contacts,
 .front-faq,
 .front-newsletter {
-    padding: 4rem 0;
+    padding: var(--re-style-space-section) 0;
 }
 
 .front-hero__layout,
@@ -98,7 +98,7 @@
 
 .front-hero__copy h2 {
     margin: 0;
-    font-size: clamp(2.75rem, 6vw, 4.5rem);
+    font-size: clamp(2.75rem, 6vw, var(--re-style-font-size-display));
     line-height: 0.98;
     text-transform: uppercase;
 }
@@ -114,6 +114,7 @@
 .front-newsletter__inner > p {
     max-width: 42rem;
     margin: 0.75rem 0 0;
+    font-size: var(--re-style-font-size-lead);
 }
 
 .front-hero__actions,
@@ -132,7 +133,7 @@
     border-top: 1px solid var(--re-style-color-border);
     color: var(--re-style-color-muted);
     font-family: var(--re-style-font-primary);
-    font-size: 0.875rem;
+    font-size: var(--re-style-font-size-label);
     text-transform: uppercase;
 }
 
@@ -151,7 +152,7 @@
 
 .front-services__content {
     display: grid;
-    gap: 1.5rem;
+    gap: var(--re-style-space-stack);
 }
 
 .front-services__grid {
@@ -262,7 +263,7 @@
     padding: 1.5rem;
     color: #fff;
     font-family: var(--re-style-font-primary);
-    font-size: 1.5rem;
+    font-size: var(--re-style-font-size-title);
     font-weight: 600;
 }
 
@@ -287,7 +288,7 @@
     display: block;
     margin-bottom: 0.5rem;
     font-family: var(--re-style-font-primary);
-    font-size: 1.125rem;
+    font-size: var(--re-style-font-size-lead);
     font-weight: 600;
 }
 
@@ -382,6 +383,7 @@
 .video-tip-card__title {
     margin: 0;
     padding: 1rem;
+    font-size: var(--re-style-font-size-title);
 }
 
 .front-contacts__layout {
@@ -455,7 +457,7 @@
 .front-newsletter__inner {
     max-width: 52rem;
     margin: 0 auto;
-    padding: 2.5rem;
+    padding: calc(var(--re-style-space-stack) * 1.667);
     border: 1px solid var(--re-style-color-border);
     background: var(--re-style-color-surface);
     text-align: center;
@@ -580,7 +582,7 @@
     .front-contacts,
     .front-faq,
     .front-newsletter {
-        padding: 2.5rem 0;
+        padding: calc(var(--re-style-space-section) * 0.625) 0;
     }
 
     .front-hero__layout,

@@ -81,6 +81,16 @@ The homepage baseline now includes:
 - minimal homepage-only JS for service modal, gallery hover rotation and FAQ
   disclosure
 
+The design-system baseline now includes:
+
+- a selective `theme.json` preset layer for palette, typography, spacing and
+  editor-facing global styles
+- a runtime token bridge from Customizer settings to CSS custom properties for
+  both frontend and editor
+- editor styles aligned with the frontend tokens, fonts and baseline typography
+- homepage section content editable through native Customizer controls with
+  PHP defaults as fallback
+
 ## Working Assumptions
 
 Conservative assumptions documented for this phase:
@@ -130,6 +140,28 @@ Conservative assumptions documented for this phase:
   responsive behavior is likely incomplete or still implicit there
 - Google Fonts are imported from static CSS; this should be replaced with a
   proper theme asset strategy during conversion
+
+### Token Strategy
+
+Current direction after the design-token migration:
+
+- `theme.json` owns canonical preset definitions that benefit WordPress and the
+  editor directly: palette, font families, font sizes, spacing sizes, layout
+  widths and a small set of global element styles
+- runtime Customizer overrides map back onto those presets through CSS custom
+  properties, so the classic theme keeps one token vocabulary across frontend
+  and editor
+- `assets/css/main.css` keeps the token aliases, reset/base typography, global
+  shell and classic-theme structural rules that are clearer in CSS than in
+  `theme.json`
+- `assets/css/front-page.css` keeps section-specific layout, component states
+  and interaction styling that are tightly coupled to the curated homepage UX
+- `assets/css/editor.css` mirrors frontend tokens and editorial typography
+  rather than duplicating all frontend component rules
+- homepage content editing remains native and conservative: Customizer settings
+  cover the current hero, service, shop, story, location, gallery, video,
+  contacts, FAQ and newsletter copy/link/image needs without introducing custom
+  fields or page builders
 
 ### JavaScript Findings
 
@@ -341,16 +373,14 @@ Recommended asset grouping:
 
 Planned next tasks after the mapping phase:
 
-1. `T005` - Define the global design system migration: move prototype tokens to
-   theme variables, enqueue fonts/assets correctly and split monolithic CSS.
-2. `T006` - Integrate WooCommerce baseline support, wrapper alignment and shop
+1. `T006` - Integrate WooCommerce baseline support, wrapper alignment and shop
    archive styling with minimal or no template overrides.
-3. `T007` - Implement WooCommerce single product, cart, checkout and account
+2. `T007` - Implement WooCommerce single product, cart, checkout and account
    styling using hooks/CSS first, documenting any override that proves
    necessary.
-4. `T008` - Convert the information area into native WordPress pages or focused
+3. `T008` - Convert the information area into native WordPress pages or focused
    page templates and define handling for legal/support content.
-5. `T009` - Run hardening pass on responsiveness, accessibility, encoding,
+4. `T009` - Run hardening pass on responsiveness, accessibility, encoding,
    missing assets/content placeholders and documentation updates.
 
 ## Open Decisions

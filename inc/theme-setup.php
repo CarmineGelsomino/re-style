@@ -48,7 +48,12 @@ if ( ! function_exists( 're_style_setup' ) ) {
 		add_theme_support( 'responsive-embeds' );
 		add_theme_support( 'align-wide' );
 		add_theme_support( 'editor-styles' );
-		add_editor_style( 'assets/css/editor.css' );
+		add_editor_style(
+			array(
+				re_style_get_google_fonts_url(),
+				'assets/css/editor.css',
+			)
+		);
 
 		add_theme_support( 'woocommerce' );
 		add_theme_support( 'wc-product-gallery-zoom' );
