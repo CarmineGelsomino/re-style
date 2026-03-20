@@ -525,3 +525,94 @@ native editing controls for core homepage sections.
 - Consider moving webfonts locally if performance, privacy or deployment rules
   require it later.
 - Continue with WooCommerce baseline styling and wrapper alignment in `T006`.
+
+---
+
+## T006
+
+### Objective
+
+Realign the global theme header with the static prototype by restoring the
+brand logo fallback on the left and the quick action icons on the right while
+keeping the implementation native to WordPress and WooCommerce.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `header.php`
+- `inc/template-tags.php`
+- `inc/theme-setup.php`
+- `assets/css/main.css`
+- `template-parts/site/icon-sprite.php`
+- `sito-statico/index.html`
+- `sito-statico/assets/css/style.css`
+
+### Files Created/Modified
+
+- `header.php`
+- `front-page.php`
+- `inc/template-tags.php`
+- `assets/css/main.css`
+- `template-parts/site/icon-sprite.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The shared SVG sprite is now loaded from the global shell so header icons are
+  available on every template instead of only on the front page.
+- The header now falls back to the static `assets/img/logo.webp` brand mark
+  when no WordPress custom logo has been assigned, preserving the prototype
+  look without forcing admin setup first.
+- Quick actions for profile, favorites and cart were added as a dedicated
+  header action group rather than mixing them into the navigation menu markup.
+- WooCommerce-native destinations are used where available for account and cart
+  links; the favorites icon falls back to a `/wishlist/` page when present, or
+  to the shop page otherwise.
+- The desktop header layout was realigned to the static prototype with a
+  full-width flex row, matching the original logo/menu/actions distribution and
+  horizontal padding more closely.
+- Header navigation weight, spacing and submenu geometry were tightened to
+  better match the static prototype without abandoning native WordPress menu
+  output.
+- The WordPress header navigation classes were aligned more closely with the
+  static CSS naming and spacing model so the header rules can now mirror the
+  prototype more faithfully.
+- The submenu trigger chevron and dropdown list reset were refined again so the
+  header matches the static preview more closely and no list markers appear in
+  the opened panel.
+
+### Assumptions
+
+- Restoring the prototype parity for the header is more important here than
+  waiting for a future wp-admin custom logo configuration.
+- A dedicated wishlist plugin is not guaranteed, so the favorites action needs
+  a conservative fallback instead of assuming third-party functionality.
+- The user request is scoped to the visual/header parity issue, so no wider
+  WooCommerce archive styling work was included in this task.
+
+### Verification
+
+- Compared the static header markup/CSS against the current theme header before
+  editing.
+- Confirmed the fallback brand asset exists in `assets/img/logo.webp`.
+- Reviewed the updated PHP and CSS to ensure the header now renders logo,
+  primary navigation and right-side actions together in the global shell.
+- Recompared the current header CSS against the static navigation rules after
+  the refinement pass for centering, font weight and dropdown alignment.
+- Recompared the latest header CSS against the static navigation block to bring
+  padding, logo size, menu gap and dropdown metrics back to the same values.
+- Rechecked the submenu arrow treatment and list reset after the latest header
+  CSS pass to remove visible list bullets from the dropdown.
+- Automated runtime verification in WordPress and PHP lint could not be run in
+  this environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- Validate the restored header in a real WordPress browser runtime, especially
+  menu wrapping and icon alignment on smaller screens.
+- Revisit the favorites destination if a specific wishlist plugin or page
+  strategy is later chosen for the project.
+- Continue the broader WooCommerce baseline integration in a later task, since
+  this fix intentionally stays focused on header parity.

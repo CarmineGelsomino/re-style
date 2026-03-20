@@ -72,3 +72,58 @@ if ( ! function_exists( 're_style_get_topbar_messages' ) ) {
 		);
 	}
 }
+
+if ( ! function_exists( 're_style_get_brand_logo_url' ) ) {
+	/**
+	 * Returns the static brand logo as a fallback for the header.
+	 *
+	 * @return string
+	 */
+	function re_style_get_brand_logo_url() {
+		return get_template_directory_uri() . '/assets/img/logo.webp';
+	}
+}
+
+if ( ! function_exists( 're_style_get_header_action_links' ) ) {
+	/**
+	 * Returns header action links with conservative WordPress/WooCommerce fallbacks.
+	 *
+	 * @return array<string, array<string, string>>
+	 */
+	function re_style_get_header_action_links() {
+		$account_url  = wp_login_url( home_url( '/' ) );
+		$wishlist_url = home_url( '/' );
+		$cart_url     = home_url( '/' );
+
+		if ( class_exists( 'WooCommerce' ) ) {
+			$account_url = wc_get_page_permalink( 'myaccount' );
+			$cart_url    = wc_get_cart_url();
+
+			$wishlist_page = get_page_by_path( 'wishlist' );
+
+			if ( $wishlist_page instanceof WP_Post ) {
+				$wishlist_url = get_permalink( $wishlist_page );
+			} else {
+				$wishlist_url = wc_get_page_permalink( 'shop' );
+			}
+		}
+
+		return array(
+			'account'  => array(
+				'label' => __( 'Profile', 're-style' ),
+				'icon'  => 'icon-user',
+				'url'   => $account_url,
+			),
+			'wishlist' => array(
+				'label' => __( 'Favorites', 're-style' ),
+				'icon'  => 'icon-favourite',
+				'url'   => $wishlist_url,
+			),
+			'cart'     => array(
+				'label' => __( 'Cart', 're-style' ),
+				'icon'  => 'icon-cart',
+				'url'   => $cart_url,
+			),
+		);
+	}
+}

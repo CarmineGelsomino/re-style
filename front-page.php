@@ -16,7 +16,6 @@ if ( have_posts() ) {
 
 $front_page = re_style_front_page_data();
 ?>
-<?php get_template_part( 'template-parts/site/icon-sprite' ); ?>
 <?php get_template_part( 'template-parts/site/floating-actions' ); ?>
 
 <main id="primary" class="site-main site-main--front-page">
