@@ -1,0 +1,37 @@
+<?php
+/**
+ * Asset loading callbacks.
+ *
+ * @package ReStyle
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+if ( ! function_exists( 're_style_enqueue_assets' ) ) {
+	/**
+	 * Enqueues frontend assets.
+	 *
+	 * @return void
+	 */
+	function re_style_enqueue_assets() {
+		$theme = wp_get_theme();
+
+		wp_enqueue_style(
+			're-style-main',
+			get_template_directory_uri() . '/assets/css/main.css',
+			array(),
+			$theme->get( 'Version' )
+		);
+
+		wp_enqueue_script(
+			're-style-theme',
+			get_template_directory_uri() . '/assets/js/theme.js',
+			array(),
+			$theme->get( 'Version' ),
+			true
+		);
+	}
+}
+add_action( 'wp_enqueue_scripts', 're_style_enqueue_assets' );

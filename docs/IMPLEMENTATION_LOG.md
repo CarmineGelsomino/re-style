@@ -88,3 +88,96 @@ WooCommerce classic theme.
 - Validate which WooCommerce screens can be solved with CSS/hooks alone before
   considering overrides.
 - Replace or source missing media assets referenced by the prototype.
+
+---
+
+## T001
+
+### Objective
+
+Create the initial scaffold of a modern WordPress classic theme that is
+activable, readable and ready for the next conversion tasks.
+
+### Files Read
+
+- `AGENT.md`
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- repository file inventory via `rg --files`
+- current root structure via `Get-ChildItem`
+
+### Files Created/Modified
+
+- `style.css`
+- `functions.php`
+- `index.php`
+- `header.php`
+- `footer.php`
+- `front-page.php`
+- `home.php`
+- `page.php`
+- `single.php`
+- `archive.php`
+- `search.php`
+- `404.php`
+- `searchform.php`
+- `comments.php`
+- `theme.json`
+- `inc/theme-setup.php`
+- `inc/enqueue.php`
+- `inc/template-tags.php`
+- `assets/css/main.css`
+- `assets/css/editor.css`
+- `assets/js/theme.js`
+- `template-parts/content/content.php`
+- `template-parts/content/content-page.php`
+- `template-parts/content/content-search.php`
+- `template-parts/content/content-none.php`
+- `woocommerce/.gitkeep`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The theme scaffold lives in the repository root and uses `re-style` as theme
+  slug and text domain.
+- The architecture remains a classic theme: PHP templates drive rendering,
+  while `theme.json` is limited to tokens, layout and editor-adjacent defaults.
+- Theme setup concerns were separated into `inc/` modules to keep
+  `functions.php` minimal.
+- WooCommerce support was declared early, but no template overrides were added.
+- Shared navigation uses safe fallbacks so the theme remains activable even
+  before menus are assigned in WordPress admin.
+- Base CSS is intentionally small and structural; no full static design
+  migration was attempted in this task.
+
+### Assumptions
+
+- WordPress core will provide the runtime environment for template functions and
+  asset loading.
+- The current task only requires a safe scaffold, not a visual reproduction of
+  the static prototype.
+- Editor styles can remain minimal until the design-token migration task.
+- The `woocommerce/` directory should exist now as a reserved location, even if
+  still empty.
+
+### Verification
+
+- All required root theme files and support directories were created.
+- Template hierarchy now has valid fallbacks for index, front page, home, page,
+  single, archive, search and 404.
+- `functions.php` only bootstraps modular includes and introduces no business
+  logic.
+- Menu fallbacks were added to avoid missing-callback issues during activation.
+- No WooCommerce override templates were introduced.
+
+### TODO / Residual Risks
+
+- Run PHP lint and activate the theme in a real WordPress install when the
+  execution environment is available.
+- Replace placeholder base styling with the actual design-system migration in
+  `T002`.
+- Decide whether to load webfonts locally or via a controlled external strategy.
+- Add screenshot, translation files and richer template parts only when the next
+  tasks justify them.

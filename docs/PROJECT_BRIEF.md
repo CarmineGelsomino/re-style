@@ -5,15 +5,19 @@
 Project goal: convert the existing static frontend into a modern WordPress +
 WooCommerce classic theme for the Re Style brand.
 
-The repository currently contains only analysis and prototype materials:
+The repository now contains:
+
+- a baseline WordPress classic theme scaffold in the repository root
+- static prototype references in `sito-statico/`
+- project documentation in `docs/`
+
+Static reference materials currently available:
 
 - `sito-statico/index.html`: homepage prototype with one-page sections
 - `sito-statico/shop.html`: catalog / shop listing prototype
 - `sito-statico/informazioni.html`: customer information page prototype
 - `sito-statico/assets/css/style.css`: monolithic stylesheet
 - `sito-statico/assets/js/main.js`: small interaction layer
-
-No WordPress theme scaffold exists yet.
 
 ## Primary Objective
 
@@ -41,12 +45,30 @@ Recommended architectural direction:
 - minimal custom PHP with clear separation between setup, rendering helpers and
   integration code
 
+## Current Theme Baseline
+
+The scaffold currently includes:
+
+- theme metadata in `style.css`
+- bootstrap in `functions.php`
+- setup and enqueue modules under `inc/`
+- shared shell templates: `header.php`, `footer.php`
+- fallback templates: `index.php`, `home.php`, `page.php`, `single.php`,
+  `archive.php`, `search.php`, `404.php`
+- content partials under `template-parts/content/`
+- initial `theme.json`
+- base asset folders under `assets/`
+- `woocommerce/` directory reserved for future justified overrides only
+
+This baseline is intentionally minimal and contains no business logic.
+
 ## Working Assumptions
 
 Conservative assumptions documented for this phase:
 
-- provisional theme slug: `re-style`
-- provisional text domain: `re-style`
+- theme slug: `re-style`
+- text domain: `re-style`
+- function prefix: `re_style_`
 - the static frontend is the visual reference, not the final implementation
   architecture
 - native WordPress editing should be preferred before introducing custom-field
@@ -83,18 +105,20 @@ Conservative assumptions documented for this phase:
   `scroll-snap` and full-height sections
 - the shop page already breaks that model and introduces a more conventional
   document flow
-- no responsive `@media` rules were detected, so responsive behavior is likely
-  incomplete or still implicit
-- Google Fonts are imported from CSS; this should be replaced with proper theme
-  enqueue strategy during conversion
+- the new theme scaffold already exposes a smaller baseline stylesheet, but the
+  design migration from the prototype is still pending
+- no responsive `@media` rules were detected in the static prototype, so
+  responsive behavior is likely incomplete or still implicit there
+- Google Fonts are imported from static CSS; this should be replaced with a
+  proper theme asset strategy during conversion
 
 ### JavaScript Findings
 
 - `main.js` is small and uses vanilla JS progressive enhancement
 - behaviors currently cover service modal, gallery hover rotation, nav dropdown,
   video modal and FAQ accordion
-- scripts are globally loaded and will need context-aware initialization once
-  moved into theme templates
+- the scaffold includes only a minimal theme script placeholder; behavior
+  migration remains a later task
 
 ### Content And Asset Gaps
 
@@ -142,24 +166,22 @@ Key translation decisions:
 
 ## Next Task Roadmap
 
-Planned next tasks after this analysis phase:
+Planned next tasks after the scaffold phase:
 
-1. `T001` - Create the WordPress theme scaffold with `style.css`,
-   `functions.php`, `theme.json`, asset folders and `inc/` structure.
-2. `T002` - Define the global design system migration: move prototype tokens to
+1. `T002` - Define the global design system migration: move prototype tokens to
    theme variables, enqueue fonts/assets correctly and split monolithic CSS.
-3. `T003` - Implement shared global layout: `header.php`, `footer.php`, menus,
-   custom logo, topbar strategy and base template parts.
-4. `T004` - Convert the homepage into `front-page.php` plus reusable
+2. `T003` - Implement shared global layout refinements: topbar strategy, menu
+   structure, custom logo behavior and reusable header/footer parts.
+3. `T004` - Convert the homepage into `front-page.php` plus reusable
    template-parts for hero, services, story, gallery, FAQ and newsletter.
-5. `T005` - Integrate WooCommerce baseline support, wrapper alignment and shop
+4. `T005` - Integrate WooCommerce baseline support, wrapper alignment and shop
    archive styling with minimal or no template overrides.
-6. `T006` - Implement WooCommerce single product, cart, checkout and account
+5. `T006` - Implement WooCommerce single product, cart, checkout and account
    styling using hooks/CSS first, documenting any override that proves
    necessary.
-7. `T007` - Convert the information area into native WordPress pages or focused
+6. `T007` - Convert the information area into native WordPress pages or focused
    page templates and define handling for legal/support content.
-8. `T008` - Run hardening pass on responsiveness, accessibility, encoding,
+7. `T008` - Run hardening pass on responsiveness, accessibility, encoding,
    missing assets/content placeholders and documentation updates.
 
 ## Open Decisions
