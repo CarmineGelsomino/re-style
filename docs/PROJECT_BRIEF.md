@@ -56,11 +56,20 @@ The scaffold currently includes:
 - fallback templates: `index.php`, `home.php`, `page.php`, `single.php`,
   `archive.php`, `search.php`, `404.php`
 - content partials under `template-parts/content/`
+- site-level partials for topbar and footer menu columns
 - initial `theme.json`
 - base asset folders under `assets/`
 - `woocommerce/` directory reserved for future justified overrides only
 
 This baseline is intentionally minimal and contains no business logic.
+
+The global shell now also includes:
+
+- WordPress-native primary navigation in `header.php`
+- WordPress-native footer navigation split into multiple footer menu locations
+- a reusable topbar partial for announcement messaging
+- CSS-only submenu disclosure based on semantic list markup and keyboard-safe
+  `:focus-within` behavior
 
 ## Working Assumptions
 
@@ -148,6 +157,150 @@ Key translation decisions:
 - keep dynamic interactions optional and scoped per template
 - centralize design tokens so CSS custom properties and `theme.json` can coexist
 
+## Static-To-Template Mapping
+
+### Global Shell
+
+Map shared chrome into classic templates and reusable partials:
+
+- `header.php`: document head, skip link, site branding, primary navigation
+- `footer.php`: footer navigation, legal links area, footer credits
+- `template-parts/site/topbar.php`: scrolling announcement bar
+- `template-parts/site/floating-actions.php`: floating WhatsApp and booking CTA
+- `template-parts/site/icon-sprite.php`: centralized SVG symbol sprite to avoid
+  per-page duplication
+- `template-parts/navigation/primary.php`: primary menu wrapper and dropdown
+  affordances if needed
+- `template-parts/navigation/footer.php`: footer menu columns or fallback lists
+
+### Template Hierarchy Targets
+
+- `front-page.php`: curated homepage composed from reusable homepage sections
+- `home.php`: editorial posts index only; not a clone of the static homepage
+- `page.php`: default static pages with standard content flow
+- `single.php`: default post content, initially generic and minimal
+- `archive.php`: non-search archives and fallback archive rendering
+- `search.php`: generic search result listing
+- `404.php`: lightweight branded not-found state
+
+### Homepage Section Mapping
+
+The current `sito-statico/index.html` should be decomposed into:
+
+- `template-parts/front-page/hero.php`
+- `template-parts/front-page/services.php`
+- `template-parts/front-page/shop-categories.php`
+- `template-parts/front-page/history.php`
+- `template-parts/front-page/gallery.php`
+- `template-parts/front-page/video-tips.php`
+- `template-parts/front-page/location-hours.php`
+- `template-parts/front-page/contacts.php`
+- `template-parts/front-page/faq.php`
+- `template-parts/front-page/newsletter.php`
+
+Recommended behavior:
+
+- `front-page.php` orchestrates the section order only
+- each section partial owns its local markup
+- modal containers that are section-specific stay close to their section partial
+- repeated CTA styles stay in assets, not in section-specific business logic
+
+### Information Page Mapping
+
+The current `sito-statico/informazioni.html` should become a native WordPress
+page using `page.php` or a focused page template only if the anchor layout
+needs dedicated control.
+
+Reusable partial candidates:
+
+- `template-parts/page/info-hero.php`
+- `template-parts/page/info-sections.php`
+- `template-parts/common/faq.php`
+
+Current recommendation:
+
+- start with standard `page.php` plus content-aware partials
+- introduce a custom page template only if the anchor navigation and repeated
+  info-card layout become awkward in the default page flow
+
+### Shop And WooCommerce Mapping
+
+The current `sito-statico/shop.html` is a visual reference for WooCommerce, not
+an independent hardcoded shop template.
+
+Preferred mapping:
+
+- product archive and shop index: WooCommerce archive flow styled by theme CSS
+- toolbar/search/sort areas: hooks, wrappers and CSS before overrides
+- filter sidebar: deferred until the project confirms whether it relies on
+  WooCommerce core widgets, blocks in classic theme context, or a plugin
+- product cards: theme styles aligned with WooCommerce loop markup
+- pagination: theme styles applied to WooCommerce pagination output
+- benefits and final CTA: optional archive-adjacent partials if retained in the
+  final UX
+
+Potential reusable WooCommerce-oriented partials:
+
+- `template-parts/woocommerce/archive-intro.php`
+- `template-parts/woocommerce/archive-benefits.php`
+- `template-parts/woocommerce/archive-cta.php`
+
+### Shared Reusable Blocks
+
+Patterns that should not remain duplicated:
+
+- FAQ accordion
+- section heading pattern with label + title + intro copy
+- CTA button variants
+- contact/social block
+- legal/footer link groups
+
+Suggested homes:
+
+- `template-parts/common/section-heading.php`
+- `template-parts/common/faq.php`
+- `template-parts/common/social-links.php`
+- `template-parts/common/contact-list.php`
+
+### Asset Reuse And Reorganization
+
+Static assets to preserve and reorganize:
+
+- move reusable images into theme `assets/img/`
+- split CSS into global foundations, layout, components and page/context files
+- migrate JS into small, scoped modules or guarded initializers inside the
+  theme script
+- replace duplicated inline SVG sprites with one shared include strategy
+
+Recommended asset grouping:
+
+- `assets/css/base.css`: reset, tokens, typography, utilities
+- `assets/css/layout.css`: header, footer, wrappers, grid primitives
+- `assets/css/components.css`: buttons, cards, accordion, modal, nav dropdown
+- `assets/css/front-page.css`: homepage-only sections
+- `assets/css/woocommerce.css`: WooCommerce-specific styling
+- `assets/css/pages.css`: informational page patterns if needed
+- `assets/js/theme.js`: guarded global bootstrap
+- `assets/js/modules/`: optional later modules for modal, FAQ, dropdown, gallery
+
+### Asset Risks And Gaps
+
+- shop product images referenced in static markup are still missing
+- video covers and mp4 files referenced by the homepage are still missing
+- Google Fonts import in static CSS must be replaced by explicit theme asset
+  loading strategy
+- text encoding should be normalized before content migration to avoid carrying
+  broken characters into templates
+
+### Mapping Assumptions
+
+- homepage content remains curated and theme-driven in the short term
+- `home.php` serves posts/blog concerns, not marketing homepage concerns
+- WooCommerce markup should stay as close as possible to plugin defaults
+- repeated FAQ content may appear both on homepage and informational contexts,
+  so it should be designed as a reusable partial rather than duplicated markup
+- legal pages are assumed to be normal WordPress pages, linked from menus/footer
+
 ## Expected Quality
 
 - semantic HTML and clear heading hierarchy
@@ -166,22 +319,20 @@ Key translation decisions:
 
 ## Next Task Roadmap
 
-Planned next tasks after the scaffold phase:
+Planned next tasks after the mapping phase:
 
-1. `T002` - Define the global design system migration: move prototype tokens to
+1. `T004` - Define the global design system migration: move prototype tokens to
    theme variables, enqueue fonts/assets correctly and split monolithic CSS.
-2. `T003` - Implement shared global layout refinements: topbar strategy, menu
-   structure, custom logo behavior and reusable header/footer parts.
-3. `T004` - Convert the homepage into `front-page.php` plus reusable
+2. `T005` - Convert the homepage into `front-page.php` plus reusable
    template-parts for hero, services, story, gallery, FAQ and newsletter.
-4. `T005` - Integrate WooCommerce baseline support, wrapper alignment and shop
+3. `T006` - Integrate WooCommerce baseline support, wrapper alignment and shop
    archive styling with minimal or no template overrides.
-5. `T006` - Implement WooCommerce single product, cart, checkout and account
+4. `T007` - Implement WooCommerce single product, cart, checkout and account
    styling using hooks/CSS first, documenting any override that proves
    necessary.
-6. `T007` - Convert the information area into native WordPress pages or focused
+5. `T008` - Convert the information area into native WordPress pages or focused
    page templates and define handling for legal/support content.
-7. `T008` - Run hardening pass on responsiveness, accessibility, encoding,
+6. `T009` - Run hardening pass on responsiveness, accessibility, encoding,
    missing assets/content placeholders and documentation updates.
 
 ## Open Decisions

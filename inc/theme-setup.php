@@ -57,8 +57,11 @@ if ( ! function_exists( 're_style_setup' ) ) {
 
 		register_nav_menus(
 			array(
-				'primary' => __( 'Primary Menu', 're-style' ),
-				'footer'  => __( 'Footer Menu', 're-style' ),
+				'primary'           => __( 'Primary Menu', 're-style' ),
+				'footer_navigation' => __( 'Footer Navigation Menu', 're-style' ),
+				'footer_shop'       => __( 'Footer Shop Menu', 're-style' ),
+				'footer_info'       => __( 'Footer Information Menu', 're-style' ),
+				'footer_legal'      => __( 'Footer Legal Menu', 're-style' ),
 			)
 		);
 	}

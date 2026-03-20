@@ -181,3 +181,153 @@ activable, readable and ready for the next conversion tasks.
 - Decide whether to load webfonts locally or via a controlled external strategy.
 - Add screenshot, translation files and richer template parts only when the next
   tasks justify them.
+
+---
+
+## T002
+
+### Objective
+
+Analyze the static frontend and convert its structure into a concrete mapping
+for classic WordPress templates, reusable partials and theme asset
+organization.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `sito-statico/index.html`
+- `sito-statico/shop.html`
+- `sito-statico/informazioni.html`
+
+### Files Created/Modified
+
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The static homepage is mapped to `front-page.php` orchestrating reusable
+  section partials instead of one monolithic template.
+- `home.php` is reserved for the posts index and will not replicate the
+  marketing homepage.
+- Shared topbar, floating actions, icon sprite, navigation and footer concerns
+  should become reusable site-level partials.
+- The static information page should start as a native WordPress page flow and
+  only become a dedicated page template if the anchored layout requires it.
+- The static shop page is treated as a WooCommerce visual reference, not a
+  standalone hardcoded shop template.
+- FAQ, section heading, contact/social and CTA patterns should be normalized
+  into common partials or components instead of duplicated markup.
+- Asset migration should split the static monolithic CSS into theme-oriented
+  layers and centralize the SVG sprite strategy.
+
+### Assumptions
+
+- Homepage sections remain curated by the theme in the short term.
+- Legal pages will be regular WordPress pages linked from menus/footer.
+- Shop filters are deferred until the final source of filtering behavior is
+  confirmed.
+- Missing media files remain prototype gaps and do not block template mapping.
+- Preserving design intent means preserving section hierarchy and interaction
+  semantics, not reproducing the current static file boundaries literally.
+
+### Verification
+
+- Homepage, shop and informational page structures were re-read and classified.
+- A concrete mapping was documented for the requested core templates:
+  `front-page.php`, `home.php`, `page.php`, `single.php`, `archive.php`,
+  `search.php` and `404.php`.
+- Reusable partial candidates and asset reorganization targets were documented.
+- Open assumptions and structural risks were recorded for future tasks.
+
+### TODO / Residual Risks
+
+- Implement the design-system migration described by the new mapping in the next
+  task.
+- Confirm whether the informational page can stay within `page.php` or deserves
+  a dedicated template.
+- Decide the final strategy for WooCommerce archive extras such as benefits and
+  CTA sections.
+- Normalize encoding before large-scale content migration.
+- Source or replace missing product and video assets before final visual
+  conversion.
+
+---
+
+## T003
+
+### Objective
+
+Convert the static header, footer and menu patterns into native WordPress
+classic theme components with accessible navigation behavior.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `header.php`
+- `footer.php`
+- `inc/theme-setup.php`
+- `inc/template-tags.php`
+- `assets/css/main.css`
+
+### Files Created/Modified
+
+- `header.php`
+- `footer.php`
+- `inc/theme-setup.php`
+- `inc/template-tags.php`
+- `assets/css/main.css`
+- `template-parts/site/topbar.php`
+- `template-parts/navigation/footer-column.php`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- Primary navigation remains a native `wp_nav_menu()` output in `header.php`
+  with semantic list markup and no JS dependency.
+- Footer navigation was split into dedicated menu locations to preserve the
+  multi-column structure of the static design using native WordPress menus.
+- The topbar was extracted into a reusable partial instead of remaining embedded
+  in the header template.
+- Submenu behavior is handled with CSS using hover and `:focus-within`, keeping
+  keyboard access without introducing extra JavaScript.
+- Existing fallback behavior was extended so the theme still renders usable
+  navigation before menus are assigned in wp-admin.
+- Styling was updated to move the scaffold closer to the static header/footer
+  intent while keeping the implementation maintainable.
+
+### Assumptions
+
+- Footer content groups are best represented as separate WordPress menu
+  locations rather than hardcoded link lists.
+- A CSS-only submenu is sufficient for the current desktop/mobile scope.
+- Topbar messages can remain theme-defined for now until content requirements
+  justify a richer editorial source.
+- Icon actions from the static prototype are deferred because they currently
+  point to placeholder destinations and are not required for native menu
+  integration.
+
+### Verification
+
+- Header and footer now use WordPress-native menu locations rather than a
+  single generic footer menu.
+- Navigation markup remains semantic with `nav`, list output and visible focus
+  treatment in CSS.
+- Keyboard users can reveal submenu items through `:focus-within`.
+- No JavaScript was introduced for navigation behavior.
+- Documentation was updated to reflect the new global shell baseline.
+
+### TODO / Residual Risks
+
+- Validate submenu behavior in a real WordPress browser runtime once menus are
+  populated.
+- Decide whether topbar messages should later come from Customizer, options or
+  remain code-defined.
+- Revisit mobile navigation if the real menu depth grows beyond the current
+  CSS-only approach.
+- Continue with design-system and asset layer migration in the next task.
