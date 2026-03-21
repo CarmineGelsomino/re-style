@@ -1,5 +1,41 @@
 document.documentElement.classList.add("js");
 
+const siteHeader = document.querySelector(".site-header");
+const siteMenuToggle = document.querySelector(".site-header__menu-toggle");
+const siteNavigation = document.getElementById("site-navigation");
+
+if (siteHeader && siteMenuToggle && siteNavigation) {
+    const closeSiteMenu = () => {
+        siteHeader.classList.remove("is-menu-open");
+        siteMenuToggle.setAttribute("aria-expanded", "false");
+    };
+
+    siteMenuToggle.addEventListener("click", () => {
+        const isOpen = siteHeader.classList.toggle("is-menu-open");
+        siteMenuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    siteNavigation.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+            if (window.innerWidth <= 782) {
+                closeSiteMenu();
+            }
+        });
+    });
+
+    window.addEventListener("resize", () => {
+        if (window.innerWidth > 782) {
+            closeSiteMenu();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeSiteMenu();
+        }
+    });
+}
+
 const serviceCards = document.querySelectorAll(".service-card");
 const serviceModal = document.getElementById("serviceModal");
 const serviceModalTitle = document.getElementById("serviceModalTitle");

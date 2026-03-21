@@ -60,6 +60,9 @@ For every task:
 - analyze the existing implementation first
 - preserve the visual language of the static prototype unless the task says
   otherwise
+- for parity work, carry the static prototype CSS into the theme as faithfully
+  as possible and avoid reinterpretations, simplifications or value changes
+  unless the user explicitly asks for them
 - choose maintainable WordPress patterns over literal static 1:1 copies when
   the prototype is too rigid
 - document every non-obvious compromise

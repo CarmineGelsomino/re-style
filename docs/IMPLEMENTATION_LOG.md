@@ -722,3 +722,800 @@ WordPress front page visually matches the original design more faithfully.
   if those files are later added to the repository.
 - If the user wants pixel-level parity after browser review, continue with a
   screenshot-driven refinement pass limited to homepage differences only.
+
+---
+
+## T008
+
+### Objective
+
+Optimize header, homepage and footer behavior for tablet and mobile without
+changing the established desktop presentation.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+- `footer.php`
+- `template-parts/navigation/footer-column.php`
+
+### Files Created/Modified
+
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- Responsive refinements were limited to new and updated `max-width`
+  breakpoints so desktop rules remain unchanged.
+- Header spacing, nav density, action icon sizing and footer columns were tuned
+  separately for tablet and mobile rather than collapsing directly from desktop
+  to a single small-screen layout.
+- Homepage full-height sections remain intact on desktop, but switch to more
+  natural content height and roomier stacking on touch-device breakpoints.
+- Mobile homepage snap scrolling is disabled to avoid awkward touch scrolling,
+  while desktop homepage snap behavior stays intact.
+- The floating booking tab is still hidden on smaller screens, while the
+  WhatsApp action is reduced and repositioned for safer thumb reach.
+
+### Assumptions
+
+- Preserving desktop fidelity means all responsive work should live under
+  tablet/mobile media queries only.
+- Touch usability on smaller screens is more important than preserving the
+  desktop section snap effect on mobile.
+- Existing WordPress menu/output structure is sufficient; this task only needs
+  CSS-level responsive improvements.
+
+### Verification
+
+- Confirmed the new changes in `assets/css/main.css` are scoped to
+  `@media (max-width: 1100px)`, `@media (max-width: 1024px)` and
+  `@media (max-width: 782px)`.
+- Confirmed the new homepage responsive adjustments live only inside the
+  existing tablet/mobile media queries in `assets/css/front-page.css`.
+- Reviewed the header, homepage and footer selectors after edit to ensure the
+  desktop base rules were left untouched.
+- Automated runtime verification in WordPress and PHP lint could not be run in
+  this environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- Validate the updated breakpoints in a real browser on tablet and mobile
+  widths, especially header wrapping and homepage section spacing.
+- Revisit menu ergonomics later if the primary navigation grows in depth or
+  item count beyond the current CSS-only mobile handling.
+
+---
+
+## T009
+
+### Objective
+
+Add proper mobile header menu handling so the navigation can be toggled open and
+closed cleanly on small screens without changing desktop behavior.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `header.php`
+- `assets/css/main.css`
+- `assets/js/theme.js`
+
+### Files Created/Modified
+
+- `header.php`
+- `assets/css/main.css`
+- `assets/js/theme.js`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- A dedicated mobile menu toggle button was added to the header instead of
+  forcing the primary navigation to remain always expanded on small screens.
+- The mobile header now reveals the primary navigation and quick actions only
+  when the toggle is open, while the desktop header remains unchanged.
+- Menu open/close state is handled with a header class plus minimal JavaScript,
+  keeping the implementation lightweight and scoped.
+
+### Assumptions
+
+- The existing WordPress menu structure is sufficient; only the small-screen
+  interaction model needed improvement.
+- A simple toggle pattern is the most maintainable option for the current menu
+  depth and project scope.
+
+### Verification
+
+- Reviewed the updated header markup, CSS media-query behavior and theme script
+  together to confirm the mobile toggle is isolated from desktop behavior.
+- Automated runtime verification in WordPress and PHP lint could not be run in
+  this environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- Validate the toggle in a real mobile browser, especially submenu disclosure
+  and spacing when real WordPress menus are populated.
+
+---
+
+## T010
+
+### Objective
+
+Realign the homepage `location-hours` section with the static prototype by
+restoring the original flat two-column presentation, schedule row styling and
+CTA alignment.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `sito-statico/index.html`
+- `sito-statico/assets/css/style.css`
+- `template-parts/front-page/location-hours.php`
+- `assets/css/front-page.css`
+
+### Files Created/Modified
+
+- `assets/css/front-page.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The fix stays CSS-only because the current WordPress partial markup already
+  matches the static section structure closely enough.
+- The boxed card interpretation previously used for the two columns was
+  removed in favor of the original flat layout from the static prototype.
+- The schedule list was restored to the prototype model with top and bottom
+  borders, fixed first-column width and row-level spacing.
+- The booking CTA was realigned to the prototype behavior by centering it at
+  the section bottom with intrinsic width instead of treating it like a full
+  content card action.
+
+### Assumptions
+
+- The reported mismatch concerns the visual fidelity of the `location-hours`
+  section, not its editable content model or link destinations.
+- Existing mobile full-width button behavior can remain unchanged because the
+  previous responsive pass intentionally optimized smaller screens separately
+  from desktop fidelity.
+
+### Verification
+
+- Compared the static `location-hours` markup and CSS against the current theme
+  partial and section styles before editing.
+- Rechecked the updated selectors in `assets/css/front-page.css` to confirm the
+  changes are scoped to the homepage `location-hours` section only.
+- Automated runtime verification in WordPress and PHP lint could not be run in
+  this environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- Validate the section in a real browser to catch any remaining spacing or font
+  differences caused by live WordPress rendering around the homepage content.
+
+---
+
+## T011
+
+### Objective
+
+Restore compliance with the project constraint that existing theme CSS must
+remain unchanged during parity work, then correct the remaining
+`location-hours` details through data and documentation updates instead of CSS
+edits.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `sito-statico/index.html`
+- `template-parts/front-page/location-hours.php`
+- `inc/front-page-data.php`
+- `assets/css/front-page.css`
+
+### Files Created/Modified
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `inc/front-page-data.php`
+- `assets/css/front-page.css`
+
+### Decisions Made
+
+- The `T010` CSS changes to `location-hours` were rolled back to respect the
+  clarified project rule that current theme CSS must not be modified for this
+  kind of parity refinement.
+- The stable-CSS constraint was added to the operating documentation so it is
+  visible in the mandatory files read before each task.
+- Remaining section fidelity adjustments were limited to structured content:
+  the schedule day labels now restore Italian accents and the location booking
+  CTA default returns to the static prototype placeholder destination.
+
+### Assumptions
+
+- The user clarification applies as a standing repository rule, not only to the
+  current section fix.
+- Aligning the `location-hours` section under this rule means preferring data
+  parity over visual restyling when the existing CSS diverges from the static
+  prototype.
+
+### Verification
+
+- Recompared the static `location-hours` section against the theme partial and
+  confirmed the remaining structural markup already matches closely enough.
+- Rechecked `assets/css/front-page.css` after rollback to ensure the
+  `location-hours` block no longer carries the prior CSS-only parity edits.
+- Rechecked `inc/front-page-data.php` to confirm `Lunedì`, `Martedì`,
+  `Venerdì` and the `#` booking CTA default are now aligned with the static
+  source content.
+- Automated runtime verification in WordPress and PHP lint could not be run in
+  this environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- If further parity gaps remain in `location-hours`, they should be resolved
+  through template/data adjustments unless the user explicitly authorizes CSS
+  edits.
+
+---
+
+## T012
+
+### Objective
+
+Align the homepage `location-hours` section 1:1 with the static prototype by
+restoring the original CSS values and correcting the previously misdocumented
+parity rule.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `sito-statico/index.html`
+- `sito-statico/assets/css/style.css`
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+- `template-parts/front-page/location-hours.php`
+
+### Files Created/Modified
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+
+### Decisions Made
+
+- The `location-hours` rules in the theme were updated to match the static
+  prototype values directly instead of using the earlier theme-specific
+  reinterpretation.
+- Static CSS variable names used by the section were bridged in `main.css` to
+  the theme token system so the section can keep the original prototype values
+  without breaking the classic theme setup.
+- The project rule was clarified in the mandatory-read documentation: parity
+  work should reproduce static CSS faithfully rather than freezing the current
+  theme CSS state.
+
+### Assumptions
+
+- For this task, 1:1 fidelity means matching the static section behavior and
+  numeric CSS values while keeping the theme's existing scope prefixes.
+- Reusing aliased variables in the theme is acceptable because it preserves the
+  static values while remaining compatible with the current token architecture.
+
+### Verification
+
+- Recompared the static `location-hours` markup and CSS against the updated
+  theme section after the edit.
+- Confirmed the theme now restores the static section behaviors that were
+  previously missing: flat columns, row-bounded schedule list, `inline-flex`
+  address line, static button sizing and bottom-centered booking CTA.
+- Confirmed the static variable names referenced by the restored section now
+  resolve through aliases declared in `assets/css/main.css`.
+- Automated runtime verification in WordPress and PHP lint could not be run in
+  this environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- Validate the updated section in a real browser to confirm there are no
+  remaining parity gaps caused by surrounding homepage rules or WordPress
+  runtime output.
+
+---
+
+## T013
+
+### Objective
+
+Restore the homepage `videoconsigli` section with 1:1 static-prototype CSS
+behavior inside the theme, including the card overlay/play treatment and the
+video modal presentation.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `sito-statico/index.html`
+- `sito-statico/assets/css/style.css`
+- `sito-statico/assets/js/main.js`
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+- `assets/js/theme.js`
+- `template-parts/front-page/video-tips.php`
+- `inc/front-page-data.php`
+
+### Files Created/Modified
+
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+- `inc/front-page-data.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The `videoconsigli` section styling was realigned to the static prototype by
+  restoring the original section height, spacing, card geometry, gradient
+  overlay, centered play button, absolute title placement and modal layout.
+- Additional static variable aliases were bridged in `assets/css/main.css` so
+  the copied prototype rules can resolve against the existing theme token
+  system without changing the design values.
+- The last video card title and related accessibility strings were updated to
+  restore the accented `più` used by the static source.
+- The current theme markup and JS were kept because they already match the
+  static behavior closely enough for this section; the work remained focused on
+  parity gaps rather than broader refactors.
+
+### Assumptions
+
+- 1:1 parity here means matching the static CSS values and behavior while
+  retaining the theme scope prefix and existing WordPress-safe markup.
+- The missing original `video-cover-1.webp` through `video-cover-4.webp` and
+  mp4 assets remain a repository gap, so image/media file parity cannot be
+  completed until those files exist.
+
+### Verification
+
+- Recompared the static `videoconsigli` markup/CSS and modal block against the
+  updated theme section after the edit.
+- Confirmed the theme now restores the static card treatment: full-height
+  imagery, dark gradient overlay, centered circular play affordance and
+  bottom-positioned title text.
+- Confirmed the video modal now follows the static dimensions and presentation:
+  portrait media frame, transparent dialog wrapper, top-right close control and
+  centered title styling.
+- Automated runtime verification in WordPress and PHP lint could not be run in
+  this environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- Add the missing original video cover images and mp4 files if the section must
+  reach full media parity with the static prototype rather than layout parity
+  only.
+
+---
+
+## T014
+
+### Objective
+
+Restore the homepage `contatti` section with 1:1 static-prototype CSS behavior
+and matching default content formatting inside the theme.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `sito-statico/index.html`
+- `sito-statico/assets/css/style.css`
+- `assets/css/front-page.css`
+- `template-parts/front-page/contacts.php`
+- `inc/front-page-data.php`
+
+### Files Created/Modified
+
+- `assets/css/front-page.css`
+- `inc/front-page-data.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The `contatti` section styling was realigned to the static prototype by
+  restoring the original section height, grid structure, contact-row geometry,
+  centered social icon strip, circular owner image and bottom CTA placement.
+- The theme partial markup already matched the static section closely enough, so
+  the parity work stayed focused on CSS values and default content formatting.
+- The default contact description now preserves the static line break and
+  `Social` capitalization, and the booking CTA default returns to the static
+  placeholder destination `#`.
+
+### Assumptions
+
+- 1:1 parity here means matching the static CSS values and visible content while
+  keeping the existing theme-safe markup and escaping.
+- The existing owner image asset already corresponds to the static reference, so
+  no media substitution was required for this section.
+
+### Verification
+
+- Recompared the static `contatti` markup and CSS against the updated theme
+  section after the edit.
+- Confirmed the theme now restores the static section behaviors that were
+  previously missing: 300px owner column, 140px label column, centered social
+  links, circular 260px portrait and intrinsic-width booking CTA.
+- Confirmed the default contact copy now renders on two lines through the
+  existing `nl2br()` handling in the template.
+- Automated runtime verification in WordPress and PHP lint could not be run in
+  this environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- Validate the updated section in a real browser to confirm there are no
+  remaining parity gaps caused by surrounding homepage rules or WordPress
+  runtime output.
+
+---
+
+## T015
+
+### Objective
+
+Refine the homepage `contatti` section so social icon rendering and contact
+links match the static prototype more closely.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `sito-statico/assets/css/style.css`
+- `assets/css/front-page.css`
+- `template-parts/site/icon-sprite.php`
+
+### Files Created/Modified
+
+- `assets/css/front-page.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- Contact email and telephone links now explicitly remove text underlines in
+  the section, matching the static prototype instead of relying on broader link
+  defaults.
+- Social links in the contact block now also remove text decoration explicitly
+  and force a zero line-height icon wrapper so the glyphs render more cleanly.
+- The generic social icon size in the contact strip was slightly increased to
+  improve Instagram legibility while staying within the visual intent of the
+  static section.
+
+### Assumptions
+
+- The Instagram visibility issue is caused by icon presentation inside the
+  themed contact strip rather than by an incorrect SVG symbol definition.
+
+### Verification
+
+- Rechecked the updated `contatti` selectors in `assets/css/front-page.css` to
+  confirm the changes are scoped to email/phone links and social icons only.
+- Automated runtime verification in WordPress and PHP lint could not be run in
+  this environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- Validate the icon rendering in a browser to confirm the Instagram symbol now
+  reads clearly at the updated size.
+
+---
+
+## T016
+
+### Objective
+
+Fix the missing Instagram icon rendering in the homepage `contatti` section by
+restoring the complete static SVG symbol in the shared icon sprite.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `sito-statico/index.html`
+- `template-parts/site/icon-sprite.php`
+- `assets/css/front-page.css`
+
+### Files Created/Modified
+
+- `template-parts/site/icon-sprite.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The Instagram visibility issue was traced to an incomplete `icon-instagram`
+  symbol path in the shared sprite, not to the section CSS.
+- The theme sprite now restores the exact Instagram path used by the static
+  prototype, including the outer camera ring and top-right detail.
+
+### Assumptions
+
+- All sections using the shared sprite should benefit safely from the restored
+  Instagram symbol because the change only completes the missing vector data.
+
+### Verification
+
+- Compared the `icon-instagram` symbol in `template-parts/site/icon-sprite.php`
+  against the static sprite embedded in `sito-statico/index.html`.
+- Confirmed the theme symbol previously ended early and now includes the full
+  static path data.
+- Automated runtime verification in WordPress and PHP lint could not be run in
+  this environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- Validate the restored icon in a browser to confirm the symbol now renders
+  clearly in the contact social strip and any other sprite consumers.
+
+---
+
+## T017
+
+### Objective
+
+Restore the homepage `faq` section with 1:1 static-prototype CSS behavior and
+matching default fallback copy inside the theme.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `sito-statico/index.html`
+- `sito-statico/assets/css/style.css`
+- `assets/css/front-page.css`
+- `assets/js/theme.js`
+- `template-parts/front-page/faq.php`
+- `inc/front-page-data.php`
+
+### Files Created/Modified
+
+- `assets/css/front-page.css`
+- `inc/front-page-data.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The `faq` section styling was realigned to the static prototype by restoring
+  the original section sizing, card styling, contrast-highlight open state,
+  question row spacing, arrow treatment and answer reveal animation model.
+- Existing FAQ markup and JavaScript were kept because they already support the
+  same accordion interaction model used by the static prototype.
+- The default FAQ description, questions and answers were updated to restore
+  accented Italian copy so the fallback content now matches the static source
+  more closely.
+- A leftover mobile selector was updated to target the new FAQ paragraph rule
+  path consistently after the section CSS realignment.
+
+### Assumptions
+
+- 1:1 parity here means matching the static desktop CSS values and accordion
+  behavior while keeping the theme-safe markup and scoped selectors.
+
+### Verification
+
+- Recompared the static `faq` markup and CSS against the updated theme section
+  after the edit.
+- Confirmed the theme now restores the static FAQ behaviors that were
+  previously missing: rounded cards, contrast-colored open state, hover fill on
+  the question row, arrow sizing/rotation and the grid-row based answer reveal.
+- Rechecked the responsive selector update so the mobile FAQ answer padding now
+  still applies to the current paragraph rule.
+- Automated runtime verification in WordPress and PHP lint could not be run in
+  this environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- Validate the updated FAQ section in a real browser to confirm there are no
+  remaining parity gaps caused by surrounding homepage rules or WordPress
+  runtime output.
+
+---
+
+## T018
+
+### Objective
+
+Restore the homepage `newsletter` section with 1:1 static-prototype CSS
+behavior and matching fallback copy inside the theme.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `sito-statico/index.html`
+- `sito-statico/assets/css/style.css`
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+- `template-parts/front-page/newsletter.php`
+- `inc/front-page-data.php`
+
+### Files Created/Modified
+
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+- `inc/front-page-data.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The `newsletter` section styling was realigned to the static prototype by
+  restoring the original section height, centered card width, form spacing,
+  input/button sizing, consent row styling and newsletter note treatment.
+- A static alias for `--btn-bg-hover` was added to the main token bridge so the
+  newsletter submit button hover state can match the prototype without
+  hardcoding inconsistent values elsewhere.
+- The default newsletter description and note were updated to restore accented
+  Italian copy so the fallback content now matches the static source more
+  closely.
+- Existing markup and responsive rules were preserved where already compatible,
+  with the responsive newsletter box padding left intact as the current
+  small-screen adaptation layer.
+
+### Assumptions
+
+- 1:1 parity here means matching the static desktop CSS values and visible copy
+  while keeping the existing theme-safe form markup and accessibility labels.
+
+### Verification
+
+- Recompared the static `newsletter` markup and CSS against the updated theme
+  section after the edit.
+- Confirmed the theme now restores the static newsletter behaviors that were
+  previously missing: 820px card width, 640px form width, 60px controls,
+  underline hoverable privacy link and muted note styling.
+- Confirmed the copied button hover rule now resolves through the new
+  `--btn-bg-hover` alias in `assets/css/main.css`.
+- Automated runtime verification in WordPress and PHP lint could not be run in
+  this environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- Validate the updated newsletter section in a real browser to confirm there
+  are no remaining parity gaps caused by surrounding homepage rules or form
+  rendering in WordPress.
+
+---
+
+## T019
+
+### Objective
+
+Restore the homepage footer with 1:1 static-prototype structure and styling,
+and fix the front-page scroll/snap behavior so the footer can be reached
+properly.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `sito-statico/index.html`
+- `sito-statico/assets/css/style.css`
+- `footer.php`
+- `template-parts/navigation/footer-column.php`
+- `inc/template-tags.php`
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+
+### Files Created/Modified
+
+- `footer.php`
+- `template-parts/navigation/footer-column.php`
+- `inc/template-tags.php`
+- `assets/css/main.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The theme footer markup was realigned to the static prototype by restoring
+  the `site-footer-inner`, `footer-grid`, `footer-col` and `footer-bottom`
+  structure, plus the branded `OC Corporation` credit line.
+- Footer column headings now use the static visual pattern with `section-label`
+  styling, and the first three headings can act as links like the static
+  prototype.
+- Footer fallback menus were upgraded from a generic single `Home` item to
+  location-specific fallback lists that mirror the static footer information
+  architecture more closely.
+- The front-page footer now becomes a snap area with front-page-specific
+  sizing, spacing and alignment rules, which should resolve the issue where the
+  final footer area was difficult or impossible to scroll into.
+- Existing generic footer styles remain available for non-front-page contexts,
+  while front-page parity rules are scoped through the `re-style-front-page`
+  body class.
+
+### Assumptions
+
+- The reported footer scroll issue is primarily caused by the footer not being
+  configured as a compatible snap destination within the front-page scrolling
+  model.
+- Using location-specific fallback links is acceptable because the project
+  still aims to mirror the static footer structure before menus are configured
+  in WordPress admin.
+
+### Verification
+
+- Recompared the static footer markup and CSS against the updated theme footer
+  structure and styles after the edit.
+- Confirmed the front-page footer now has its own snap-aware layout rules,
+  static-style column geometry and branded bottom credit row.
+- Confirmed the footer fallback callback now outputs static-like lists for
+  navigation, shop, information and legal columns instead of a one-link
+  placeholder.
+- Automated runtime verification in WordPress and PHP lint could not be run in
+  this environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- Validate the updated footer in a real browser to confirm the homepage now
+  scrolls cleanly into the footer and that no final snap/overflow issue
+  remains.
+
+---
+
+## T020
+
+### Objective
+
+Correct the footer heading-link selector so `.footer-col > a.section-label`
+matches the static prototype exactly.
+
+### Files Read
+
+- `AGENTS.md`
+- `sito-statico/assets/css/style.css`
+- `assets/css/main.css`
+
+### Files Created/Modified
+
+- `assets/css/main.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The front-page footer now styles the direct anchor heading selector
+  `.footer-col > a.section-label` with the exact static typography, spacing,
+  color and hover behavior instead of relying on a broader `.section-label`
+  rule.
+- A separate non-link footer heading rule was kept for `.footer-col >
+  .section-label` so the legal column still matches the visual pattern without
+  inheriting link-only hover behavior.
+
+### Assumptions
+
+- The reported mismatch concerned the direct linked footer headings rather than
+  the list links inside each footer column.
+
+### Verification
+
+- Compared the static `.footer-col > a.section-label` rule against the updated
+  front-page footer selector in `assets/css/main.css`.
+- Automated runtime verification in WordPress and PHP lint could not be run in
+  this environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- Validate the footer headings in a browser to confirm the linked and non-linked
+  column labels now both match the intended static styling.

@@ -51,9 +51,55 @@ if ( ! function_exists( 're_style_footer_menu_fallback' ) ) {
 	 */
 	function re_style_footer_menu_fallback( $args = array() ) {
 		$menu_id = ! empty( $args['menu_id'] ) ? $args['menu_id'] : 'footer-menu';
+		$location = ! empty( $args['theme_location'] ) ? $args['theme_location'] : '';
+		$items = array();
+
+		switch ( $location ) {
+			case 'footer_navigation':
+				$items = array(
+					array( 'label' => __( 'Storia', 're-style' ), 'url' => home_url( '/#storia' ) ),
+					array( 'label' => __( 'Servizi', 're-style' ), 'url' => home_url( '/#servizi' ) ),
+					array( 'label' => __( 'Galleria', 're-style' ), 'url' => home_url( '/#galleria' ) ),
+					array( 'label' => __( 'Videoconsigli', 're-style' ), 'url' => home_url( '/#videoconsigli' ) ),
+					array( 'label' => __( 'Sede e Orari', 're-style' ), 'url' => home_url( '/#sede-orari' ) ),
+					array( 'label' => __( 'Contatti', 're-style' ), 'url' => home_url( '/#contatti' ) ),
+				);
+				break;
+			case 'footer_shop':
+				$items = array(
+					array( 'label' => __( 'Cura dei capelli', 're-style' ), 'url' => '#' ),
+					array( 'label' => __( 'Cura della barba', 're-style' ), 'url' => '#' ),
+					array( 'label' => __( 'Dispositivi elettronici', 're-style' ), 'url' => '#' ),
+				);
+				break;
+			case 'footer_info':
+				$items = array(
+					array( 'label' => __( 'Spedizioni', 're-style' ), 'url' => home_url( '/informazioni/#spedizioni' ) ),
+					array( 'label' => __( 'Resi e rimborsi', 're-style' ), 'url' => home_url( '/informazioni/#resi-rimborsi' ) ),
+					array( 'label' => __( 'Metodi di pagamento', 're-style' ), 'url' => home_url( '/informazioni/#pagamenti' ) ),
+					array( 'label' => __( 'Supporto clienti', 're-style' ), 'url' => home_url( '/informazioni/#supporto-clienti' ) ),
+					array( 'label' => __( 'Faq', 're-style' ), 'url' => home_url( '/#faq' ) ),
+				);
+				break;
+			case 'footer_legal':
+				$items = array(
+					array( 'label' => __( 'Privacy Policy', 're-style' ), 'url' => '#' ),
+					array( 'label' => __( 'Cookie Policy', 're-style' ), 'url' => '#' ),
+					array( 'label' => __( 'Termini e Condizioni', 're-style' ), 'url' => '#' ),
+				);
+				break;
+		}
+
+		if ( empty( $items ) ) {
+			$items = array(
+				array( 'label' => __( 'Home', 're-style' ), 'url' => home_url( '/' ) ),
+			);
+		}
 
 		echo '<ul id="' . esc_attr( $menu_id ) . '" class="menu footer-menu">';
-		echo '<li class="menu-item"><a href="' . esc_url( home_url( '/' ) ) . '">' . esc_html__( 'Home', 're-style' ) . '</a></li>';
+		foreach ( $items as $item ) {
+			echo '<li class="menu-item"><a href="' . esc_url( $item['url'] ) . '">' . esc_html( $item['label'] ) . '</a></li>';
+		}
 		echo '</ul>';
 	}
 }

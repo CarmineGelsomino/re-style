@@ -9,15 +9,20 @@ $args = wp_parse_args(
 	$args,
 	array(
 		'title'      => '',
+		'title_url'  => '',
 		'location'   => '',
 		'menu_id'    => 'footer-menu',
 		'aria_label' => '',
 	)
 );
 ?>
-<section class="footer-column">
+<section class="footer-col">
 	<?php if ( $args['title'] ) : ?>
-		<h2 class="footer-column__title"><?php echo esc_html( $args['title'] ); ?></h2>
+		<?php if ( ! empty( $args['title_url'] ) ) : ?>
+			<a href="<?php echo esc_url( $args['title_url'] ); ?>" class="section-label"><?php echo esc_html( $args['title'] ); ?></a>
+		<?php else : ?>
+			<span class="section-label"><?php echo esc_html( $args['title'] ); ?></span>
+		<?php endif; ?>
 	<?php endif; ?>
 
 	<nav class="footer-navigation" aria-label="<?php echo esc_attr( $args['aria_label'] ); ?>">

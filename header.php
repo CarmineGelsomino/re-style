@@ -36,6 +36,17 @@
 				?>
 			</div>
 
+			<button
+				class="site-header__menu-toggle"
+				type="button"
+				aria-expanded="false"
+				aria-controls="site-navigation"
+				aria-label="<?php esc_attr_e( 'Open menu', 're-style' ); ?>">
+				<span class="site-header__menu-toggle-line" aria-hidden="true"></span>
+				<span class="site-header__menu-toggle-line" aria-hidden="true"></span>
+				<span class="site-header__menu-toggle-line" aria-hidden="true"></span>
+			</button>
+
 			<nav id="site-navigation" class="main-navigation" aria-label="<?php esc_attr_e( 'Primary menu', 're-style' ); ?>">
 				<?php
 				wp_nav_menu(

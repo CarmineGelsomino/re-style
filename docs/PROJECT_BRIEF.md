@@ -156,6 +156,9 @@ Current direction after the design-token migration:
   `theme.json`
 - `assets/css/front-page.css` keeps section-specific layout, component states
   and interaction styling that are tightly coupled to the curated homepage UX
+- parity work should restore the static prototype CSS as faithfully as
+  possible, reusing the original values and behavior instead of reinterpreting
+  them for the theme unless a task explicitly asks for adaptation
 - `assets/css/editor.css` mirrors frontend tokens and editorial typography
   rather than duplicating all frontend component rules
 - homepage content editing remains native and conservative: Customizer settings
