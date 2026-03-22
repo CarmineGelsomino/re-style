@@ -365,8 +365,6 @@ if ( ! function_exists( 're_style_customize_register' ) ) {
 			array( 'id' => 'video_tips_label', 'section' => 'video_tips', 'label' => __( 'Label', 're-style' ), 'default' => $front_page_defaults['video_tips']['label'] ),
 			array( 'id' => 'video_tips_title', 'section' => 'video_tips', 'label' => __( 'Title', 're-style' ), 'default' => $front_page_defaults['video_tips']['title'] ),
 			array( 'id' => 'video_tips_description', 'section' => 'video_tips', 'label' => __( 'Description', 're-style' ), 'default' => $front_page_defaults['video_tips']['description'], 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
-			array( 'id' => 'video_tips_items', 'section' => 'video_tips', 'label' => __( 'Video card titles', 're-style' ), 'default' => re_style_serialize_single_value_list( $front_page_defaults['video_tips']['items'], 'title' ), 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field', 'description' => __( 'One title per line.', 're-style' ) ),
-
 			array( 'id' => 'contacts_label', 'section' => 'contacts', 'label' => __( 'Label', 're-style' ), 'default' => $front_page_defaults['contacts']['label'] ),
 			array( 'id' => 'contacts_title', 'section' => 'contacts', 'label' => __( 'Title', 're-style' ), 'default' => $front_page_defaults['contacts']['title'] ),
 			array( 'id' => 'contacts_description', 'section' => 'contacts', 'label' => __( 'Description', 're-style' ), 'default' => $front_page_defaults['contacts']['description'], 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),

@@ -1594,3 +1594,91 @@ messaging based on the configured shipping threshold.
   configuration, especially if multiple zones expose different thresholds.
 - If the floating WhatsApp CTA also needs to be editable later, add that as a
   separate scoped task rather than expanding this change ad hoc.
+
+---
+
+## T022
+
+### Objective
+
+Make the homepage `videoconsigli` section dynamic through a dedicated
+WordPress admin menu so editors can manage each card as a real content item
+with title, cover image and uploaded/external video source.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `functions.php`
+- `inc/theme-setup.php`
+- `inc/enqueue.php`
+- `inc/customizer.php`
+- `inc/front-page-data.php`
+- `template-parts/front-page/video-tips.php`
+- `assets/js/theme.js`
+- `assets/css/front-page.css`
+
+### Files Created/Modified
+
+- `functions.php`
+- `inc/video-tutorials.php`
+- `inc/front-page-data.php`
+- `inc/customizer.php`
+- `template-parts/front-page/video-tips.php`
+- `assets/js/theme.js`
+- `assets/js/admin-video-tutorials.js`
+- `assets/css/front-page.css`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The video cards now use a dedicated custom post type `oc_video_tutorial`
+  with admin menu label `OC | Video Tutorial` instead of a Customizer textarea,
+  because each card needs structured editorial fields rather than one-line text.
+- Each tutorial uses native WordPress title and featured image support, while a
+  dedicated meta box handles the video source as either uploaded media or an
+  external URL.
+- Frontend card attributes such as `aria-label`, title ID and cover-image alt
+  fallback are now generated automatically from the saved content, preserving
+  the dynamic behavior that the theme already had.
+- Homepage rendering now prefers published `oc_video_tutorial` posts ordered by
+  `menu_order` and falls back to the existing theme defaults only when no
+  tutorial has been published yet.
+- The video modal was extended to support both local/direct video files and
+  embeddable external providers such as YouTube or Vimeo without changing the
+  overall homepage section design.
+
+### Assumptions
+
+- The requested dedicated menu should be a native WordPress admin sidebar item,
+  not another Customizer subsection.
+- "Indicare un link" can include both direct video-file URLs and common
+  embeddable provider URLs, so the frontend now distinguishes file playback
+  from iframe embeds automatically.
+- The featured image of each `oc_video_tutorial` entry is the intended cover
+  image for the homepage card unless no cover is set, in which case the theme
+  fallback image remains acceptable.
+
+### Verification
+
+- Manually reviewed the CPT registration, meta-box save flow, homepage data
+  assembly and modal rendering after the edits.
+- Confirmed the old Customizer field for per-card video titles was removed so
+  editorial management now has one clear source of truth.
+- Confirmed the frontend template and JS now carry a source mode per card and
+  switch the modal between native `<video>` playback and iframe embeds.
+- Attempted automated PHP verification earlier in this environment, but the
+  local machine does not provide a `php` executable, so syntax linting still
+  could not be run here.
+
+### TODO / Residual Risks
+
+- Validate the new `OC | Video Tutorial` flow in a real WordPress admin session,
+  especially media selection, featured-image usage and publish ordering.
+- Test at least one uploaded MP4 and one YouTube/Vimeo URL in the browser to
+  confirm the modal player behavior and provider policies match expectations.
+- If the business later needs per-card descriptions, categories or explicit
+  homepage inclusion toggles, extend the CPT deliberately rather than
+  reintroducing ad hoc Customizer fields.

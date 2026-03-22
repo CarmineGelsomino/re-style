@@ -835,12 +835,14 @@ html:has(body.re-style-front-page) {
     background-color: #000;
 }
 
-.site-main--front-page .video-modal-media video {
+.site-main--front-page .video-modal-media video,
+.site-main--front-page .video-modal-media iframe {
     width: 100%;
     height: 100%;
     display: block;
     object-fit: cover;
     background: #000;
+    border: 0;
 }
 
 .site-main--front-page .video-modal-close {

@@ -170,6 +170,7 @@ if ( ! function_exists( 're_style_get_front_page_defaults' ) ) {
 						'title'      => 'Come sistemare il ciuffo',
 						'aria_label' => 'Apri video: Come sistemare il ciuffo',
 						'video_src'  => '/assets/video/videoconsiglio-1.mp4',
+						'video_mode' => 'file',
 						'cover'      => re_style_asset_url( 'assets/img/hero.webp' ),
 						'cover_alt'  => 'Copertina video: Come sistemare il ciuffo',
 					),
@@ -178,6 +179,7 @@ if ( ! function_exists( 're_style_get_front_page_defaults' ) ) {
 						'title'      => 'Cura quotidiana della barba',
 						'aria_label' => 'Apri video: Cura quotidiana della barba',
 						'video_src'  => '/assets/video/videoconsiglio-2.mp4',
+						'video_mode' => 'file',
 						'cover'      => re_style_asset_url( 'assets/img/servizi.webp' ),
 						'cover_alt'  => 'Copertina video: Cura quotidiana della barba',
 					),
@@ -186,6 +188,7 @@ if ( ! function_exists( 're_style_get_front_page_defaults' ) ) {
 						'title'      => 'Il prodotto giusto per i capelli',
 						'aria_label' => 'Apri video: Il prodotto giusto per i capelli',
 						'video_src'  => '/assets/video/videoconsiglio-3.mp4',
+						'video_mode' => 'file',
 						'cover'      => re_style_asset_url( 'assets/img/capelli-shop.webp' ),
 						'cover_alt'  => 'Copertina video: Il prodotto giusto per i capelli',
 					),
@@ -194,6 +197,7 @@ if ( ! function_exists( 're_style_get_front_page_defaults' ) ) {
 						'title'      => 'Mantieni il taglio più a lungo',
 						'aria_label' => 'Apri video: Mantieni il taglio più a lungo',
 						'video_src'  => '/assets/video/videoconsiglio-4.mp4',
+						'video_mode' => 'file',
 						'cover'      => re_style_asset_url( 'assets/img/barba-shop.webp' ),
 						'cover_alt'  => 'Copertina video: Mantieni il taglio più a lungo',
 					),
@@ -445,17 +449,23 @@ if ( ! function_exists( 're_style_front_page_data' ) ) {
 		$data['video_tips']['label']        = re_style_get_mod_value( 'video_tips_label', $defaults['video_tips']['label'] );
 		$data['video_tips']['title']        = re_style_get_mod_value( 'video_tips_title', $defaults['video_tips']['title'] );
 		$data['video_tips']['description']  = re_style_get_mod_value( 'video_tips_description', $defaults['video_tips']['description'] );
-		$data['video_tips']['items']        = re_style_parse_single_value_lines( re_style_get_mod_value( 'video_tips_items', re_style_serialize_single_value_list( $defaults['video_tips']['items'], 'title' ) ), 'title' );
-		$data['video_tips']['items']        = ! empty( $data['video_tips']['items'] ) ? $data['video_tips']['items'] : $defaults['video_tips']['items'];
+		$video_tutorial_items              = function_exists( 're_style_get_video_tutorial_items' ) ? re_style_get_video_tutorial_items() : array();
 
-		foreach ( $data['video_tips']['items'] as $index => $item ) {
-			$fallback = isset( $defaults['video_tips']['items'][ $index ] ) ? $defaults['video_tips']['items'][ $index ] : end( $defaults['video_tips']['items'] );
+		if ( ! empty( $video_tutorial_items ) ) {
+			$data['video_tips']['items'] = $video_tutorial_items;
+		} else {
+			$data['video_tips']['items'] = $defaults['video_tips']['items'];
 
-			$data['video_tips']['items'][ $index ]['id']         = isset( $item['id'] ) ? $item['id'] : $fallback['id'];
-			$data['video_tips']['items'][ $index ]['aria_label'] = isset( $item['aria_label'] ) ? $item['aria_label'] : 'Apri video: ' . $item['title'];
-			$data['video_tips']['items'][ $index ]['video_src']  = isset( $item['video_src'] ) ? $item['video_src'] : $fallback['video_src'];
-			$data['video_tips']['items'][ $index ]['cover']      = isset( $item['cover'] ) ? $item['cover'] : $fallback['cover'];
-			$data['video_tips']['items'][ $index ]['cover_alt']  = isset( $item['cover_alt'] ) ? $item['cover_alt'] : 'Copertina video: ' . $item['title'];
+			foreach ( $data['video_tips']['items'] as $index => $item ) {
+				$fallback = isset( $defaults['video_tips']['items'][ $index ] ) ? $defaults['video_tips']['items'][ $index ] : end( $defaults['video_tips']['items'] );
+
+				$data['video_tips']['items'][ $index ]['id']         = isset( $item['id'] ) ? $item['id'] : $fallback['id'];
+				$data['video_tips']['items'][ $index ]['aria_label'] = isset( $item['aria_label'] ) ? $item['aria_label'] : 'Apri video: ' . $item['title'];
+				$data['video_tips']['items'][ $index ]['video_src']  = isset( $item['video_src'] ) ? $item['video_src'] : $fallback['video_src'];
+				$data['video_tips']['items'][ $index ]['video_mode'] = isset( $item['video_mode'] ) ? $item['video_mode'] : 'file';
+				$data['video_tips']['items'][ $index ]['cover']      = isset( $item['cover'] ) ? $item['cover'] : $fallback['cover'];
+				$data['video_tips']['items'][ $index ]['cover_alt']  = isset( $item['cover_alt'] ) ? $item['cover_alt'] : 'Copertina video: ' . $item['title'];
+			}
 		}
 
 		$data['contacts']['label']          = re_style_get_mod_value( 'contacts_label', $defaults['contacts']['label'] );

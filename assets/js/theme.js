@@ -160,13 +160,29 @@ const videoModal = document.getElementById("videoModal");
 const closeVideoModal = document.getElementById("closeVideoModal");
 const videoModalPlayer = document.getElementById("videoModalPlayer");
 const videoModalSource = document.getElementById("videoModalSource");
+const videoModalEmbed = document.getElementById("videoModalEmbed");
 const videoModalTitle = document.getElementById("videoModalTitle");
 
-if (videoTipTriggers.length && videoModal && closeVideoModal && videoModalPlayer && videoModalSource && videoModalTitle) {
-    const openVideoModal = (src, title) => {
-        videoModalSource.src = src;
+if (videoTipTriggers.length && videoModal && closeVideoModal && videoModalPlayer && videoModalSource && videoModalEmbed && videoModalTitle) {
+    const openVideoModal = (mode, src, title) => {
         videoModalTitle.textContent = title;
-        videoModalPlayer.load();
+
+        if (mode === "embed") {
+            videoModalPlayer.pause();
+            videoModalPlayer.currentTime = 0;
+            videoModalSource.src = "";
+            videoModalPlayer.load();
+            videoModalPlayer.hidden = true;
+            videoModalEmbed.hidden = false;
+            videoModalEmbed.src = src;
+        } else {
+            videoModalEmbed.src = "";
+            videoModalEmbed.hidden = true;
+            videoModalPlayer.hidden = false;
+            videoModalSource.src = src;
+            videoModalPlayer.load();
+        }
+
         videoModal.classList.add("active");
         videoModal.setAttribute("aria-hidden", "false");
         document.body.style.overflow = "hidden";
@@ -179,12 +195,15 @@ if (videoTipTriggers.length && videoModal && closeVideoModal && videoModalPlayer
         videoModalPlayer.currentTime = 0;
         videoModalSource.src = "";
         videoModalPlayer.load();
+        videoModalPlayer.hidden = false;
+        videoModalEmbed.src = "";
+        videoModalEmbed.hidden = true;
         document.body.style.overflow = "";
     };
 
     videoTipTriggers.forEach((trigger) => {
         trigger.addEventListener("click", () => {
-            openVideoModal(trigger.dataset.videoSrc || "", trigger.dataset.videoTitle || "");
+            openVideoModal(trigger.dataset.videoMode || "file", trigger.dataset.videoSrc || "", trigger.dataset.videoTitle || "");
         });
     });
 

@@ -11,6 +11,7 @@
 					type="button"
 					aria-labelledby="<?php echo esc_attr( $item['id'] ); ?>"
 					aria-label="<?php echo esc_attr( $item['aria_label'] ); ?>"
+					data-video-mode="<?php echo esc_attr( isset( $item['video_mode'] ) ? $item['video_mode'] : 'file' ); ?>"
 					data-video-src="<?php echo esc_attr( $item['video_src'] ); ?>"
 					data-video-title="<?php echo esc_attr( $item['title'] ); ?>">
 					<img src="<?php echo esc_url( $item['cover'] ); ?>" alt="<?php echo esc_attr( $item['cover_alt'] ); ?>">
@@ -32,6 +33,7 @@
 					<source id="videoModalSource" src="" type="video/mp4">
 					<?php esc_html_e( 'Il tuo browser non supporta il tag video.', 're-style' ); ?>
 				</video>
+				<iframe id="videoModalEmbed" src="" title="<?php esc_attr_e( 'Video tutorial', 're-style' ); ?>" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen hidden></iframe>
 			</div>
 			<h3 id="videoModalTitle"></h3>
 		</div>

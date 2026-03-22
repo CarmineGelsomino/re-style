@@ -77,6 +77,8 @@ The homepage baseline now includes:
 - a real `front-page.php` assembled from reusable front-page sections
 - a dedicated `inc/front-page-data.php` helper for lightweight structured
   default content
+- a dedicated `oc_video_tutorial` editorial type for homepage video cards, with
+  native admin management for title, cover image and source url/file
 - local theme copies of the currently available homepage images
 - minimal homepage-only JS for service modal, gallery hover rotation and FAQ
   disclosure
@@ -165,6 +167,10 @@ Current direction after the design-token migration:
   cover the current hero, service, shop, story, location, gallery, video,
   contacts, FAQ and newsletter copy/link/image needs without introducing custom
   fields or page builders
+- homepage video cards now have a richer native editorial model than the other
+  sections: they are managed from a dedicated admin menu instead of a textarea
+  list in the Customizer because each item needs title, cover image and
+  video/file source metadata
 
 ### JavaScript Findings
 
@@ -257,8 +263,9 @@ Current implementation status:
 - implemented as reusable site pieces: icon sprite and floating actions
 - current compromise: structured homepage copy is still theme-defined through a
   PHP data helper instead of a richer editorial UI
-- current compromise: video cards are rendered visually, but playback is not yet
-  active because the referenced cover and mp4 assets are missing from the repo
+- current compromise: video cards now support admin-managed uploads and
+  embeddable links, with theme defaults kept only as a fallback when no
+  published tutorial exists yet
 
 ### Information Page Mapping
 
