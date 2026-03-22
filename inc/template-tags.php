@@ -104,6 +104,162 @@ if ( ! function_exists( 're_style_footer_menu_fallback' ) ) {
 	}
 }
 
+if ( ! function_exists( 're_style_get_topbar_default_messages' ) ) {
+	/**
+	 * Returns default topbar messages.
+	 *
+	 * @return string[]
+	 */
+	function re_style_get_topbar_default_messages() {
+		return array(
+			__( 'Buy from our shop', 're-style' ),
+			__( 'Free shipping over EUR 50', 're-style' ),
+			__( 'Book your services', 're-style' ),
+		);
+	}
+}
+
+if ( ! function_exists( 're_style_get_free_shipping_notice' ) ) {
+	/**
+	 * Returns a WooCommerce-aware free shipping notice when available.
+	 *
+	 * @return string
+	 */
+	function re_style_get_free_shipping_notice() {
+		if ( ! class_exists( 'WooCommerce' ) || ! class_exists( 'WC_Shipping_Zones' ) ) {
+			return '';
+		}
+
+		$shipping_methods = array();
+		$zones            = WC_Shipping_Zones::get_zones();
+
+		foreach ( $zones as $zone ) {
+			if ( empty( $zone['shipping_methods'] ) || ! is_array( $zone['shipping_methods'] ) ) {
+				continue;
+			}
+
+			$shipping_methods = array_merge( $shipping_methods, $zone['shipping_methods'] );
+		}
+
+		$default_zone = WC_Shipping_Zones::get_zone_by( 'zone_id', 0 );
+
+		if ( $default_zone && method_exists( $default_zone, 'get_shipping_methods' ) ) {
+			$shipping_methods = array_merge( $shipping_methods, $default_zone->get_shipping_methods( true ) );
+		}
+
+		$lowest_min_amount      = null;
+		$has_threshold_message  = false;
+		$has_generic_available  = false;
+
+		foreach ( $shipping_methods as $method ) {
+			if ( ! is_object( $method ) ) {
+				continue;
+			}
+
+			$method_id = '';
+
+			if ( isset( $method->id ) && is_string( $method->id ) ) {
+				$method_id = $method->id;
+			} elseif ( isset( $method->method_id ) && is_string( $method->method_id ) ) {
+				$method_id = $method->method_id;
+			}
+
+			if ( 'free_shipping' !== $method_id ) {
+				continue;
+			}
+
+			$enabled = isset( $method->enabled ) ? $method->enabled : 'no';
+
+			if ( 'yes' !== $enabled ) {
+				continue;
+			}
+
+			$requires = '';
+
+			if ( isset( $method->requires ) && is_string( $method->requires ) ) {
+				$requires = $method->requires;
+			} elseif ( method_exists( $method, 'get_option' ) ) {
+				$requires = (string) $method->get_option( 'requires', '' );
+			}
+
+			$min_amount = 0;
+
+			if ( isset( $method->min_amount ) ) {
+				$min_amount = (float) $method->min_amount;
+			} elseif ( method_exists( $method, 'get_option' ) ) {
+				$min_amount = (float) $method->get_option( 'min_amount', 0 );
+			}
+
+			if ( in_array( $requires, array( 'min_amount', 'either', 'both' ), true ) && $min_amount > 0 ) {
+				$has_threshold_message = true;
+
+				if ( null === $lowest_min_amount || $min_amount < $lowest_min_amount ) {
+					$lowest_min_amount = $min_amount;
+				}
+
+				continue;
+			}
+
+			if ( '' === $requires ) {
+				$has_generic_available = true;
+			}
+		}
+
+		if ( $has_threshold_message && null !== $lowest_min_amount && function_exists( 'wc_price' ) ) {
+			return sprintf(
+				/* translators: %s free shipping threshold price. */
+				__( 'Free shipping from %s', 're-style' ),
+				wp_strip_all_tags( wc_price( $lowest_min_amount ) )
+			);
+		}
+
+		if ( $has_threshold_message && null !== $lowest_min_amount ) {
+			$price = number_format_i18n( $lowest_min_amount, 2 );
+
+			if ( function_exists( 'get_woocommerce_currency_symbol' ) ) {
+				$price = get_woocommerce_currency_symbol() . $price;
+			}
+
+			return sprintf(
+				/* translators: %s free shipping threshold price. */
+				__( 'Free shipping from %s', 're-style' ),
+				$price
+			);
+		}
+
+		if ( $has_generic_available ) {
+			return __( 'Free shipping available', 're-style' );
+		}
+
+		return '';
+	}
+}
+
+if ( ! function_exists( 're_style_get_floating_book_action' ) ) {
+	/**
+	 * Returns the floating booking CTA label and URL.
+	 *
+	 * @return array<string, string>
+	 */
+	function re_style_get_floating_book_action() {
+		$defaults = array(
+			'label' => __( 'Book', 're-style' ),
+			'url'   => '#contatti',
+		);
+
+		$label = get_theme_mod( 're_style_home_floating_book_label', $defaults['label'] );
+		$url   = get_theme_mod( 're_style_home_floating_book_url', $defaults['url'] );
+
+		$label = is_string( $label ) && '' !== trim( $label ) ? trim( $label ) : $defaults['label'];
+		$url   = is_string( $url ) && '' !== trim( $url ) ? trim( $url ) : $defaults['url'];
+
+		return array(
+			'label' => $label,
+			'url'   => $url,
+		);
+	}
+}
+
 if ( ! function_exists( 're_style_get_topbar_messages' ) ) {
 	/**
 	 * Returns topbar messages.
@@ -111,11 +267,35 @@ if ( ! function_exists( 're_style_get_topbar_messages' ) ) {
 	 * @return string[]
 	 */
 	function re_style_get_topbar_messages() {
-		return array(
-			__( 'Buy from our shop', 're-style' ),
-			__( 'Free shipping over EUR 50', 're-style' ),
-			__( 'Book your services', 're-style' ),
+		$default_messages = re_style_get_topbar_default_messages();
+		$serialized       = get_theme_mod( 're_style_home_topbar_messages', implode( "\n", $default_messages ) );
+		$parsed_messages  = re_style_parse_single_value_lines( $serialized, 'value' );
+		$messages         = ! empty( $parsed_messages ) ? wp_list_pluck( $parsed_messages, 'value' ) : $default_messages;
+		$show_shipping    = (bool) get_theme_mod( 're_style_home_topbar_enable_free_shipping', false );
+
+		if ( $show_shipping ) {
+			$shipping_notice = re_style_get_free_shipping_notice();
+
+			if ( $shipping_notice ) {
+				$messages = array_filter(
+					$messages,
+					static function ( $message ) {
+						return __( 'Free shipping over EUR 50', 're-style' ) !== $message;
+					}
+				);
+
+				$messages[] = $shipping_notice;
+			}
+		}
+
+		$messages = array_filter(
+			array_map( 'trim', $messages ),
+			static function ( $message ) {
+				return '' !== $message;
+			}
 		);
+
+		return array_values( array_unique( $messages ) );
 	}
 }
 

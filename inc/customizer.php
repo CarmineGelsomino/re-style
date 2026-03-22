@@ -158,6 +158,18 @@ if ( ! function_exists( 're_style_sanitize_image_url' ) ) {
 	}
 }
 
+if ( ! function_exists( 're_style_sanitize_checkbox' ) ) {
+	/**
+	 * Sanitizes a checkbox value.
+	 *
+	 * @param mixed $value Raw checkbox value.
+	 * @return bool
+	 */
+	function re_style_sanitize_checkbox( $value ) {
+		return ! empty( $value );
+	}
+}
+
 if ( ! function_exists( 're_style_customize_register' ) ) {
 	/**
 	 * Registers Customizer settings for design tokens and homepage content.
@@ -261,6 +273,7 @@ if ( ! function_exists( 're_style_customize_register' ) ) {
 		}
 
 		$sections = array(
+			'site_shell' => __( 'Site Header & Floating CTA', 're-style' ),
 			'hero'       => __( 'Homepage Hero', 're-style' ),
 			'services'   => __( 'Homepage Services', 're-style' ),
 			'shop'       => __( 'Homepage Shop', 're-style' ),
@@ -285,6 +298,11 @@ if ( ! function_exists( 're_style_customize_register' ) ) {
 		}
 
 		$controls = array(
+			array( 'id' => 'topbar_messages', 'section' => 'site_shell', 'label' => __( 'Topbar messages', 're-style' ), 'default' => implode( "\n", re_style_get_topbar_default_messages() ), 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field', 'description' => __( 'One message per line.', 're-style' ) ),
+			array( 'id' => 'topbar_enable_free_shipping', 'section' => 'site_shell', 'label' => __( 'Show WooCommerce free shipping message automatically', 're-style' ), 'default' => false, 'type' => 'checkbox', 'sanitize' => 're_style_sanitize_checkbox', 'description' => __( 'When enabled, the topbar adds a message based on the active WooCommerce free shipping method and threshold.', 're-style' ) ),
+			array( 'id' => 'floating_book_label', 'section' => 'site_shell', 'label' => __( 'Floating button text', 're-style' ), 'default' => __( 'Book', 're-style' ) ),
+			array( 'id' => 'floating_book_url', 'section' => 'site_shell', 'label' => __( 'Floating button URL', 're-style' ), 'default' => '#contatti', 'sanitize' => 'esc_url_raw' ),
+
 			array( 'id' => 'hero_title', 'section' => 'hero', 'label' => __( 'Title', 're-style' ), 'default' => $front_page_defaults['hero']['title'] ),
 			array( 'id' => 'hero_description', 'section' => 'hero', 'label' => __( 'Description', 're-style' ), 'default' => $front_page_defaults['hero']['description'], 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
 			array( 'id' => 'hero_primary_label', 'section' => 'hero', 'label' => __( 'Primary CTA label', 're-style' ), 'default' => $front_page_defaults['hero']['primary_cta']['label'] ),

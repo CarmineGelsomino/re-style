@@ -1519,3 +1519,78 @@ matches the static prototype exactly.
 
 - Validate the footer headings in a browser to confirm the linked and non-linked
   column labels now both match the intended static styling.
+
+---
+
+## T021
+
+### Objective
+
+Expose the scrolling topbar text and the floating side booking button through
+the native Customizer, with optional automatic WooCommerce free-shipping
+messaging based on the configured shipping threshold.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `functions.php`
+- `inc/customizer.php`
+- `inc/template-tags.php`
+- `inc/front-page-data.php`
+- `template-parts/site/topbar.php`
+- `template-parts/site/floating-actions.php`
+
+### Files Created/Modified
+
+- `inc/customizer.php`
+- `inc/template-tags.php`
+- `template-parts/site/floating-actions.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- A new Customizer section was added for site-shell controls so header-adjacent
+  content can be managed without mixing it into unrelated homepage sections.
+- The topbar now supports manual scrolling messages from a textarea plus an
+  optional checkbox that appends a WooCommerce-derived free-shipping notice.
+- Free-shipping detection follows WooCommerce zones and active shipping methods,
+  prefers the lowest enabled minimum threshold and falls back to a generic
+  message only when free shipping is available without a threshold.
+- The floating booking tab now reads its label and destination URL from the
+  Customizer instead of remaining hardcoded in the template.
+- Existing topbar behavior was preserved by keeping the previous static message
+  set as the default manual fallback until the automatic shipping option is
+  explicitly enabled.
+
+### Assumptions
+
+- The requested "barra che scorre" refers to the existing site topbar rendered
+  above the header.
+- Automatic shipping messaging should be additive and opt-in through a checkbox,
+  not forced by default.
+- When WooCommerce free shipping depends only on a coupon, no automatic topbar
+  message should be injected because there is no reliable threshold to show.
+
+### Verification
+
+- Manually reviewed the new Customizer controls and the related helper/template
+  wiring after the edits.
+- Confirmed the floating booking CTA template now consumes sanitized Customizer
+  values for both text and link.
+- Confirmed the topbar helper now reads manual lines from theme mods and can
+  replace the legacy static shipping message with a WooCommerce-derived one when
+  the checkbox is enabled.
+- Attempted PHP lint on the modified files, but the local environment does not
+  provide a `php` executable, so automated syntax verification could not be run
+  here.
+
+### TODO / Residual Risks
+
+- Validate the new Customizer controls in a real WordPress admin session to
+  confirm live-preview/save behavior.
+- Verify the WooCommerce free-shipping message against the store's actual zone
+  configuration, especially if multiple zones expose different thresholds.
+- If the floating WhatsApp CTA also needs to be editable later, add that as a
+  separate scoped task rather than expanding this change ad hoc.

@@ -11,6 +11,7 @@
 		<svg><use href="#icon-whatsapp"></use></svg>
 	</span>
 </a>
-<a href="#contatti" class="floating-book-btn" aria-label="<?php esc_attr_e( 'Book now', 're-style' ); ?>">
-	<span><?php esc_html_e( 'Book', 're-style' ); ?></span>
+<?php $floating_book = re_style_get_floating_book_action(); ?>
+<a href="<?php echo esc_url( $floating_book['url'] ); ?>" class="floating-book-btn" aria-label="<?php echo esc_attr( $floating_book['label'] ); ?>">
+	<span><?php echo esc_html( $floating_book['label'] ); ?></span>
 </a>
