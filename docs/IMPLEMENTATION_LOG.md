@@ -1834,3 +1834,110 @@ preserving the existing desktop layout.
 
 - Validate the mobile swipe behavior in a real browser or device to confirm the
   chosen slide width works well with the current shop card content.
+
+---
+
+## T026
+
+### Objective
+
+Convert the static `shop.html` prototype into a scalable WooCommerce product
+archive that stays visually faithful to the mockup while keeping WooCommerce
+template overrides to the minimum strictly necessary.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `sito-statico/shop.html`
+- `sito-statico/assets/css/style.css`
+- `functions.php`
+- `inc/theme-setup.php`
+- `inc/enqueue.php`
+- `inc/template-tags.php`
+- `header.php`
+- `footer.php`
+- `archive.php`
+- `assets/css/main.css`
+
+### Files Created/Modified
+
+- `functions.php`
+- `inc/enqueue.php`
+- `inc/woocommerce.php`
+- `assets/css/woocommerce.css`
+- `woocommerce/archive-product.php`
+- `template-parts/woocommerce/archive-benefits.php`
+- `template-parts/woocommerce/archive-cta.php`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The WooCommerce archive page shell is handled with one justified override:
+  `woocommerce/archive-product.php`, because the static shop design requires a
+  dedicated page-level structure with toolbar, category tabs, sidebar filters,
+  results area, benefits and CTA that cannot be reproduced cleanly with hooks
+  and CSS alone.
+- Product cards remain based on the native WooCommerce loop template
+  `content-product.php`; the theme reshapes the markup through hooks and
+  filters instead of overriding that template, which keeps the catalog more
+  maintainable during WooCommerce updates.
+- A dedicated `inc/woocommerce.php` layer now centralizes archive helpers,
+  GET-based filtering, taxonomy discovery, result-count rendering, badge logic
+  and loop customization so WooCommerce integration does not leak into
+  unrelated theme files.
+- Sidebar filters are dynamic and scalable: product categories and all
+  non-empty product attribute taxonomies are discovered automatically instead
+  of being hardcoded to the exact prototype labels.
+- Search, ordering, availability filters and price range filtering all operate
+  on the WooCommerce main query, preserving archive context where useful while
+  still allowing category filters to be broadened/reset from the sidebar.
+- Shop-specific CSS lives in `assets/css/woocommerce.css` so the static archive
+  parity work does not bloat `assets/css/main.css` or homepage styles.
+- Benefits and final CTA were extracted into reusable WooCommerce-oriented
+  template parts so the archive shell stays readable and future reuse remains
+  possible.
+
+### Assumptions
+
+- "Nuovi arrivi" is currently modeled as products published in the last 30
+  days; this window is filterable in PHP if merchandising rules change later.
+- The store will use native WooCommerce taxonomies and product attributes as
+  the primary source for archive filters, without assuming third-party layered
+  navigation plugins.
+- Preserving 1:1 fidelity means matching the static toolbar, filter, grid,
+  pagination, benefits and CTA layout while still using real WooCommerce data,
+  query state and product actions.
+- Product thumbnails, excerpts and prices will be supplied by WooCommerce data
+  rather than the missing static mockup images.
+
+### Verification
+
+- Manually compared the static `shop.html` structure and shop-specific CSS
+  rules against the new archive template, loop hook output and dedicated
+  WooCommerce stylesheet.
+- Reviewed the new PHP helpers to confirm that search, ordering, taxonomy
+  filters, availability filters, price range and pagination all flow through
+  the main WooCommerce archive query.
+- Confirmed that only `woocommerce/archive-product.php` was overridden, while
+  product-card rendering remains based on WooCommerce default loop templates.
+- Attempted PHP lint on the modified files, but the local environment does not
+  provide a `php` executable, so automated syntax verification could not be run
+  here.
+- Attempted to inspect the change set with `git diff`, but this workspace is
+  not currently initialized as a git repository, so diff review was completed
+  by direct file inspection instead.
+
+### TODO / Residual Risks
+
+- Validate the archive in a real WordPress + WooCommerce browser runtime,
+  especially add-to-cart behavior, pagination state and filter combinations.
+- Confirm the real catalog data model for attributes/taxonomies so the dynamic
+  sidebar group set aligns with editorial expectations.
+- Revisit price filtering if the project later needs to rely on WooCommerce's
+  product lookup tables or a different catalog indexing strategy for very large
+  inventories.
+- Continue with single product, cart, checkout and account styling in the next
+  WooCommerce task, keeping the same hook-first discipline.

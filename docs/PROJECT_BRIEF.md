@@ -93,6 +93,21 @@ The design-system baseline now includes:
 - homepage section content editable through native Customizer controls with
   PHP defaults as fallback
 
+The WooCommerce shop baseline now includes:
+
+- a dedicated `inc/woocommerce.php` integration layer for catalog query
+  filters, archive helpers and loop hook customization
+- a dedicated `assets/css/woocommerce.css` stylesheet that carries the static
+  shop prototype layout into the classic theme without mixing it into
+  `assets/css/main.css`
+- one justified WooCommerce template override:
+  `woocommerce/archive-product.php`, used only because the shop prototype
+  requires a page-level structure with toolbar, tabs, filter sidebar, results,
+  benefits and CTA that cannot be assembled cleanly with hooks/CSS alone
+- dynamic category tabs, taxonomy-driven sidebar filters, availability filters,
+  price range filtering, custom archive search and custom loop cards built on
+  top of WooCommerce defaults rather than overriding `content-product.php`
+
 ## Working Assumptions
 
 Conservative assumptions documented for this phase:
@@ -307,6 +322,22 @@ Potential reusable WooCommerce-oriented partials:
 - `template-parts/woocommerce/archive-benefits.php`
 - `template-parts/woocommerce/archive-cta.php`
 
+Current implementation status:
+
+- implemented: `woocommerce/archive-product.php` as a single justified
+  override for the archive page shell only
+- implemented: dynamic toolbar search, WooCommerce ordering dropdown,
+  top-level category tabs, taxonomy-aware filter sidebar, custom result count,
+  custom product cards and archive pagination styling
+- implemented: benefits and final CTA as reusable archive-adjacent template
+  parts
+- current compromise: "new arrivals" filtering and badge logic use a 30-day
+  publish-date window until the business defines a more explicit merchandising
+  model
+- current compromise: the sidebar lists all non-empty product taxonomies and
+  product attributes dynamically, so the number of filter groups may exceed the
+  exact mockup when the catalog grows
+
 ### Shared Reusable Blocks
 
 Patterns that should not remain duplicated:
@@ -383,14 +414,12 @@ Recommended asset grouping:
 
 Planned next tasks after the mapping phase:
 
-1. `T006` - Integrate WooCommerce baseline support, wrapper alignment and shop
-   archive styling with minimal or no template overrides.
-2. `T007` - Implement WooCommerce single product, cart, checkout and account
+1. `T027` - Implement WooCommerce single product, cart, checkout and account
    styling using hooks/CSS first, documenting any override that proves
    necessary.
-3. `T008` - Convert the information area into native WordPress pages or focused
+2. `T028` - Convert the information area into native WordPress pages or focused
    page templates and define handling for legal/support content.
-4. `T009` - Run hardening pass on responsiveness, accessibility, encoding,
+3. `T029` - Run hardening pass on responsiveness, accessibility, encoding,
    missing assets/content placeholders and documentation updates.
 
 ## Open Decisions
@@ -399,5 +428,5 @@ Planned next tasks after the mapping phase:
   editing model
 - whether booking functionality will stay external or require future WordPress
   integration
-- which WooCommerce templates, if any, truly need overrides after hook-first
-  integration
+- whether future WooCommerce flows beyond the archive can stay hook-first or
+  will require additional narrow overrides

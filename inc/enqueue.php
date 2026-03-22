@@ -43,6 +43,15 @@ if ( ! function_exists( 're_style_enqueue_assets' ) ) {
 			);
 		}
 
+		if ( function_exists( 'is_woocommerce' ) && ( is_woocommerce() || re_style_is_shop_archive() ) ) {
+			wp_enqueue_style(
+				're-style-woocommerce',
+				get_template_directory_uri() . '/assets/css/woocommerce.css',
+				array( 're-style-main' ),
+				$theme->get( 'Version' )
+			);
+		}
+
 		wp_enqueue_script(
 			're-style-theme',
 			get_template_directory_uri() . '/assets/js/theme.js',
