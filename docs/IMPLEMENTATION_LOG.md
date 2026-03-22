@@ -1735,3 +1735,53 @@ preserving the existing desktop grid layout.
 
 - Validate the swipe behavior on a real mobile device or responsive browser
   mode to confirm the chosen slide width feels right with the live content.
+
+---
+
+## T024
+
+### Objective
+
+Turn the homepage `video-tips` card grid into a swipeable slider on mobile
+only while preserving the existing desktop layout.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `assets/css/front-page.css`
+
+### Files Created/Modified
+
+- `assets/css/front-page.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The mobile video tutorial behavior was implemented with CSS only using
+  horizontal overflow and `scroll-snap`, matching the approach already used for
+  the gallery mobile slider.
+- The change is scoped to the existing `@media (max-width: 782px)` breakpoint,
+  so the desktop `video-tips-grid` remains untouched.
+- Video cards now become fixed-width horizontal slides on mobile, with hidden
+  scrollbars and a bounded card height to keep swipe behavior stable inside the
+  section.
+
+### Assumptions
+
+- "Solo da mobile" maps to the current theme mobile breakpoint of `782px`.
+- A touch/swipe slider without extra navigation controls is sufficient for the
+  requested mobile interaction.
+
+### Verification
+
+- Manually reviewed the updated mobile selectors to confirm they only affect
+  `.video-tips-grid` and `.video-tip-card` inside the mobile media query.
+- Confirmed the desktop grid rules remain unchanged outside the mobile
+  breakpoint.
+
+### TODO / Residual Risks
+
+- Validate the mobile card height and swipe feel in a real browser or device to
+  confirm the chosen slide sizing works well with the current covers and titles.
