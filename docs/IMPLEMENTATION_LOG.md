@@ -1908,6 +1908,120 @@ CTAs labeled `Prenota` to the provided external booking URL.
 
 ---
 
+## T027
+
+### Objective
+
+Refine the mobile header so wishlist and cart remain visible beside the menu
+toggle, while the account action moves inside the mobile navigation as a text
+link labeled `Il mio account`.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `header.php`
+- `assets/css/main.css`
+- `inc/template-tags.php`
+
+### Files Created/Modified
+
+- `header.php`
+- `assets/css/main.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- Mobile-only quick actions for wishlist and cart were added beside the menu
+  toggle, reusing the existing header-action URLs and icons instead of creating
+  separate data sources.
+- The account action was moved into the mobile navigation as a dedicated text
+  link labeled `Il mio account`, with no icon, while desktop header actions
+  remain unchanged.
+- New mobile-specific header selectors were introduced and hidden by default so
+  the desktop header layout continues to use the original action list.
+
+### Assumptions
+
+- The requested mobile layout should keep the current desktop header untouched
+  and affect only the `max-width: 782px` breakpoint already used by the theme.
+- The wishlist and cart icons should remain icon-only in the mobile header,
+  while the account entry should be easier to read as a text row inside the
+  opened mobile menu.
+
+### Verification
+
+- Manually reviewed the updated header markup to confirm the same action-link
+  source now feeds both desktop actions and the new mobile quick-action area.
+- Manually reviewed the new mobile header CSS to confirm the extra controls are
+  hidden on desktop and activated only inside the mobile breakpoint.
+
+### TODO / Residual Risks
+
+- Validate the mobile header on a real device to confirm spacing stays balanced
+  between logo, icons and toggle on narrower screens.
+- If the assigned primary menu already contains a separate account item, decide
+  later whether to keep both entries or suppress one of them conditionally.
+
+---
+
+## T028
+
+### Objective
+
+Correct the previous mobile-header refinement so desktop behavior remains
+unchanged and the mobile wishlist/cart icons render with cleaner sizing and
+alignment.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `header.php`
+- `assets/css/main.css`
+
+### Files Created/Modified
+
+- `assets/css/main.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The mobile header control cluster was tightened by reducing icon-control
+  spacing, slightly increasing icon glyph size and switching the mobile control
+  wrapper to a compact inline grid for more stable alignment.
+- The mobile header layout now uses `minmax(0, 1fr) auto` so the logo keeps the
+  left side while the icon/toggle cluster stays visually anchored on the right.
+- The desktop action list is now explicitly kept hidden on mobile even when the
+  mobile menu opens, preventing the desktop quick-action behavior from leaking
+  into the mobile header.
+- The `Il mio account` link remains mobile-only and is visually separated inside
+  the opened mobile navigation with a top border and spacing.
+
+### Assumptions
+
+- The reported desktop regression was caused by mobile CSS re-enabling
+  `.site-header__actions` during the open-menu state rather than by the desktop
+  breakpoint styles themselves.
+
+### Verification
+
+- Manually reviewed the updated mobile breakpoint rules to confirm
+  `.site-header__actions` now stays hidden on mobile in both closed and open
+  states.
+- Manually reviewed the icon and control sizing rules to confirm the changes
+  are scoped to the new mobile-header selectors and do not alter desktop action
+  icon dimensions.
+
+### TODO / Residual Risks
+
+- Validate the revised mobile header in a real browser to confirm the wishlist,
+  cart and toggle cluster now reads clearly across common device widths.
+
+---
+
 ## T026
 
 ### Objective
