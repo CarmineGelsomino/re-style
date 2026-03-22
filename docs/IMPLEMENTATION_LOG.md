@@ -1682,3 +1682,56 @@ with title, cover image and uploaded/external video source.
 - If the business later needs per-card descriptions, categories or explicit
   homepage inclusion toggles, extend the CPT deliberately rather than
   reintroducing ad hoc Customizer fields.
+
+---
+
+## T023
+
+### Objective
+
+Turn the homepage gallery section into a swipeable slider on mobile only while
+preserving the existing desktop grid layout.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `template-parts/front-page/gallery.php`
+- `assets/css/front-page.css`
+- `assets/js/theme.js`
+
+### Files Created/Modified
+
+- `assets/css/front-page.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The mobile gallery behavior was implemented with CSS only using horizontal
+  overflow and `scroll-snap`, avoiding unnecessary JavaScript for a simple
+  touch-first slider interaction.
+- The change is scoped to the existing `@media (max-width: 782px)` breakpoint,
+  so the desktop gallery remains a grid exactly as before.
+- Gallery cards now become fixed-width horizontal slides on mobile, with hidden
+  scrollbars and momentum scrolling for a cleaner swipe experience.
+
+### Assumptions
+
+- "Solo da mobile" maps to the theme's existing mobile breakpoint of `782px`.
+- A touch/swipe slider without arrows or dots is sufficient for the requested
+  behavior and fits the current visual language better than introducing new UI
+  controls.
+
+### Verification
+
+- Manually reviewed the updated mobile gallery rules to confirm they only
+  affect the mobile breakpoint and only the `.gallery-grid` / `.gallery-card`
+  pair.
+- Confirmed the desktop gallery CSS remains unchanged outside the mobile media
+  query.
+
+### TODO / Residual Risks
+
+- Validate the swipe behavior on a real mobile device or responsive browser
+  mode to confirm the chosen slide width feels right with the live content.

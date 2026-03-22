@@ -1526,6 +1526,28 @@ html:has(body.re-style-front-page) {
         font-size: 2.5rem;
     }
 
+    .site-main--front-page .gallery-grid {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-bottom: 0.5rem;
+        scroll-snap-type: x mandatory;
+        scroll-padding-left: 0;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .site-main--front-page .gallery-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .site-main--front-page .gallery-card {
+        flex: 0 0 min(85vw, 22rem);
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+    }
+
     .site-main--front-page .hero-visual-frame {
         min-height: 18rem;
     }
