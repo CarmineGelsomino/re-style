@@ -571,10 +571,17 @@ textarea:focus-visible {
 .footer-menu {
     display: grid;
     gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
 .footer-menu a {
     text-decoration: none;
+}
+
+.footer-navigation {
+    width: 100%;
 }
 
 .footer-bottom {
@@ -946,20 +953,49 @@ body.re-style-front-page .footer-bottom span {
         gap: 1.5rem;
     }
 
+    .footer-col {
+        width: 100%;
+    }
+
     .footer-bottom,
     body.re-style-front-page .footer-bottom {
         text-align: left;
     }
 
     body.re-style-front-page .site-footer {
-        padding-right: 0;
-        padding-left: 0;
+        padding-top: 2.5rem;
+        padding-right: var(--re-style-shell-padding);
+        padding-left: var(--re-style-shell-padding);
+        padding-bottom: 1.5rem;
         min-height: auto;
         overflow: visible;
     }
 
     body.re-style-front-page .footer-grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 1.75rem;
+        padding-top: 1.75rem;
+        padding-bottom: 1.75rem;
+    }
+
+    body.re-style-front-page .site-footer-inner {
+        grid-template-rows: auto auto;
+    }
+
+    body.re-style-front-page .footer-col,
+    body.re-style-front-page .footer-col:nth-child(1),
+    body.re-style-front-page .footer-col:nth-child(2),
+    body.re-style-front-page .footer-col:nth-child(3),
+    body.re-style-front-page .footer-col:nth-child(4) {
+        justify-self: stretch;
+    }
+
+    body.re-style-front-page .footer-col > a.section-label,
+    body.re-style-front-page .footer-col > .section-label {
+        margin-bottom: 0.875rem;
+    }
+
+    body.re-style-front-page .footer-col ul {
+        gap: 0.625rem;
     }
 }

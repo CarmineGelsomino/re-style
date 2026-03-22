@@ -2126,3 +2126,62 @@ template overrides to the minimum strictly necessary.
   inventories.
 - Continue with single product, cart, checkout and account styling in the next
   WooCommerce task, keeping the same hook-first discipline.
+
+---
+
+## T029
+
+### Objective
+
+Refine the mobile footer layout so the column alignment, spacing and padding
+feel consistent with the static prototype while leaving the desktop footer
+unchanged.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `footer.php`
+- `template-parts/navigation/footer-column.php`
+- `assets/css/main.css`
+- `sito-statico/index.html`
+- `sito-statico/assets/css/style.css`
+
+### Files Created/Modified
+
+- `assets/css/main.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The fix stays CSS-only because the footer structure was already correct; the
+  visual issue came from the mobile breakpoint and default list spacing rather
+  than from footer markup.
+- Mobile front-page footer padding now uses the theme shell gutters again
+  instead of collapsing to the viewport edges, which keeps the footer aligned
+  with the rest of the mobile layout.
+- On mobile, all footer columns now stretch consistently in the single-column
+  stack and use tighter, more regular spacing between labels and links.
+- Footer menus now explicitly reset margin, padding and bullets so WordPress
+  menu output cannot introduce browser-default indentation.
+
+### Assumptions
+
+- The user's feedback refers primarily to the homepage/footer experience on
+  mobile, where the front-page footer has dedicated styling different from
+  generic internal pages.
+
+### Verification
+
+- Manually reviewed `footer.php` and `template-parts/navigation/footer-column.php`
+  to confirm no markup changes were required.
+- Compared the current footer CSS against the static prototype footer rules to
+  preserve the existing visual language while adapting the mobile breakpoint.
+- Reviewed the updated mobile selectors in `assets/css/main.css` to confirm the
+  changes are scoped to footer layout and do not alter the desktop footer.
+
+### TODO / Residual Risks
+
+- Validate the footer on a real mobile viewport to confirm the new gutter,
+  spacing and stacked-column rhythm feel balanced across common device widths.
