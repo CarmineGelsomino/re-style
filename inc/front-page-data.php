@@ -48,6 +48,42 @@ if ( ! function_exists( 're_style_shop_url' ) ) {
 	}
 }
 
+if ( ! function_exists( 're_style_get_booking_url' ) ) {
+	/**
+	 * Returns the canonical booking URL used by booking CTAs.
+	 *
+	 * @return string
+	 */
+	function re_style_get_booking_url() {
+		return 'https://skipres.com/restyledomenicovincenzo_001';
+	}
+}
+
+if ( ! function_exists( 're_style_is_booking_label' ) ) {
+	/**
+	 * Determines whether a CTA label is a booking action.
+	 *
+	 * @param string $label CTA label.
+	 * @return bool
+	 */
+	function re_style_is_booking_label( $label ) {
+		return is_string( $label ) && false !== stripos( $label, 'prenota' );
+	}
+}
+
+if ( ! function_exists( 're_style_apply_booking_url' ) ) {
+	/**
+	 * Forces the booking URL for booking CTA labels.
+	 *
+	 * @param string $label CTA label.
+	 * @param string $url   CTA URL.
+	 * @return string
+	 */
+	function re_style_apply_booking_url( $label, $url ) {
+		return re_style_is_booking_label( $label ) ? re_style_get_booking_url() : $url;
+	}
+}
+
 if ( ! function_exists( 're_style_get_front_page_defaults' ) ) {
 	/**
 	 * Returns default homepage content.
@@ -61,7 +97,7 @@ if ( ! function_exists( 're_style_get_front_page_defaults' ) ) {
 				'description'   => 'Un punto di riferimento a Casoria (NA) per chi cerca consulenza, tecnica e cura del dettaglio, con servizi professionali e una selezione di prodotti grooming da usare anche a casa.',
 				'primary_cta'   => array(
 					'label' => 'Prenota ora',
-					'url'   => '#contatti',
+					'url'   => re_style_get_booking_url(),
 				),
 				'secondary_cta' => array(
 					'label' => 'Vai allo shop',
@@ -83,7 +119,7 @@ if ( ! function_exists( 're_style_get_front_page_defaults' ) ) {
 				),
 				'cta'         => array(
 					'label' => 'Prenota il tuo servizio',
-					'url'   => '#contatti',
+					'url'   => re_style_get_booking_url(),
 				),
 				'items'       => array(
 					array( 'title' => 'Shampoo', 'description' => 'Trattamento detergente delicato per capelli e cute, ideale per iniziare il servizio con pulizia e freschezza.' ),
@@ -126,7 +162,7 @@ if ( ! function_exists( 're_style_get_front_page_defaults' ) ) {
 				),
 				'primary_cta'   => array(
 					'label' => 'Prenota il tuo appuntamento',
-					'url'   => '#contatti',
+					'url'   => re_style_get_booking_url(),
 				),
 				'secondary_cta' => array(
 					'label' => 'Richiedi una consulenza',
@@ -146,7 +182,7 @@ if ( ! function_exists( 're_style_get_front_page_defaults' ) ) {
 				'note'     => 'Gli orari possono variare nei giorni festivi.',
 				'cta'      => array(
 					'label' => 'Prenota',
-					'url'   => '#',
+					'url'   => re_style_get_booking_url(),
 				),
 			),
 			'gallery'    => array(
@@ -222,7 +258,7 @@ if ( ! function_exists( 're_style_get_front_page_defaults' ) ) {
 				),
 				'cta'         => array(
 					'label' => 'Prenota',
-					'url'   => '#',
+					'url'   => re_style_get_booking_url(),
 				),
 			),
 			'faq'        => array(
@@ -498,6 +534,15 @@ if ( ! function_exists( 're_style_front_page_data' ) ) {
 			$data['contacts']['socials'][ $index ]['icon']  = isset( $social['icon'] ) ? $social['icon'] : $fallback_icon;
 			$data['contacts']['socials'][ $index ]['class'] = isset( $social['class'] ) ? $social['class'] : $fallback_class;
 		}
+
+		$data['hero']['primary_cta']['url']   = re_style_apply_booking_url( $data['hero']['primary_cta']['label'], $data['hero']['primary_cta']['url'] );
+		$data['hero']['secondary_cta']['url'] = re_style_apply_booking_url( $data['hero']['secondary_cta']['label'], $data['hero']['secondary_cta']['url'] );
+		$data['services']['cta']['url']       = re_style_apply_booking_url( $data['services']['cta']['label'], $data['services']['cta']['url'] );
+		$data['shop']['cta']['url']           = re_style_apply_booking_url( $data['shop']['cta']['label'], $data['shop']['cta']['url'] );
+		$data['history']['primary_cta']['url'] = re_style_apply_booking_url( $data['history']['primary_cta']['label'], $data['history']['primary_cta']['url'] );
+		$data['history']['secondary_cta']['url'] = re_style_apply_booking_url( $data['history']['secondary_cta']['label'], $data['history']['secondary_cta']['url'] );
+		$data['location']['cta']['url']       = re_style_apply_booking_url( $data['location']['cta']['label'], $data['location']['cta']['url'] );
+		$data['contacts']['cta']['url']       = re_style_apply_booking_url( $data['contacts']['cta']['label'], $data['contacts']['cta']['url'] );
 
 		$data['faq']['label']               = re_style_get_mod_value( 'faq_label', $defaults['faq']['label'] );
 		$data['faq']['title']               = re_style_get_mod_value( 'faq_title', $defaults['faq']['title'] );

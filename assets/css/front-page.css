@@ -1612,6 +1612,8 @@ html:has(body.re-style-front-page) {
 
     .site-main--front-page .shop-card {
         flex: 0 0 min(85vw, 22rem);
+        aspect-ratio: 1 / 1;
+        height: auto;
         scroll-snap-align: start;
         scroll-snap-stop: always;
     }

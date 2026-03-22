@@ -1841,6 +1841,77 @@ preserving the existing desktop layout.
 
 ### Objective
 
+Refine three mobile/front-page interaction details: make mobile shop cards
+square, clean up the header menu-toggle icon rendering, and point all booking
+CTAs labeled `Prenota` to the provided external booking URL.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `header.php`
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+- `inc/front-page-data.php`
+- `template-parts/front-page/hero.php`
+- `template-parts/front-page/history.php`
+- `template-parts/front-page/services.php`
+- `template-parts/front-page/shop-categories.php`
+- `template-parts/front-page/location-hours.php`
+- `template-parts/front-page/contacts.php`
+
+### Files Created/Modified
+
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+- `inc/front-page-data.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The mobile `shop-card` slider items now enforce a `1 / 1` aspect ratio so
+  cards remain square while preserving the existing swipe behavior.
+- The header menu toggle icon was refined by normalizing line spacing, width,
+  radius and transform origin so the hamburger/close transition reads more
+  cleanly on mobile.
+- A central booking URL helper was added in `inc/front-page-data.php`, and all
+  homepage CTAs whose label contains `Prenota` are now forced to use the
+  provided Skipres link.
+- The booking-link enforcement is label-based after Customizer overrides are
+  applied, so user-edited CTA text containing `Prenota` still resolves to the
+  same booking destination automatically.
+
+### Assumptions
+
+- The supplied URL should be treated as the canonical booking destination for
+  homepage CTAs that visibly present themselves as booking actions.
+- Buttons without the word `Prenota` in their label, such as shop-discovery or
+  maps actions, should keep their existing destinations.
+
+### Verification
+
+- Manually reviewed the updated mobile shop-card rules to confirm square cards
+  are scoped to the mobile slider breakpoint only.
+- Manually reviewed the menu-toggle CSS to confirm the icon styling changes are
+  limited to the toggle control and its line elements.
+- Confirmed the homepage data helper now exposes the Skipres URL once and
+  reapplies it consistently to all `Prenota` CTA labels after theme-mod
+  overrides are loaded.
+
+### TODO / Residual Risks
+
+- Validate the menu-toggle rendering and animation on a real mobile browser to
+  confirm the line geometry now appears clean in both closed and open states.
+- If future booking buttons outside homepage sections need the same behavior,
+  the booking helper should be reused there instead of duplicating the URL.
+
+---
+
+## T026
+
+### Objective
+
 Convert the static `shop.html` prototype into a scalable WooCommerce product
 archive that stays visually faithful to the mockup while keeping WooCommerce
 template overrides to the minimum strictly necessary.
