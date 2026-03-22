@@ -1594,6 +1594,28 @@ html:has(body.re-style-front-page) {
         width: auto;
     }
 
+    .site-main--front-page .shop-grid {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-bottom: 0.5rem;
+        scroll-snap-type: x mandatory;
+        scroll-padding-left: 0;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .site-main--front-page .shop-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .site-main--front-page .shop-card {
+        flex: 0 0 min(85vw, 22rem);
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+    }
+
     .site-main--front-page .services-grid {
         grid-template-columns: repeat(2, 1fr);
     }

@@ -1785,3 +1785,52 @@ only while preserving the existing desktop layout.
 
 - Validate the mobile card height and swipe feel in a real browser or device to
   confirm the chosen slide sizing works well with the current covers and titles.
+
+---
+
+## T025
+
+### Objective
+
+Turn the homepage `shop-grid` into a swipeable slider on mobile only while
+preserving the existing desktop layout.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `assets/css/front-page.css`
+
+### Files Created/Modified
+
+- `assets/css/front-page.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The mobile shop behavior was implemented with CSS only using horizontal
+  overflow and `scroll-snap`, matching the mobile slider pattern already used
+  for gallery and video tips.
+- The change is scoped to the existing `@media (max-width: 782px)` breakpoint,
+  so the desktop `shop-grid` layout remains unchanged.
+- Shop cards now become fixed-width horizontal slides on mobile, with hidden
+  scrollbars and touch-friendly momentum scrolling.
+
+### Assumptions
+
+- "Solo da mobile" maps to the current theme mobile breakpoint of `782px`.
+- A touch/swipe slider without arrows or dots is sufficient for the requested
+  mobile interaction.
+
+### Verification
+
+- Manually reviewed the updated mobile selectors to confirm they only affect
+  `.shop-grid` and `.shop-card` inside the mobile media query.
+- Confirmed the desktop shop grid rules remain unchanged outside the mobile
+  breakpoint.
+
+### TODO / Residual Risks
+
+- Validate the mobile swipe behavior in a real browser or device to confirm the
+  chosen slide width works well with the current shop card content.
