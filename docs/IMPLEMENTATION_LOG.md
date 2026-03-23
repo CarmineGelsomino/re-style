@@ -2347,6 +2347,27 @@ preview.
   original static values for media height, content spacing, title sizing,
   description depth and add-to-cart button sizing, while common wishlist plugin
   selectors were forced into a top-right floating control position.
+- A later verification pass showed that the static footer had only been carried
+  over faithfully for the front page, while the generic footer used by the shop
+  was still on a different baseline. The shared footer rules in
+  `assets/css/main.css` were therefore realigned to the static prototype for
+  all contexts, and the shop product-card selectors were strengthened further
+  so button/price/footer alignment is no longer left to weaker generic rules.
+- A final shop pass changed the product-media area from fixed-height logic to a
+  true square `4/4` ratio and widened the wishlist-position selectors so common
+  plugin wrappers/buttons are forced to the top-right corner more reliably.
+- A follow-up tweak increased wishlist icon legibility by strengthening the
+  floating button contrast, setting explicit icon sizing and normalizing
+  `svg`/icon-font coloring inside common wishlist plugin controls.
+- A later browser screenshot showed the wishlist button shell rendering but the
+  inner icon still appearing as a white blob. The shop CSS was therefore
+  extended to force inner `svg`, `path`, `circle`, icon-font and nested span
+  colors/backgrounds to a visible heart color, while removing plugin-introduced
+  filters and extra shadows.
+- When the plugin icon still rendered poorly after direct recoloring, the shop
+  CSS switched to a more defensive approach: hide the plugin's inner visual
+  fragments and draw a clean heart via a pseudo-element on the wishlist button
+  shell itself.
 
 ---
 
