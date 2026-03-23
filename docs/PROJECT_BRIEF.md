@@ -334,6 +334,9 @@ Current implementation status:
 - implemented: dynamic toolbar search, WooCommerce ordering dropdown,
   top-level category tabs, taxonomy-aware filter sidebar, custom result count,
   custom product cards and archive pagination styling
+- implemented: on tablet/mobile the filter sidebar now becomes an off-canvas
+  drawer opened from the toolbar, so the archive stays compact without losing
+  the same filter set available on desktop
 - implemented: benefits and final CTA as reusable archive-adjacent template
   parts
 - implemented: "Novita" badges now mark the latest 5 published products within
@@ -341,6 +344,17 @@ Current implementation status:
 - current compromise: the sidebar lists all non-empty product taxonomies and
   product attributes dynamically, so the number of filter groups may exceed the
   exact mockup when the catalog grows
+- current compromise: the wishlist/favorites control inside product cards is
+  normalized with defensive CSS because plugin markup can vary; it is styled as
+  a consistent floating heart button without introducing a theme-side plugin
+  dependency
+- implemented: single product layout now stays on WooCommerce core templates
+  and is reshaped via hooks/CSS/JS first, with no additional legacy single
+  template override; description, quantity stepper, related products and a
+  dedicated reviews section are arranged from the theme integration layer
+- current compromise: the single-product wishlist position is styled
+  defensively when a wishlist plugin injects markup into the summary, but the
+  theme still does not hard-depend on any one plugin implementation
 
 ### Shared Reusable Blocks
 
@@ -418,12 +432,11 @@ Recommended asset grouping:
 
 Planned next tasks after the mapping phase:
 
-1. `T028` - Implement WooCommerce single product, cart, checkout and account
-   styling using hooks/CSS first, documenting any override that proves
-   necessary.
-2. `T029` - Convert the information area into native WordPress pages or focused
+1. `T032` - Implement WooCommerce cart, checkout and account styling using
+   hooks/CSS first, documenting any override that proves necessary.
+2. `T033` - Convert the information area into native WordPress pages or focused
    page templates and define handling for legal/support content.
-3. `T030` - Run hardening pass on responsiveness, accessibility, encoding,
+3. `T034` - Run hardening pass on responsiveness, accessibility, encoding,
    missing assets/content placeholders and documentation updates.
 
 ## Open Decisions

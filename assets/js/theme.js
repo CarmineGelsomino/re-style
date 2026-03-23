@@ -221,3 +221,104 @@ if (videoTipTriggers.length && videoModal && closeVideoModal && videoModalPlayer
         }
     });
 }
+
+const quantityWrappers = document.querySelectorAll(".single-product div.product form.cart .quantity");
+
+quantityWrappers.forEach((wrapper) => {
+    const input = wrapper.querySelector("input.qty");
+    const minusButton = wrapper.querySelector(".re-style-quantity-button--minus");
+    const plusButton = wrapper.querySelector(".re-style-quantity-button--plus");
+
+    if (!input || !minusButton || !plusButton) {
+        return;
+    }
+
+    const min = Number.parseFloat(input.getAttribute("min") || "0");
+    const max = Number.parseFloat(input.getAttribute("max") || "");
+    const step = Number.parseFloat(input.getAttribute("step") || "1") || 1;
+
+    const clampValue = (value) => {
+        let nextValue = value;
+
+        if (!Number.isNaN(min)) {
+            nextValue = Math.max(min, nextValue);
+        }
+
+        if (!Number.isNaN(max)) {
+            nextValue = Math.min(max, nextValue);
+        }
+
+        return nextValue;
+    };
+
+    const updateValue = (direction) => {
+        const currentValue = Number.parseFloat(input.value || "0");
+        const safeCurrent = Number.isNaN(currentValue) ? (Number.isNaN(min) ? 0 : min) : currentValue;
+        const nextValue = clampValue(safeCurrent + (step * direction));
+        const decimals = step % 1 === 0 ? 0 : (step.toString().split(".")[1] || "").length;
+
+        input.value = nextValue.toFixed(decimals);
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+    };
+
+    minusButton.addEventListener("click", () => updateValue(-1));
+    plusButton.addEventListener("click", () => updateValue(1));
+});
+
+const shopFiltersToggle = document.querySelector(".shop-filters-toggle");
+const shopFiltersPanel = document.getElementById("shop-filters-panel");
+const shopFiltersClose = document.querySelector(".shop-filters-close");
+const shopFiltersOverlay = document.querySelector(".shop-filters-overlay");
+
+if (shopFiltersToggle && shopFiltersPanel && shopFiltersClose && shopFiltersOverlay) {
+    const mobileBreakpoint = 1024;
+
+    const closeShopFilters = () => {
+        document.body.classList.remove("shop-filters-open");
+        shopFiltersToggle.setAttribute("aria-expanded", "false");
+        shopFiltersPanel.setAttribute("aria-hidden", "true");
+    };
+
+    const openShopFilters = () => {
+        document.body.classList.add("shop-filters-open");
+        shopFiltersToggle.setAttribute("aria-expanded", "true");
+        shopFiltersPanel.setAttribute("aria-hidden", "false");
+    };
+
+    if (window.innerWidth <= mobileBreakpoint) {
+        shopFiltersPanel.setAttribute("aria-hidden", "true");
+    }
+
+    shopFiltersToggle.addEventListener("click", () => {
+        const isOpen = document.body.classList.contains("shop-filters-open");
+
+        if (isOpen) {
+            closeShopFilters();
+            return;
+        }
+
+        openShopFilters();
+    });
+
+    shopFiltersClose.addEventListener("click", closeShopFilters);
+    shopFiltersOverlay.addEventListener("click", closeShopFilters);
+
+    window.addEventListener("resize", () => {
+        if (window.innerWidth > mobileBreakpoint) {
+            document.body.classList.remove("shop-filters-open");
+            shopFiltersToggle.setAttribute("aria-expanded", "false");
+            shopFiltersPanel.setAttribute("aria-hidden", "false");
+            return;
+        }
+
+        if (!document.body.classList.contains("shop-filters-open")) {
+            shopFiltersPanel.setAttribute("aria-hidden", "true");
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && document.body.classList.contains("shop-filters-open")) {
+            closeShopFilters();
+        }
+    });
+}

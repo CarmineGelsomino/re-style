@@ -44,19 +44,29 @@ $price_values      = re_style_get_shop_price_filter_values();
 				<?php re_style_render_shop_hidden_fields( array( 'shop_search' ) ); ?>
 			</form>
 
-			<?php if ( ! empty( $order_by_options ) ) : ?>
-				<form class="shop-toolbar-actions" action="<?php echo esc_url( $shop_url ); ?>" method="get">
-					<label for="shop-sort" class="screen-reader-text"><?php esc_html_e( 'Ordina prodotti', 're-style' ); ?></label>
-					<select id="shop-sort" name="orderby" onchange="this.form.submit()">
-						<?php foreach ( $order_by_options as $value => $label ) : ?>
-							<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $current_orderby, $value ); ?>>
-								<?php echo esc_html( $label ); ?>
-							</option>
-						<?php endforeach; ?>
-					</select>
-					<?php re_style_render_shop_hidden_fields( array( 'orderby' ) ); ?>
-				</form>
-			<?php endif; ?>
+			<div class="shop-toolbar-controls">
+				<?php if ( ! empty( $order_by_options ) ) : ?>
+					<form class="shop-toolbar-actions" action="<?php echo esc_url( $shop_url ); ?>" method="get">
+						<label for="shop-sort" class="screen-reader-text"><?php esc_html_e( 'Ordina prodotti', 're-style' ); ?></label>
+						<select id="shop-sort" name="orderby" onchange="this.form.submit()">
+							<?php foreach ( $order_by_options as $value => $label ) : ?>
+								<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $current_orderby, $value ); ?>>
+									<?php echo esc_html( $label ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+						<?php re_style_render_shop_hidden_fields( array( 'orderby' ) ); ?>
+					</form>
+				<?php endif; ?>
+
+				<button
+					type="button"
+					class="shop-filters-toggle"
+					aria-expanded="false"
+					aria-controls="shop-filters-panel">
+					<?php esc_html_e( 'Filtri', 're-style' ); ?>
+				</button>
+			</div>
 		</div>
 
 		<div class="shop-categories-tabs" aria-label="<?php esc_attr_e( 'Categorie shop', 're-style' ); ?>">
@@ -75,9 +85,28 @@ $price_values      = re_style_get_shop_price_filter_values();
 	</section>
 
 	<section class="shop-layout-page" aria-label="<?php esc_attr_e( 'Catalogo prodotti', 're-style' ); ?>">
-		<aside class="shop-sidebar" aria-label="<?php esc_attr_e( 'Filtri prodotti', 're-style' ); ?>">
+		<button
+			type="button"
+			class="shop-filters-overlay"
+			aria-hidden="true"
+			tabindex="-1">
+		</button>
+
+		<aside
+			id="shop-filters-panel"
+			class="shop-sidebar"
+			aria-label="<?php esc_attr_e( 'Filtri prodotti', 're-style' ); ?>"
+			aria-hidden="false">
 			<form class="shop-filters-card" action="<?php echo esc_url( $shop_url ); ?>" method="get">
-				<h2><?php esc_html_e( 'Filtri', 're-style' ); ?></h2>
+				<div class="shop-filters-card__header">
+					<h2><?php esc_html_e( 'Filtri', 're-style' ); ?></h2>
+					<button
+						type="button"
+						class="shop-filters-close"
+						aria-label="<?php esc_attr_e( 'Chiudi filtri', 're-style' ); ?>">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
 
 				<?php foreach ( $taxonomy_filters as $filter ) : ?>
 					<div class="shop-filter-block">

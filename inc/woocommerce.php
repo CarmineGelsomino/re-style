@@ -20,6 +20,17 @@ if ( ! function_exists( 're_style_is_shop_archive' ) ) {
 	}
 }
 
+if ( ! function_exists( 're_style_is_single_product' ) ) {
+	/**
+	 * Returns whether the current request is a single product page.
+	 *
+	 * @return bool
+	 */
+	function re_style_is_single_product() {
+		return function_exists( 'is_product' ) && is_product();
+	}
+}
+
 if ( ! function_exists( 're_style_get_shop_page_url' ) ) {
 	/**
 	 * Returns the canonical shop page URL.
@@ -602,10 +613,181 @@ if ( ! function_exists( 're_style_body_classes_woocommerce' ) ) {
 			$classes[] = 're-style-shop-archive';
 		}
 
+		if ( re_style_is_single_product() ) {
+			$classes[] = 're-style-single-product';
+		}
+
 		return $classes;
 	}
 }
 add_filter( 'body_class', 're_style_body_classes_woocommerce' );
+
+if ( ! function_exists( 're_style_customize_single_product_layout' ) ) {
+	/**
+	 * Reorganizes the single product layout while keeping WooCommerce core
+	 * templates in place.
+	 *
+	 * @return void
+	 */
+	function re_style_customize_single_product_layout() {
+		if ( ! re_style_is_single_product() ) {
+			return;
+		}
+
+		remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
+		remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10 );
+		remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_excerpt', 20 );
+		remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
+		remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10 );
+		remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_upsell_display', 15 );
+
+		add_action( 'woocommerce_single_product_summary', 're_style_output_single_product_description', 20 );
+		add_action( 'woocommerce_after_single_product_summary', 're_style_output_single_product_reviews_section', 30 );
+	}
+}
+add_action( 'wp', 're_style_customize_single_product_layout' );
+
+if ( ! function_exists( 're_style_get_single_product_description_text' ) ) {
+	/**
+	 * Returns the descriptive copy used in the single product summary.
+	 *
+	 * @param WC_Product $product Product object.
+	 * @return string
+	 */
+	function re_style_get_single_product_description_text( $product ) {
+		if ( ! $product instanceof WC_Product ) {
+			return '';
+		}
+
+		$description = trim( wp_strip_all_tags( $product->get_short_description() ) );
+
+		if ( '' !== $description ) {
+			return $description;
+		}
+
+		$post = get_post( $product->get_id() );
+
+		if ( ! $post instanceof WP_Post ) {
+			return '';
+		}
+
+		$fallback = '' !== trim( $post->post_excerpt ) ? $post->post_excerpt : $post->post_content;
+
+		return wp_trim_words( wp_strip_all_tags( $fallback ), 48, '...' );
+	}
+}
+
+if ( ! function_exists( 're_style_output_single_product_description' ) ) {
+	/**
+	 * Outputs the product description block inside the summary column.
+	 *
+	 * @return void
+	 */
+	function re_style_output_single_product_description() {
+		global $product;
+
+		$description = re_style_get_single_product_description_text( $product );
+
+		if ( '' === $description ) {
+			return;
+		}
+
+		?>
+		<div class="re-style-single-description">
+			<h2 class="re-style-single-description__title"><?php esc_html_e( 'Descrizione', 're-style' ); ?></h2>
+			<div class="re-style-single-description__content">
+				<p><?php echo esc_html( $description ); ?></p>
+			</div>
+		</div>
+		<?php
+	}
+}
+
+if ( ! function_exists( 're_style_output_single_product_reviews_section' ) ) {
+	/**
+	 * Outputs the reviews block below related products.
+	 *
+	 * @return void
+	 */
+	function re_style_output_single_product_reviews_section() {
+		if ( ! comments_open() && ! get_comments_number() ) {
+			return;
+		}
+
+		echo '<section class="re-style-single-reviews-section" aria-label="' . esc_attr__( 'Recensioni prodotto', 're-style' ) . '">';
+		comments_template();
+		echo '</section>';
+	}
+}
+
+if ( ! function_exists( 're_style_output_single_quantity_decrease_button' ) ) {
+	/**
+	 * Outputs the quantity decrease button for single product forms.
+	 *
+	 * @return void
+	 */
+	function re_style_output_single_quantity_decrease_button() {
+		if ( ! re_style_is_single_product() ) {
+			return;
+		}
+
+		echo '<button type="button" class="re-style-quantity-button re-style-quantity-button--minus" aria-label="' . esc_attr__( 'Diminuisci quantita', 're-style' ) . '">-</button>';
+	}
+}
+add_action( 'woocommerce_before_quantity_input_field', 're_style_output_single_quantity_decrease_button' );
+
+if ( ! function_exists( 're_style_output_single_quantity_increase_button' ) ) {
+	/**
+	 * Outputs the quantity increase button for single product forms.
+	 *
+	 * @return void
+	 */
+	function re_style_output_single_quantity_increase_button() {
+		if ( ! re_style_is_single_product() ) {
+			return;
+		}
+
+		echo '<button type="button" class="re-style-quantity-button re-style-quantity-button--plus" aria-label="' . esc_attr__( 'Aumenta quantita', 're-style' ) . '">+</button>';
+	}
+}
+add_action( 'woocommerce_after_quantity_input_field', 're_style_output_single_quantity_increase_button' );
+
+if ( ! function_exists( 're_style_related_products_args' ) ) {
+	/**
+	 * Normalizes related products output for the custom single-product layout.
+	 *
+	 * @param array $args Related product arguments.
+	 * @return array
+	 */
+	function re_style_related_products_args( $args ) {
+		if ( ! re_style_is_single_product() ) {
+			return $args;
+		}
+
+		$args['posts_per_page'] = 4;
+		$args['columns']        = 4;
+
+		return $args;
+	}
+}
+add_filter( 'woocommerce_output_related_products_args', 're_style_related_products_args' );
+
+if ( ! function_exists( 're_style_related_products_heading' ) ) {
+	/**
+	 * Returns the related products heading copy.
+	 *
+	 * @param string $heading Existing heading.
+	 * @return string
+	 */
+	function re_style_related_products_heading( $heading ) {
+		if ( re_style_is_single_product() ) {
+			return __( 'Prodotti correlati', 're-style' );
+		}
+
+		return $heading;
+	}
+}
+add_filter( 'woocommerce_product_related_products_heading', 're_style_related_products_heading' );
 
 if ( ! function_exists( 're_style_modify_shop_query' ) ) {
 	/**
