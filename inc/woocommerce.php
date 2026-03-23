@@ -576,6 +576,39 @@ if ( ! function_exists( 're_style_get_loop_add_to_cart_html' ) ) {
 	}
 }
 
+if ( ! function_exists( 're_style_get_wishlist_button_html' ) ) {
+	/**
+	 * Returns theme-owned wishlist button markup for product cards/single pages.
+	 *
+	 * @param WC_Product $product Product object.
+	 * @param string     $context Render context.
+	 * @return string
+	 */
+	function re_style_get_wishlist_button_html( $product, $context = 'loop' ) {
+		if ( ! $product instanceof WC_Product ) {
+			return '';
+		}
+
+		$classes = array(
+			're-style-wishlist-button',
+			're-style-wishlist-button--' . sanitize_html_class( $context ),
+		);
+
+		$label = sprintf(
+			/* translators: %s product title. */
+			__( 'Aggiungi %s ai preferiti', 're-style' ),
+			$product->get_name()
+		);
+
+		return sprintf(
+			'<button type="button" class="%1$s" data-product-id="%2$d" aria-pressed="false" aria-label="%3$s"><span class="screen-reader-text">%3$s</span><span class="re-style-wishlist-button__icon re-style-wishlist-button__icon--default" aria-hidden="true"><svg viewBox="0 0 1024 1024" focusable="false"><use href="#icon-favourite"></use></svg></span><span class="re-style-wishlist-button__icon re-style-wishlist-button__icon--active" aria-hidden="true"><svg viewBox="0 0 1024 1024" focusable="false"><use href="#icon-favourite-solid"></use></svg></span></button>',
+			esc_attr( implode( ' ', $classes ) ),
+			absint( $product->get_id() ),
+			esc_attr( $label )
+		);
+	}
+}
+
 if ( ! function_exists( 're_style_get_shop_result_count_text' ) ) {
 	/**
 	 * Returns the archive result count text.
@@ -641,11 +674,25 @@ if ( ! function_exists( 're_style_customize_single_product_layout' ) ) {
 		remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10 );
 		remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_upsell_display', 15 );
 
+		add_action( 'woocommerce_single_product_summary', 're_style_output_single_product_wishlist_button', 6 );
 		add_action( 'woocommerce_single_product_summary', 're_style_output_single_product_description', 20 );
 		add_action( 'woocommerce_after_single_product_summary', 're_style_output_single_product_reviews_section', 30 );
 	}
 }
 add_action( 'wp', 're_style_customize_single_product_layout' );
+
+if ( ! function_exists( 're_style_output_single_product_wishlist_button' ) ) {
+	/**
+	 * Outputs the theme-owned wishlist button in single product summaries.
+	 *
+	 * @return void
+	 */
+	function re_style_output_single_product_wishlist_button() {
+		global $product;
+
+		echo re_style_get_wishlist_button_html( $product, 'single' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Theme-generated wishlist button HTML with escaped attributes.
+	}
+}
 
 if ( ! function_exists( 're_style_get_single_product_description_text' ) ) {
 	/**
@@ -715,7 +762,9 @@ if ( ! function_exists( 're_style_output_single_product_reviews_section' ) ) {
 		}
 
 		echo '<section class="re-style-single-reviews-section" aria-label="' . esc_attr__( 'Recensioni prodotto', 're-style' ) . '">';
-		comments_template();
+		if ( function_exists( 'comments_template' ) ) {
+			comments_template( '/single-product-reviews.php' );
+		}
 		echo '</section>';
 	}
 }

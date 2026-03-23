@@ -352,6 +352,10 @@ Current implementation status:
   and is reshaped via hooks/CSS/JS first, with no additional legacy single
   template override; description, quantity stepper, related products and a
   dedicated reviews section are arranged from the theme integration layer
+- implemented: the wishlist/favorites control for shop cards and single-product
+  summary is now rendered by the theme using the shared `icon-favourite` and
+  `icon-favourite-solid` symbols, while keeping compatibility with the plugin's
+  current `localStorage` key for stored items
 - current compromise: the single-product wishlist position is styled
   defensively when a wishlist plugin injects markup into the summary, but the
   theme still does not hard-depend on any one plugin implementation

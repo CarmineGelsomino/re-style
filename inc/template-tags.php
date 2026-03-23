@@ -325,7 +325,11 @@ if ( ! function_exists( 're_style_get_header_action_links' ) ) {
 			$account_url = wc_get_page_permalink( 'myaccount' );
 			$cart_url    = wc_get_cart_url();
 
-			$wishlist_page = get_page_by_path( 'wishlist' );
+			$wishlist_page = get_page_by_path( 'lista-preferiti' );
+
+			if ( ! $wishlist_page instanceof WP_Post ) {
+				$wishlist_page = get_page_by_path( 'wishlist' );
+			}
 
 			if ( $wishlist_page instanceof WP_Post ) {
 				$wishlist_url = get_permalink( $wishlist_page );

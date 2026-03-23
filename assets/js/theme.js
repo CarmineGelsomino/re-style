@@ -222,6 +222,67 @@ if (videoTipTriggers.length && videoModal && closeVideoModal && videoModalPlayer
     });
 }
 
+const wishlistButtons = document.querySelectorAll(".re-style-wishlist-button");
+
+if (wishlistButtons.length) {
+    const wishlistStorageKey = "mio_wishlist_items";
+
+    const getWishlistItems = () => {
+        try {
+            const rawValue = window.localStorage.getItem(wishlistStorageKey);
+            const items = rawValue ? JSON.parse(rawValue) : [];
+            return Array.isArray(items) ? items.map((item) => String(item)) : [];
+        } catch (error) {
+            return [];
+        }
+    };
+
+    const setWishlistItems = (items) => {
+        window.localStorage.setItem(wishlistStorageKey, JSON.stringify(items));
+        document.dispatchEvent(new CustomEvent("re-style-wishlist-updated", { detail: { items } }));
+    };
+
+    const syncWishlistButtons = () => {
+        const items = getWishlistItems();
+
+        wishlistButtons.forEach((button) => {
+            const productId = String(button.dataset.productId || "");
+            const isActive = items.includes(productId);
+
+            button.classList.toggle("is-active", isActive);
+            button.setAttribute("aria-pressed", isActive ? "true" : "false");
+        });
+    };
+
+    wishlistButtons.forEach((button) => {
+        button.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const productId = String(button.dataset.productId || "");
+
+            if (!productId) {
+                return;
+            }
+
+            let items = getWishlistItems();
+
+            if (items.includes(productId)) {
+                items = items.filter((item) => item !== productId);
+            } else {
+                items.push(productId);
+            }
+
+            setWishlistItems(items);
+            syncWishlistButtons();
+        });
+    });
+
+    syncWishlistButtons();
+    document.addEventListener("re-style-wishlist-updated", syncWishlistButtons);
+    window.addEventListener("storage", syncWishlistButtons);
+}
+
 const quantityWrappers = document.querySelectorAll(".single-product div.product form.cart .quantity");
 
 quantityWrappers.forEach((wrapper) => {

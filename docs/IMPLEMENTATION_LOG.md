@@ -2602,3 +2602,128 @@ area.
   disabled.
 - If the active wishlist plugin injects a substantially different summary
   markup than expected, a follow-up CSS normalization may still be needed.
+
+### Additional Note
+
+- A follow-up visual review showed two issues still open after the first
+  single-product pass: the shop wishlist/favorites control could render in a
+  repeated "a raffica" state because the defensive selectors were too broad,
+  and the single-product gallery could still appear too small or visually
+  misaligned because WooCommerce/FlexSlider layout wrappers were not reset
+  strongly enough.
+- The shop wishlist normalization in `assets/css/woocommerce.css` was therefore
+  tightened to target only common actionable plugin wrappers/buttons instead of
+  generic `[class*="wishlist"]` descendants, while common feedback/status text
+  fragments were explicitly hidden.
+- The single-product gallery CSS was also hardened by resetting
+  `div.images`, `.woocommerce-product-gallery`, `.flex-viewport` and the
+  gallery wrapper widths/floats directly, enlarging the main media frame and
+  assigning the thumbnail rail and main image viewport to explicit grid
+  columns, so the primary image can occupy the intended space more reliably.
+
+---
+
+## T032
+
+### Objective
+
+Move the wishlist/favorites icon rendering for WooCommerce products into the
+theme, using the shared `icon-favourite` and `icon-favourite-solid` symbols,
+instead of relying on plugin-side DOM injection.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `template-parts/site/icon-sprite.php`
+- `inc/template-tags.php`
+- `inc/woocommerce.php`
+- `woocommerce/content-product.php`
+- `assets/css/woocommerce.css`
+- `assets/js/theme.js`
+- `sito-statico/index.html`
+- `sito-statico/shop.html`
+
+### Files Created/Modified
+
+- `template-parts/site/icon-sprite.php`
+- `inc/template-tags.php`
+- `inc/woocommerce.php`
+- `woocommerce/content-product.php`
+- `assets/css/woocommerce.css`
+- `assets/js/theme.js`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The favorites button is now theme-owned on both shop cards and single product
+  summary, so the visible control no longer depends on plugin markup being
+  injected correctly into the DOM.
+- The theme reuses the same `localStorage` key currently used by the custom
+  wishlist plugin (`mio_wishlist_items`) so stored favorite items remain
+  compatible with the existing plugin page/data flow.
+- The shared icon sprite now includes both `icon-favourite` and
+  `icon-favourite-solid`, which lets the button toggle between empty/filled
+  states without loading external assets.
+- Existing plugin-injected `.mio-wishlist-icon-wrapper` elements are hidden at
+  theme level on product cards so the theme button remains the only visible
+  favorites control in catalog contexts.
+- Header wishlist links now prefer a `lista-preferiti` page slug before the
+  older `wishlist` fallback, aligning the theme better with the current plugin.
+
+### Assumptions
+
+- The custom wishlist plugin may remain active for page rendering and storage,
+  but the theme should own the product-card and single-product icon UI.
+- Keeping compatibility with the plugin's `localStorage` key is preferable to
+  introducing a separate theme-only storage model, because it avoids breaking
+  the user's existing favorites list.
+
+### Verification
+
+- Manually reviewed the new PHP helper and hook usage to confirm the favorites
+  button now renders directly inside `woocommerce/content-product.php` and the
+  single-product summary flow.
+- Manually reviewed the updated theme script to confirm it toggles active state
+  from `localStorage`, syncs across tabs and updates the button UI without
+  plugin DOM injection.
+- Manually reviewed the new CSS to confirm the theme button uses the shared
+  heart icons and plugin-injected wrappers are hidden in product contexts.
+- Automated runtime verification and PHP lint could not be run here because no
+  local `php` executable or live WordPress/WooCommerce runtime is available in
+  the workspace.
+
+### TODO / Residual Risks
+
+- Validate the visible favorites flow in the live browser with the custom
+  plugin still active, especially on pages where the plugin may also inject its
+  own controls outside shop cards.
+- If the plugin later stops using `localStorage` and moves to server-side
+  persistence, the theme-side JS should be updated to follow the new source of
+  truth instead of `mio_wishlist_items`.
+
+### Additional Note
+
+- A follow-up check showed the theme wishlist button shell rendering as a white
+  circle without the heart glyph. The cause was `wp_kses_post()` stripping the
+  inline SVG/`use` markup from the theme-generated button HTML.
+- The loop card and single-product outputs were therefore adjusted to print the
+  helper HTML directly, keeping attribute escaping inside the helper itself so
+  the shared `icon-favourite` and `icon-favourite-solid` symbols can render
+  correctly.
+
+### Additional Note 2
+
+- A later browser review of the single-product page showed three remaining
+  issues: the reviews section was rendering the generic theme comments template
+  instead of WooCommerce's product-review template, the review area layout was
+  visually misaligned, and the main product image was still reading as too
+  narrow/rectangular.
+- The single-product reviews output was therefore switched from the generic
+  `comments_template()` flow to the WooCommerce `single-product-reviews.php`
+  template path, while the single-product CSS was strengthened to assign
+  explicit grid columns to gallery/summary, force a square main media viewport
+  and normalize WooCommerce review-template wrappers/avatar/comment-text
+  spacing.

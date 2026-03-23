@@ -18,9 +18,12 @@ $category     = re_style_get_product_primary_category_name( $product );
 $description  = re_style_get_loop_product_description( $product );
 $price_html   = re_style_get_product_loop_price_html( $product );
 $button_html  = re_style_get_loop_add_to_cart_html( $product );
+$wishlist     = re_style_get_wishlist_button_html( $product, 'loop' );
 $product_link = get_permalink( $product->get_id() );
 ?>
 <li <?php wc_product_class( 'product-card', $product ); ?>>
+	<?php echo $wishlist; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Theme-generated wishlist button HTML with escaped attributes. ?>
+
 	<a href="<?php echo esc_url( $product_link ); ?>" class="product-media">
 		<?php if ( ! empty( $badge['label'] ) ) : ?>
 			<span class="product-badge <?php echo esc_attr( $badge['class'] ); ?>"><?php echo esc_html( $badge['label'] ); ?></span>
