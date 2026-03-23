@@ -1535,6 +1535,17 @@ body.woocommerce-account .entry-content {
     gap: 2rem;
 }
 
+body.woocommerce-account .woocommerce,
+body.woocommerce-account .woocommerce p,
+body.woocommerce-account .woocommerce li,
+body.woocommerce-account .woocommerce td,
+body.woocommerce-account .woocommerce address,
+body.woocommerce-account .woocommerce .woocommerce-MyAccount-content,
+body.woocommerce-account .woocommerce .woocommerce-form-login,
+body.woocommerce-account .woocommerce .woocommerce-form-register {
+    font-family: var(--secondary-font);
+}
+
 .re-style-account-intro {
     display: grid;
     gap: 1.25rem;
@@ -1658,10 +1669,28 @@ body.woocommerce-account .woocommerce #customer_login .u-column2 > :last-child {
 
 body.woocommerce-account .woocommerce-MyAccount-content h2,
 body.woocommerce-account .woocommerce-MyAccount-content h3,
-body.woocommerce-account .woocommerce #customer_login h2 {
+body.woocommerce-account .woocommerce #customer_login h2,
+body.woocommerce-account .woocommerce .woocommerce-Address-title h3,
+body.woocommerce-account .woocommerce .woocommerce-order-details__title,
+body.woocommerce-account .woocommerce .woocommerce-column__title {
     margin-bottom: 1rem;
+    font-family: var(--primary-font);
     font-size: clamp(1.5rem, 2vw, 2rem);
     text-transform: none;
+}
+
+body.woocommerce-account .woocommerce-MyAccount-content a:not(.button),
+body.woocommerce-account .woocommerce .woocommerce-Address-title a,
+body.woocommerce-account .woocommerce .woocommerce-orders-table__cell-order-actions a {
+    color: var(--font-clr);
+    font-family: var(--primary-font);
+    font-weight: 500;
+}
+
+body.woocommerce-account .woocommerce-MyAccount-content a:not(.button):hover,
+body.woocommerce-account .woocommerce .woocommerce-Address-title a:hover,
+body.woocommerce-account .woocommerce .woocommerce-orders-table__cell-order-actions a:hover {
+    color: var(--btn-bg-hover);
 }
 
 body.woocommerce-account .woocommerce #customer_login {
@@ -1786,9 +1815,22 @@ body.woocommerce-account .woocommerce .addresses {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem;
+    align-items: stretch;
+}
+
+body.woocommerce-account .woocommerce .addresses .col-1,
+body.woocommerce-account .woocommerce .addresses .col-2 {
+    width: auto;
+    max-width: none;
+    float: none;
+    margin: 0;
 }
 
 body.woocommerce-account .woocommerce .addresses .woocommerce-Address {
+    min-height: 100%;
+    display: grid;
+    align-content: start;
+    gap: 1rem;
     padding: 1.5rem;
     border: 1px solid var(--border-clr);
     border-radius: 16px;
@@ -1796,17 +1838,150 @@ body.woocommerce-account .woocommerce .addresses .woocommerce-Address {
 }
 
 body.woocommerce-account .woocommerce .addresses .woocommerce-Address-title {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 0;
+    align-items: start;
+}
+
+body.woocommerce-account .woocommerce .addresses .woocommerce-Address-title h3 {
+    margin: 0;
+    float: none;
+}
+
+body.woocommerce-account .woocommerce .addresses .woocommerce-Address-title a {
+    width: fit-content;
+    margin: 0;
+    float: none;
+    display: inline-flex;
+    align-items: center;
+    text-align: left;
+    line-height: 1.45;
+    text-underline-offset: 0.16em;
+}
+
+body.woocommerce-account .woocommerce .u-columns.woocommerce-Addresses.col2-set,
+body.woocommerce-account .woocommerce .woocommerce-Addresses {
+    width: 100%;
+    max-width: none;
+}
+
+body.re-style-account-endpoint-edit-address .woocommerce .addresses,
+body.woocommerce-account .woocommerce .u-columns.woocommerce-Addresses.col2-set.addresses {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+body.re-style-account-endpoint-edit-address .woocommerce .addresses .woocommerce-Address,
+body.re-style-account-endpoint-edit-address .woocommerce .u-columns.woocommerce-Addresses .woocommerce-Address {
+    width: 100%;
+    max-width: none;
+}
+
+body.re-style-account-endpoint-edit-address .woocommerce .woocommerce-Address-title h3,
+body.re-style-account-endpoint-edit-address .woocommerce .woocommerce-Address-title a {
+    float: none;
+}
+
+body.re-style-account-endpoint-edit-address .woocommerce .woocommerce-Address-title a {
+    justify-self: start;
 }
 
 body.woocommerce-account .woocommerce .woocommerce-pagination,
 body.woocommerce-account .woocommerce .woocommerce-Button,
 body.woocommerce-account .woocommerce .woocommerce-orders-table__cell-order-actions {
     margin-top: 1rem;
+}
+
+body.woocommerce-account .woocommerce .woocommerce-MyAccount-content .dashboard-links,
+body.woocommerce-account .woocommerce .woocommerce-MyAccount-content ul:not(.woocommerce-Address-fields):not(.woocommerce-error):not(.woocommerce-info):not(.woocommerce-message) {
+    padding-left: 1.1rem;
+}
+
+body.re-style-account-endpoint-dashboard .woocommerce-MyAccount-content > p:first-of-type {
+    padding: 1rem 1.1rem;
+    border-left: 3px solid var(--contrast-clr);
+    border-radius: 0 12px 12px 0;
+    background: rgba(240, 234, 219, 0.55);
+}
+
+body.re-style-account-endpoint-dashboard .woocommerce-MyAccount-content a:not(.button) {
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.16em;
+}
+
+body.re-style-account-endpoint-orders .woocommerce-MyAccount-content,
+body.re-style-account-endpoint-downloads .woocommerce-MyAccount-content,
+body.re-style-account-endpoint-view-order .woocommerce-MyAccount-content,
+body.re-style-account-endpoint-payment-methods .woocommerce-MyAccount-content,
+body.re-style-account-endpoint-add-payment-method .woocommerce-MyAccount-content,
+body.re-style-account-endpoint-edit-address .woocommerce-MyAccount-content,
+body.re-style-account-endpoint-edit-account .woocommerce-MyAccount-content,
+body.re-style-account-endpoint-subscriptions .woocommerce-MyAccount-content {
+    box-shadow: 0 18px 40px rgba(28, 28, 28, 0.04);
+}
+
+body.re-style-account-endpoint-orders .woocommerce-orders-table__cell-order-actions,
+body.re-style-account-endpoint-view-order .woocommerce-orders-table__cell-order-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+body.re-style-account-endpoint-orders .woocommerce-orders-table__cell-order-actions .button,
+body.re-style-account-endpoint-view-order .woocommerce-orders-table__cell-order-actions .button {
+    margin: 0;
+}
+
+body.re-style-account-endpoint-downloads .woocommerce-table--downloads td.download-file a,
+body.re-style-account-endpoint-dashboard .woocommerce-MyAccount-downloads-file a {
+    font-family: var(--primary-font);
+    font-weight: 600;
+}
+
+body.re-style-account-endpoint-edit-address .woocommerce-Address,
+body.re-style-account-endpoint-edit-address .woocommerce-Address-title,
+body.re-style-account-endpoint-edit-account .woocommerce-form-row,
+body.re-style-account-endpoint-edit-account .woocommerce-form-row label {
+    min-width: 0;
+}
+
+body.re-style-account-endpoint-edit-address .woocommerce-Address address {
+    margin: 0;
+    line-height: 1.8;
+}
+
+body.re-style-account-endpoint-edit-account fieldset {
+    margin: 2rem 0 0;
+    padding: 1.5rem;
+    border: 1px solid var(--border-clr);
+    border-radius: 14px;
+    background: rgba(240, 234, 219, 0.42);
+}
+
+body.re-style-account-endpoint-edit-account fieldset legend {
+    padding: 0 0.5rem;
+    font-family: var(--primary-font);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+body.re-style-account-endpoint-subscriptions .woocommerce-MyAccount-content .button,
+body.re-style-account-endpoint-payment-methods .woocommerce-MyAccount-content .button {
+    margin-top: 0.5rem;
+}
+
+body.re-style-account-endpoint-dashboard .woocommerce-MyAccount-navigation ul li.is-active a,
+body.re-style-account-endpoint-orders .woocommerce-MyAccount-navigation ul li.is-active a,
+body.re-style-account-endpoint-downloads .woocommerce-MyAccount-navigation ul li.is-active a,
+body.re-style-account-endpoint-edit-address .woocommerce-MyAccount-navigation ul li.is-active a,
+body.re-style-account-endpoint-edit-account .woocommerce-MyAccount-navigation ul li.is-active a,
+body.re-style-account-endpoint-customer-logout .woocommerce-MyAccount-navigation ul li.is-active a,
+body.re-style-account-endpoint-subscriptions .woocommerce-MyAccount-navigation ul li.is-active a {
+    box-shadow: inset 0 0 0 1px rgba(208, 185, 133, 0.35);
 }
 
 @media (max-width: 1100px) {
@@ -1837,6 +2012,11 @@ body.woocommerce-account .woocommerce .woocommerce-orders-table__cell-order-acti
     }
 
     body.woocommerce-account .woocommerce .addresses {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body.re-style-account-endpoint-edit-address .woocommerce .addresses,
+    body.woocommerce-account .woocommerce .u-columns.woocommerce-Addresses.col2-set.addresses {
         grid-template-columns: minmax(0, 1fr);
     }
 

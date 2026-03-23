@@ -2822,3 +2822,74 @@ Customizer.
 - If the project later requires stronger account-layout parity beyond what core
   WooCommerce markup allows, reassess whether a very narrow template override
   becomes justified and document the reason explicitly.
+
+### Additional Note
+
+- A follow-up requirement asked for stricter font consistency and clearer
+  ownership of the internal My Account menu/endpoints while still avoiding
+  extra template overrides.
+- The account menu is therefore now normalized through the
+  `woocommerce_account_menu_items` filter so core/plugin endpoints can present
+  the requested labels (`Bacheca`, `Ordini`, `Download`, `Indirizzi`,
+  `Dettagli account`, `Esci`, `Disdici iscrizione`) without replacing the
+  WooCommerce navigation template.
+- Account-area typography was also tightened so textual UI in My Account uses
+  only the two theme font stacks already defined by the design system:
+  navigation/headings/actions use the primary font and body/form/table content
+  uses the secondary font.
+
+### Additional Note 2
+
+- A further refinement pass focused only on the visual quality of My Account
+  endpoint-by-endpoint, again without adding WooCommerce account template
+  overrides.
+- Body classes now expose the active account endpoint so the theme can tune
+  dashboard, orders, downloads, addresses, account-details and subscription
+  states more precisely through CSS alone.
+- Endpoint-specific CSS was then layered on top of the shared account styling
+  to improve dashboard emphasis, orders/download actions, address cards,
+  account-details fieldsets and active navigation feedback while preserving the
+  same overall theme language.
+
+### Additional Note 4
+
+- A later desktop review showed the `edit-address` endpoint still laying out
+  poorly because WooCommerce's internal `.col-1` / `.col-2` address wrappers
+  were still constraining the two cards and the address-title/action row.
+- The account CSS was therefore tightened for the address endpoint by resetting
+  those column wrappers, making each address card a full-height grid container
+  and improving the internal title/action alignment so the two desktop cards
+  read as balanced panels.
+
+### Additional Note 5
+
+- A subsequent browser screenshot showed that the address-card heading row was
+  still visually broken because the action link was trying to sit on the same
+  line as the large title, producing awkward wrapping on both desktop and
+  mobile.
+- The address-title block was therefore simplified from a two-item flex row to
+  a compact vertical grid so the title and CTA stack cleanly inside each card,
+  which keeps the layout stable across viewport sizes.
+
+### Additional Note 6
+
+- A later cross-device screenshot confirmed the address cards were still
+  breaking on both desktop and mobile because WooCommerce core float rules on
+  the address heading (`h3` and edit/add link) were still winning over the
+  theme layout.
+- The account stylesheet was therefore tightened again to explicitly reset
+  those floats, normalize the `u-columns.woocommerce-Addresses` wrapper as a
+  full-width grid container and restate the two-column/one-column behavior for
+  the `edit-address` endpoint so the cards stack and align consistently across
+  viewport sizes.
+
+### Additional Note 3
+
+- A later live check showed the My Account screen still rendering almost
+  unstyled despite the new account CSS being present in the repository.
+- The cause was the frontend enqueue condition in `inc/enqueue.php`: the theme
+  was loading `assets/css/woocommerce.css` for `is_woocommerce()` and the shop
+  archive helper, but not explicitly for `is_account_page()`.
+- The enqueue rule was therefore extended so the WooCommerce stylesheet also
+  loads on the account page, allowing the previously added account/menu/endpoint
+  styling to actually apply in the browser.

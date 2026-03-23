@@ -43,7 +43,14 @@ if ( ! function_exists( 're_style_enqueue_assets' ) ) {
 			);
 		}
 
-		if ( function_exists( 'is_woocommerce' ) && ( is_woocommerce() || re_style_is_shop_archive() ) ) {
+		if (
+			function_exists( 'is_woocommerce' )
+			&& (
+				is_woocommerce()
+				|| re_style_is_shop_archive()
+				|| ( function_exists( 'is_account_page' ) && is_account_page() )
+			)
+		) {
 			wp_enqueue_style(
 				're-style-woocommerce',
 				get_template_directory_uri() . '/assets/css/woocommerce.css',

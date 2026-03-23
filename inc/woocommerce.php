@@ -663,6 +663,32 @@ if ( ! function_exists( 're_style_body_classes_woocommerce' ) ) {
 
 		if ( re_style_is_account_page() ) {
 			$classes[] = 're-style-account-page';
+
+			if ( function_exists( 'is_wc_endpoint_url' ) ) {
+				$endpoints = array(
+					'dashboard',
+					'orders',
+					'downloads',
+					'edit-address',
+					'edit-account',
+					'customer-logout',
+					'payment-methods',
+					'view-order',
+					'add-payment-method',
+					'subscriptions',
+				);
+
+				$matched_endpoint = 'dashboard';
+
+				foreach ( $endpoints as $endpoint ) {
+					if ( is_wc_endpoint_url( $endpoint ) ) {
+						$matched_endpoint = $endpoint;
+						break;
+					}
+				}
+
+				$classes[] = 're-style-account-endpoint-' . sanitize_html_class( $matched_endpoint );
+			}
 		}
 
 		return $classes;
@@ -742,6 +768,59 @@ if ( ! function_exists( 're_style_prepend_account_intro_to_content' ) ) {
 	}
 }
 add_filter( 'the_content', 're_style_prepend_account_intro_to_content', 5 );
+
+if ( ! function_exists( 're_style_filter_account_menu_items' ) ) {
+	/**
+	 * Normalizes account menu labels/order with theme copy.
+	 *
+	 * @param array<string, string> $items Account menu items.
+	 * @return array<string, string>
+	 */
+	function re_style_filter_account_menu_items( $items ) {
+		if ( ! is_array( $items ) ) {
+			return $items;
+		}
+
+		$labels = array(
+			'dashboard'       => __( 'Bacheca', 're-style' ),
+			'orders'          => __( 'Ordini', 're-style' ),
+			'downloads'       => __( 'Download', 're-style' ),
+			'edit-address'    => __( 'Indirizzi', 're-style' ),
+			'edit-account'    => __( 'Dettagli account', 're-style' ),
+			'customer-logout' => __( 'Esci', 're-style' ),
+			'subscriptions'   => __( 'Disdici iscrizione', 're-style' ),
+		);
+
+		$preferred_order = array(
+			'dashboard',
+			'orders',
+			'downloads',
+			'edit-address',
+			'edit-account',
+			'customer-logout',
+			'subscriptions',
+		);
+
+		$normalized = array();
+
+		foreach ( $preferred_order as $endpoint ) {
+			if ( isset( $items[ $endpoint ] ) ) {
+				$normalized[ $endpoint ] = isset( $labels[ $endpoint ] ) ? $labels[ $endpoint ] : $items[ $endpoint ];
+			}
+		}
+
+		foreach ( $items as $endpoint => $label ) {
+			if ( isset( $normalized[ $endpoint ] ) ) {
+				continue;
+			}
+
+			$normalized[ $endpoint ] = isset( $labels[ $endpoint ] ) ? $labels[ $endpoint ] : $label;
+		}
+
+		return $normalized;
+	}
+}
+add_filter( 'woocommerce_account_menu_items', 're_style_filter_account_menu_items', 20 );
 
 if ( ! function_exists( 're_style_customize_single_product_layout' ) ) {
 	/**
