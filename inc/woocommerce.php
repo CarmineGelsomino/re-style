@@ -123,10 +123,17 @@ if ( ! function_exists( 're_style_get_shop_taxonomy_filters' ) ) {
 			}
 
 			$taxonomy_object = get_taxonomy( $taxonomy );
+			$label           = $taxonomy;
+
+			if ( 'product_cat' === $taxonomy && $taxonomy_object && ! empty( $taxonomy_object->labels->name ) ) {
+				$label = $taxonomy_object->labels->name;
+			} elseif ( $taxonomy_object && ! empty( $taxonomy_object->labels->singular_name ) ) {
+				$label = $taxonomy_object->labels->singular_name;
+			}
 
 			$filters[] = array(
 				'taxonomy' => $taxonomy,
-				'label'    => $taxonomy_object && ! empty( $taxonomy_object->labels->singular_name ) ? $taxonomy_object->labels->singular_name : $taxonomy,
+				'label'    => $label,
 				'terms'    => $terms,
 				'selected' => re_style_get_shop_filter_values( $taxonomy ),
 			);
@@ -138,7 +145,7 @@ if ( ! function_exists( 're_style_get_shop_taxonomy_filters' ) ) {
 
 if ( ! function_exists( 're_style_get_shop_category_tabs' ) ) {
 	/**
-	 * Returns top-level category tabs for the archive toolbar.
+	 * Returns category tabs for the archive toolbar.
 	 *
 	 * @return WP_Term[]
 	 */
@@ -155,7 +162,16 @@ if ( ! function_exists( 're_style_get_shop_category_tabs' ) ) {
 			return array();
 		}
 
-		return $terms;
+		if ( empty( $terms ) ) {
+			$terms = get_terms(
+				array(
+					'taxonomy'   => 'product_cat',
+					'hide_empty' => true,
+				)
+			);
+		}
+
+		return is_wp_error( $terms ) ? array() : $terms;
 	}
 }
 
@@ -193,8 +209,8 @@ if ( ! function_exists( 're_style_get_shop_price_filter_values' ) ) {
 	 * @return array<string, string>
 	 */
 	function re_style_get_shop_price_filter_values() {
-		$min_price = isset( $_GET['min_price'] ) ? wc_format_decimal( wp_unslash( $_GET['min_price'] ) ) : '';
-		$max_price = isset( $_GET['max_price'] ) ? wc_format_decimal( wp_unslash( $_GET['max_price'] ) ) : '';
+		$min_price = isset( $_GET['min_price'] ) && function_exists( 'wc_format_decimal' ) ? wc_format_decimal( wp_unslash( $_GET['min_price'] ) ) : '';
+		$max_price = isset( $_GET['max_price'] ) && function_exists( 'wc_format_decimal' ) ? wc_format_decimal( wp_unslash( $_GET['max_price'] ) ) : '';
 
 		return array(
 			'min' => '' !== $min_price ? (string) $min_price : '',
@@ -210,20 +226,29 @@ if ( ! function_exists( 're_style_get_shop_orderby_options' ) ) {
 	 * @return array<string, string>
 	 */
 	function re_style_get_shop_orderby_options() {
-		if ( function_exists( 'woocommerce_catalog_orderby' ) ) {
-			$catalog_orderby = apply_filters( 'woocommerce_catalog_orderby', array(
+		$catalog_orderby = apply_filters(
+			'woocommerce_default_catalog_orderby_options',
+			array(
 				'menu_order' => __( 'Default sorting', 'woocommerce' ),
 				'popularity' => __( 'Sort by popularity', 'woocommerce' ),
 				'rating'     => __( 'Sort by average rating', 'woocommerce' ),
 				'date'       => __( 'Sort by latest', 'woocommerce' ),
 				'price'      => __( 'Sort by price: low to high', 'woocommerce' ),
 				'price-desc' => __( 'Sort by price: high to low', 'woocommerce' ),
-			) );
+			)
+		);
 
-			return is_array( $catalog_orderby ) ? $catalog_orderby : array();
+		if ( '' !== re_style_get_shop_search_term() ) {
+			$catalog_orderby['relevance'] = __( 'Sort by relevance', 'woocommerce' );
 		}
 
-		return array();
+		$catalog_orderby = apply_filters( 'woocommerce_catalog_orderby', $catalog_orderby );
+
+		if ( 'no' === get_option( 'woocommerce_enable_review_rating' ) ) {
+			unset( $catalog_orderby['rating'] );
+		}
+
+		return is_array( $catalog_orderby ) ? $catalog_orderby : array();
 	}
 }
 
@@ -234,7 +259,7 @@ if ( ! function_exists( 're_style_get_current_shop_orderby' ) ) {
 	 * @return string
 	 */
 	function re_style_get_current_shop_orderby() {
-		$orderby = isset( $_GET['orderby'] ) ? wc_clean( wp_unslash( $_GET['orderby'] ) ) : '';
+		$orderby = isset( $_GET['orderby'] ) && function_exists( 'wc_clean' ) ? wc_clean( wp_unslash( $_GET['orderby'] ) ) : '';
 
 		if ( '' !== $orderby ) {
 			return $orderby;
@@ -296,7 +321,7 @@ if ( ! function_exists( 're_style_render_shop_hidden_fields' ) ) {
 					printf(
 						'<input type="hidden" name="%1$s[]" value="%2$s">',
 						esc_attr( $key ),
-						esc_attr( sanitize_text_field( $item ) )
+						esc_attr( sanitize_text_field( (string) $item ) )
 					);
 				}
 
@@ -333,22 +358,59 @@ if ( ! function_exists( 're_style_get_shop_active_term_slug' ) ) {
 
 if ( ! function_exists( 're_style_is_product_new_arrival' ) ) {
 	/**
-	 * Returns whether a product should receive the "new" badge.
+	 * Returns whether a product belongs to the latest five items of any assigned
+	 * product category.
 	 *
 	 * @param WC_Product $product Product object.
 	 * @return bool
 	 */
 	function re_style_is_product_new_arrival( $product ) {
-		$newness_days = (int) apply_filters( 're_style_shop_newness_days', 30 );
-		$created      = $product instanceof WC_Product ? $product->get_date_created() : false;
-
-		if ( ! $created ) {
+		if ( ! $product instanceof WC_Product ) {
 			return false;
 		}
 
-		$threshold = strtotime( '-' . absint( $newness_days ) . ' days' );
+		$term_ids = wc_get_product_term_ids( $product->get_id(), 'product_cat' );
 
-		return $created->getTimestamp() >= $threshold;
+		if ( empty( $term_ids ) ) {
+			return false;
+		}
+
+		static $latest_ids_by_term = array();
+
+		foreach ( $term_ids as $term_id ) {
+			$term_id = (int) $term_id;
+
+			if ( ! isset( $latest_ids_by_term[ $term_id ] ) ) {
+				$latest_ids_by_term[ $term_id ] = get_posts(
+					array(
+						'post_type'              => 'product',
+						'post_status'            => 'publish',
+						'fields'                 => 'ids',
+						'posts_per_page'         => 5,
+						'orderby'                => 'date',
+						'order'                  => 'DESC',
+						'ignore_sticky_posts'    => true,
+						'no_found_rows'          => true,
+						'update_post_meta_cache' => false,
+						'update_post_term_cache' => false,
+						'tax_query'              => array(
+							array(
+								'taxonomy'         => 'product_cat',
+								'field'            => 'term_id',
+								'terms'            => array( $term_id ),
+								'include_children' => true,
+							),
+						),
+					)
+				);
+			}
+
+			if ( in_array( $product->get_id(), $latest_ids_by_term[ $term_id ], true ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
 
@@ -369,6 +431,13 @@ if ( ! function_exists( 're_style_get_product_badge' ) ) {
 			return $default_badge;
 		}
 
+		if ( re_style_is_product_new_arrival( $product ) ) {
+			return array(
+				'label' => __( 'Novita', 're-style' ),
+				'class' => 'badge-new',
+			);
+		}
+
 		if ( $product->is_on_sale() ) {
 			return array(
 				'label' => __( 'Promo', 're-style' ),
@@ -376,16 +445,7 @@ if ( ! function_exists( 're_style_get_product_badge' ) ) {
 			);
 		}
 
-		if ( re_style_is_product_new_arrival( $product ) ) {
-			return array(
-				'label' => __( 'Novità', 're-style' ),
-				'class' => 'badge-new',
-			);
-		}
-
-		$kit_taxonomies = array( 'product_cat', 'product_tag' );
-
-		foreach ( $kit_taxonomies as $taxonomy ) {
+		foreach ( array( 'product_cat', 'product_tag' ) as $taxonomy ) {
 			if ( has_term( array( 'kit', 'kits', 'bundle', 'bundles' ), $taxonomy, $product->get_id() ) ) {
 				return array(
 					'label' => __( 'Kit', 're-style' ),
@@ -400,7 +460,7 @@ if ( ! function_exists( 're_style_get_product_badge' ) ) {
 
 if ( ! function_exists( 're_style_get_loop_product_description' ) ) {
 	/**
-	 * Returns a concise product description for the archive cards.
+	 * Returns a concise product description for archive cards.
 	 *
 	 * @param WC_Product $product Product object.
 	 * @return string
@@ -416,11 +476,11 @@ if ( ! function_exists( 're_style_get_loop_product_description' ) ) {
 			$post = get_post( $product->get_id() );
 
 			if ( $post instanceof WP_Post ) {
-				$description = $post->post_excerpt;
+				$description = '' !== trim( $post->post_excerpt ) ? $post->post_excerpt : $post->post_content;
 			}
 		}
 
-		return wp_trim_words( wp_strip_all_tags( $description ), 22, '...' );
+		return wp_trim_words( wp_strip_all_tags( $description ), 16, '...' );
 	}
 }
 
@@ -478,6 +538,30 @@ if ( ! function_exists( 're_style_get_product_loop_price_html' ) ) {
 		}
 
 		return '';
+	}
+}
+
+if ( ! function_exists( 're_style_get_loop_add_to_cart_html' ) ) {
+	/**
+	 * Returns loop add-to-cart HTML.
+	 *
+	 * @param WC_Product $product Product object.
+	 * @return string
+	 */
+	function re_style_get_loop_add_to_cart_html( $product ) {
+		if ( ! $product instanceof WC_Product ) {
+			return '';
+		}
+
+		ob_start();
+
+		woocommerce_template_loop_add_to_cart(
+			array(
+				'class' => 'product-btn button alt',
+			)
+		);
+
+		return (string) ob_get_clean();
 	}
 }
 
@@ -583,20 +667,15 @@ if ( ! function_exists( 're_style_modify_shop_query' ) ) {
 
 		if ( ! empty( $_GET['on_sale'] ) && function_exists( 'wc_get_product_ids_on_sale' ) ) {
 			$on_sale_ids = wc_get_product_ids_on_sale();
-
 			$query->set( 'post__in', ! empty( $on_sale_ids ) ? array_map( 'absint', $on_sale_ids ) : array( 0 ) );
 		}
 
 		if ( ! empty( $_GET['new_arrivals'] ) ) {
-			$newness_days = (int) apply_filters( 're_style_shop_newness_days', 30 );
-
 			$query->set(
-				'date_query',
+				'orderby',
 				array(
-					array(
-						'after'     => gmdate( 'Y-m-d', strtotime( '-' . absint( $newness_days ) . ' days' ) ),
-						'inclusive' => true,
-					),
+					'date' => 'DESC',
+					'ID'   => 'DESC',
 				)
 			);
 		}
@@ -609,159 +688,6 @@ if ( ! function_exists( 're_style_modify_shop_query' ) ) {
 	}
 }
 add_action( 'pre_get_posts', 're_style_modify_shop_query' );
-
-if ( ! function_exists( 're_style_adjust_woocommerce_loop_hooks' ) ) {
-	/**
-	 * Realigns WooCommerce loop hooks with the custom catalog card structure.
-	 *
-	 * @return void
-	 */
-	function re_style_adjust_woocommerce_loop_hooks() {
-		if ( ! class_exists( 'WooCommerce' ) ) {
-			return;
-		}
-
-		remove_action( 'woocommerce_before_shop_loop_item', 'woocommerce_template_loop_product_link_open', 10 );
-		remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
-		remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10 );
-		remove_action( 'woocommerce_shop_loop_item_title', 'woocommerce_template_loop_product_title', 10 );
-		remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5 );
-		remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
-		remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_product_link_close', 5 );
-		remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
-
-		add_action( 'woocommerce_before_shop_loop_item', 're_style_render_loop_product_media', 10 );
-		add_action( 'woocommerce_shop_loop_item_title', 're_style_render_loop_product_header', 10 );
-		add_action( 'woocommerce_after_shop_loop_item_title', 're_style_render_loop_product_excerpt', 15 );
-		add_action( 'woocommerce_after_shop_loop_item', 're_style_render_loop_product_footer', 10 );
-	}
-}
-add_action( 'after_setup_theme', 're_style_adjust_woocommerce_loop_hooks', 20 );
-
-if ( ! function_exists( 're_style_add_product_card_classes' ) ) {
-	/**
-	 * Adds custom loop classes for CSS parity.
-	 *
-	 * @param string[]    $classes Existing classes.
-	 * @param WC_Product  $product Product object.
-	 * @return string[]
-	 */
-	function re_style_add_product_card_classes( $classes, $product ) {
-		if ( re_style_is_shop_archive() ) {
-			$classes[] = 'product-card';
-		}
-
-		if ( $product instanceof WC_Product && re_style_is_product_new_arrival( $product ) ) {
-			$classes[] = 'is-new-arrival';
-		}
-
-		return $classes;
-	}
-}
-add_filter( 'woocommerce_post_class', 're_style_add_product_card_classes', 10, 2 );
-
-if ( ! function_exists( 're_style_render_loop_product_media' ) ) {
-	/**
-	 * Outputs the custom catalog card media block.
-	 *
-	 * @return void
-	 */
-	function re_style_render_loop_product_media() {
-		global $product;
-
-		if ( ! $product instanceof WC_Product ) {
-			return;
-		}
-
-		$badge = re_style_get_product_badge( $product );
-
-		echo '<a class="product-media" href="' . esc_url( get_permalink( $product->get_id() ) ) . '">';
-
-		if ( ! empty( $badge['label'] ) ) {
-			echo '<span class="product-badge ' . esc_attr( $badge['class'] ) . '">' . esc_html( $badge['label'] ) . '</span>';
-		}
-
-		if ( has_post_thumbnail( $product->get_id() ) ) {
-			echo get_the_post_thumbnail( $product->get_id(), 'woocommerce_thumbnail' );
-		} else {
-			echo wc_placeholder_img( 'woocommerce_thumbnail' );
-		}
-
-		echo '</a>';
-		echo '<div class="product-info">';
-	}
-}
-
-if ( ! function_exists( 're_style_render_loop_product_header' ) ) {
-	/**
-	 * Outputs the custom catalog card title block.
-	 *
-	 * @return void
-	 */
-	function re_style_render_loop_product_header() {
-		global $product;
-
-		if ( ! $product instanceof WC_Product ) {
-			return;
-		}
-
-		$category_name = re_style_get_product_primary_category_name( $product );
-
-		if ( '' !== $category_name ) {
-			echo '<span class="product-category">' . esc_html( $category_name ) . '</span>';
-		}
-
-		echo '<h3><a href="' . esc_url( get_permalink( $product->get_id() ) ) . '">' . esc_html( get_the_title( $product->get_id() ) ) . '</a></h3>';
-	}
-}
-
-if ( ! function_exists( 're_style_render_loop_product_excerpt' ) ) {
-	/**
-	 * Outputs the custom catalog card description block.
-	 *
-	 * @return void
-	 */
-	function re_style_render_loop_product_excerpt() {
-		global $product;
-
-		if ( ! $product instanceof WC_Product ) {
-			return;
-		}
-
-		$description = re_style_get_loop_product_description( $product );
-
-		if ( '' !== $description ) {
-			echo '<p>' . esc_html( $description ) . '</p>';
-		}
-	}
-}
-
-if ( ! function_exists( 're_style_render_loop_product_footer' ) ) {
-	/**
-	 * Outputs the custom catalog card footer block.
-	 *
-	 * @return void
-	 */
-	function re_style_render_loop_product_footer() {
-		global $product;
-
-		if ( ! $product instanceof WC_Product ) {
-			return;
-		}
-
-		echo '<div class="product-bottom">';
-		echo '<div class="product-price-group">' . wp_kses_post( re_style_get_product_loop_price_html( $product ) ) . '</div>';
-
-		woocommerce_template_loop_add_to_cart(
-			array(
-				'class' => 'product-btn button alt',
-			)
-		);
-
-		echo '</div>';
-		echo '</div>';
-	}
-}
 
 if ( ! function_exists( 're_style_filter_loop_add_to_cart_args' ) ) {
 	/**
@@ -813,7 +739,7 @@ if ( ! function_exists( 're_style_filter_loop_add_to_cart_link' ) ) {
 			? __( 'Aggiungi', 're-style' )
 			: __( 'Scopri', 're-style' );
 
-		return preg_replace( '/>(.*?)</', '>' . esc_html( $label ) . '<', $html, 1 );
+		return (string) preg_replace( '/>(.*?)</', '>' . esc_html( $label ) . '<', $html, 1 );
 	}
 }
 add_filter( 'woocommerce_loop_add_to_cart_link', 're_style_filter_loop_add_to_cart_link', 10, 3 );

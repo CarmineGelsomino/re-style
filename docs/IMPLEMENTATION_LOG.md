@@ -2129,6 +2129,227 @@ template overrides to the minimum strictly necessary.
 
 ---
 
+## T027
+
+### Objective
+
+Refine the WooCommerce shop archive after visual review by fixing the search
+icon, aligning ordering/category behavior with real WooCommerce data, bringing
+product cards closer to 1:1 parity, switching the "Novita" badge to the latest
+five products per category and strengthening the mobile layout.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `header.php`
+- `template-parts/site/icon-sprite.php`
+- `assets/css/main.css`
+- `assets/css/woocommerce.css`
+- `inc/woocommerce.php`
+- `woocommerce/archive-product.php`
+- `sito-statico/assets/css/style.css`
+
+### Files Created/Modified
+
+- `template-parts/site/icon-sprite.php`
+- `inc/woocommerce.php`
+- `woocommerce/archive-product.php`
+- `woocommerce/content-product.php`
+- `assets/css/woocommerce.css`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The shared SVG sprite now includes the missing search icon symbol so the shop
+  search field can match the static prototype exactly.
+- WooCommerce ordering options are now sourced from the same filter chain used
+  by WooCommerce itself, rather than a narrower hardcoded list, so the shop
+  sort control reflects real store behavior more reliably.
+- Category tabs now fall back to all non-empty product categories when there
+  are no top-level categories available, preventing the toolbar from appearing
+  empty in flatter catalog structures.
+- The product-card rendering moved from a hook-shaped loop transformation to a
+  narrow `woocommerce/content-product.php` override because exact visual parity
+  with the static mockup was easier and safer to maintain with direct loop-item
+  markup control.
+- "Novita" badges no longer use a date window; they now mark the latest five
+  published products inside each assigned product category, matching the new
+  merchandising rule from the task feedback.
+- The mobile layout was hardened by stacking toolbar/sidebar earlier on tablet,
+  making category tabs horizontally scrollable on mobile and tightening card
+  behavior for narrower screens.
+
+### Assumptions
+
+- When a product belongs to multiple categories, it is considered "Novita" if
+  it appears in the latest five products of at least one assigned category.
+- Using ASCII `Novita`/`Disponibilita` strings in code is acceptable for now in
+  order to avoid carrying forward the repository's current encoding anomalies.
+- The global header already uses the same shared template on homepage and shop;
+  this task therefore focused on verifying that no shop-specific CSS was
+  distorting it rather than introducing a separate shop header implementation.
+
+### Verification
+
+- Re-read the static header/shop CSS and the updated theme files to confirm the
+  search icon, toolbar, tabs, product cards and mobile breakpoints now align
+  more closely with the prototype.
+- Reviewed the new `woocommerce/content-product.php` loop markup against the
+  static product-card structure to verify direct parity in media, category,
+  title, description, price group and CTA placement.
+- Reviewed the updated badge logic to confirm that "Novita" now comes from the
+  latest five products per category instead of a rolling 30-day window.
+- Attempted PHP lint on the modified PHP files, but the local environment still
+  does not provide a `php` executable, so automated syntax verification could
+  not be run here.
+
+### TODO / Residual Risks
+
+- Validate the updated archive in a real WooCommerce browser runtime to confirm
+  the new loop-item override behaves correctly with variable, external and
+  out-of-stock products.
+- Confirm with live catalog data whether the fallback-to-all-categories toolbar
+  rule is the desired editorial behavior when a store uses only child terms.
+- If the shop archive still shows a header mismatch in the real browser after
+  these fixes, inspect the live menu assignment/content rather than the theme
+  shell first, since the header template itself remains shared.
+
+---
+
+## T028
+
+### Objective
+
+Refine the WooCommerce archive visual balance after further review by aligning
+the shop content canvas with the shared header shell and compacting product
+cards that were still appearing too long and sparse.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `assets/css/woocommerce.css`
+- `inc/woocommerce.php`
+
+### Files Created/Modified
+
+- `assets/css/woocommerce.css`
+- `inc/woocommerce.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The shop archive now overrides the generic constrained `.site-main` width so
+  the catalog content aligns with the same shell padding used by the fixed
+  header, matching the static prototype more closely.
+- Product cards were compacted through both CSS and data shaping: image height
+  was slightly reduced, title and description were line-clamped, and excerpt
+  trimming was shortened from 22 to 16 words.
+- The shop-specific horizontal padding now scales with the existing shell
+  padding on desktop/tablet and collapses cleanly on mobile.
+
+### Assumptions
+
+- The perceived header misalignment comes from the shop canvas width and
+  padding relationship, not from a separate header-template discrepancy.
+- A more compact editorial rhythm is preferable to showing full excerpts in the
+  product grid, because the static mockup prioritizes scanability over long
+  descriptive text.
+
+### Verification
+
+- Manually reviewed the updated CSS selectors and spacing rules to confirm the
+  shop canvas now follows header shell padding on larger breakpoints.
+- Confirmed the product title/description stack now has both shorter source
+  text and visual line clamps, reducing the tall-card effect.
+- Automated PHP lint could not be run because the local environment still does
+  not provide a `php` executable.
+
+### TODO / Residual Risks
+
+- Validate the updated spacing in the live browser with real product titles and
+  thumbnails, because unusually long catalog data may still need minor tuning.
+
+---
+
+## T029
+
+### Objective
+
+Resolve the remaining visual mismatch on the WooCommerce archive by correcting
+the shared header logo sizing and further compacting product cards that were
+still reading as too tall and visually off compared with the static shop
+preview.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `assets/css/main.css`
+- `assets/css/woocommerce.css`
+- `woocommerce/content-product.php`
+
+### Files Created/Modified
+
+- `assets/css/main.css`
+- `assets/css/woocommerce.css`
+- `woocommerce/content-product.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The shared header logo sizing was normalized by capping both custom-logo and
+  fallback branding images to the same 2.5rem height, so the shop header now
+  matches the homepage logo scale more closely.
+- Product cards were compacted again by moving the media area to an
+  aspect-ratio driven frame, reducing title sizing slightly, lowering text-gap
+  density and trimming the visible description to two lines instead of three.
+- Empty product descriptions no longer render an empty paragraph in the card,
+  avoiding artificial vertical stretch when WooCommerce data is sparse.
+
+### Assumptions
+
+- The reported header mismatch was caused by image sizing differences rather
+  than a different header template between homepage and shop.
+- Matching the static shop card better means preferring a denser, more
+  scan-friendly layout even when some live product text gets clipped sooner.
+
+### Verification
+
+- Manually reviewed the updated branding selectors in `assets/css/main.css` to
+  confirm that both custom and fallback logo paths now share the same maximum
+  height behavior.
+- Rechecked the product-card template/CSS combination to confirm cards no
+  longer reserve unnecessary height for missing descriptions and now keep a
+  tighter visual rhythm.
+- Automated runtime verification and PHP lint could not be run in this
+  environment because no `php` executable is available locally.
+
+### TODO / Residual Risks
+
+- Validate the final logo size and product-card density in the live browser
+  with the real WooCommerce catalog, since image crops and title lengths can
+  still influence the perceived balance.
+
+### Additional Note
+
+- A later browser screenshot showed the product card collapsing to an extremely
+  narrow width despite the earlier compacting pass. The shop grid CSS was
+  therefore hardened with stronger archive-scoped selectors and explicit
+  `float`/`width`/`max-width` resets on `li.product` so WooCommerce or
+  third-party plugin loop styles cannot keep constraining the card width.
+- A subsequent browser screenshot showed the wishlist control overlapping the
+  left badge area and the card/button still reading differently from the static
+  prototype. The product-card rules were therefore pulled back toward the
+  original static values for media height, content spacing, title sizing,
+  description depth and add-to-cart button sizing, while common wishlist plugin
+  selectors were forced into a top-right floating control position.
+
+---
+
 ## T029
 
 ### Objective

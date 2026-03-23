@@ -208,7 +208,7 @@ textarea:focus-visible {
 .custom-logo {
     width: auto;
     height: 2.5rem;
-    max-height: none;
+    max-height: 2.5rem;
 }
 
 .custom-logo-link {
@@ -238,6 +238,14 @@ textarea:focus-visible {
     display: block;
     width: auto;
     height: 2.5rem;
+    max-height: 2.5rem;
+}
+
+.site-branding img {
+    width: auto;
+    max-width: 100%;
+    max-height: 2.5rem;
+    object-fit: contain;
 }
 
 .site-header__mobile-controls,

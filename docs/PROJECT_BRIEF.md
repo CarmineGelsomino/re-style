@@ -104,9 +104,13 @@ The WooCommerce shop baseline now includes:
   `woocommerce/archive-product.php`, used only because the shop prototype
   requires a page-level structure with toolbar, tabs, filter sidebar, results,
   benefits and CTA that cannot be assembled cleanly with hooks/CSS alone
+- one justified WooCommerce loop-item override:
+  `woocommerce/content-product.php`, introduced after the hook-only card
+  approach proved insufficient to keep the product cards visually 1:1 with the
+  static shop prototype
 - dynamic category tabs, taxonomy-driven sidebar filters, availability filters,
   price range filtering, custom archive search and custom loop cards built on
-  top of WooCommerce defaults rather than overriding `content-product.php`
+  top of WooCommerce data rather than hardcoded mockup content
 
 ## Working Assumptions
 
@@ -325,15 +329,15 @@ Potential reusable WooCommerce-oriented partials:
 Current implementation status:
 
 - implemented: `woocommerce/archive-product.php` as a single justified
-  override for the archive page shell only
+  override for the archive page shell, plus `woocommerce/content-product.php`
+  as a narrow justified override for exact product-card parity
 - implemented: dynamic toolbar search, WooCommerce ordering dropdown,
   top-level category tabs, taxonomy-aware filter sidebar, custom result count,
   custom product cards and archive pagination styling
 - implemented: benefits and final CTA as reusable archive-adjacent template
   parts
-- current compromise: "new arrivals" filtering and badge logic use a 30-day
-  publish-date window until the business defines a more explicit merchandising
-  model
+- implemented: "Novita" badges now mark the latest 5 published products within
+  each product category
 - current compromise: the sidebar lists all non-empty product taxonomies and
   product attributes dynamically, so the number of filter groups may exceed the
   exact mockup when the catalog grows
@@ -414,12 +418,12 @@ Recommended asset grouping:
 
 Planned next tasks after the mapping phase:
 
-1. `T027` - Implement WooCommerce single product, cart, checkout and account
+1. `T028` - Implement WooCommerce single product, cart, checkout and account
    styling using hooks/CSS first, documenting any override that proves
    necessary.
-2. `T028` - Convert the information area into native WordPress pages or focused
+2. `T029` - Convert the information area into native WordPress pages or focused
    page templates and define handling for legal/support content.
-3. `T029` - Run hardening pass on responsiveness, accessibility, encoding,
+3. `T030` - Run hardening pass on responsiveness, accessibility, encoding,
    missing assets/content placeholders and documentation updates.
 
 ## Open Decisions

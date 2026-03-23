@@ -2,11 +2,6 @@
 /**
  * Product archive template.
  *
- * This is the only WooCommerce template override currently required because
- * the static shop prototype has a dedicated page structure with toolbar,
- * category tabs, filter sidebar and archive-adjacent sections that cannot be
- * assembled cleanly with CSS and hooks alone.
- *
  * @package ReStyle
  */
 
@@ -49,17 +44,19 @@ $price_values      = re_style_get_shop_price_filter_values();
 				<?php re_style_render_shop_hidden_fields( array( 'shop_search' ) ); ?>
 			</form>
 
-			<form class="shop-toolbar-actions" action="<?php echo esc_url( $shop_url ); ?>" method="get">
-				<label for="shop-sort" class="screen-reader-text"><?php esc_html_e( 'Ordina prodotti', 're-style' ); ?></label>
-				<select id="shop-sort" name="orderby" onchange="this.form.submit()">
-					<?php foreach ( $order_by_options as $value => $label ) : ?>
-						<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $current_orderby, $value ); ?>>
-							<?php echo esc_html( $label ); ?>
-						</option>
-					<?php endforeach; ?>
-				</select>
-				<?php re_style_render_shop_hidden_fields( array( 'orderby' ) ); ?>
-			</form>
+			<?php if ( ! empty( $order_by_options ) ) : ?>
+				<form class="shop-toolbar-actions" action="<?php echo esc_url( $shop_url ); ?>" method="get">
+					<label for="shop-sort" class="screen-reader-text"><?php esc_html_e( 'Ordina prodotti', 're-style' ); ?></label>
+					<select id="shop-sort" name="orderby" onchange="this.form.submit()">
+						<?php foreach ( $order_by_options as $value => $label ) : ?>
+							<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $current_orderby, $value ); ?>>
+								<?php echo esc_html( $label ); ?>
+							</option>
+						<?php endforeach; ?>
+					</select>
+					<?php re_style_render_shop_hidden_fields( array( 'orderby' ) ); ?>
+				</form>
+			<?php endif; ?>
 		</div>
 
 		<div class="shop-categories-tabs" aria-label="<?php esc_attr_e( 'Categorie shop', 're-style' ); ?>">
@@ -100,7 +97,7 @@ $price_values      = re_style_get_shop_price_filter_values();
 				<?php endforeach; ?>
 
 				<div class="shop-filter-block">
-					<h3><?php esc_html_e( 'Disponibilità', 're-style' ); ?></h3>
+					<h3><?php esc_html_e( 'Disponibilita', 're-style' ); ?></h3>
 
 					<?php foreach ( $availability_sets as $availability ) : ?>
 						<label>
@@ -136,23 +133,25 @@ $price_values      = re_style_get_shop_price_filter_values();
 					</div>
 				</div>
 
-				<?php re_style_render_shop_hidden_fields(
+				<?php
+				re_style_render_shop_hidden_fields(
 					array_merge(
 						$filter_exclusions,
 						array(
-						'min_price',
-						'max_price',
-						'in_stock',
-						'on_sale',
-						'new_arrivals',
-						'product-page',
-						'paged',
-						'orderby',
-						'shop_search',
+							'min_price',
+							'max_price',
+							'in_stock',
+							'on_sale',
+							'new_arrivals',
+							'product-page',
+							'paged',
+							'orderby',
+							'shop_search',
 						)
 					),
 					false
-				); ?>
+				);
+				?>
 
 				<?php if ( '' !== re_style_get_shop_search_term() ) : ?>
 					<input type="hidden" name="shop_search" value="<?php echo esc_attr( re_style_get_shop_search_term() ); ?>">
