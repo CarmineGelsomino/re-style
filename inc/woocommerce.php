@@ -31,6 +31,17 @@ if ( ! function_exists( 're_style_is_single_product' ) ) {
 	}
 }
 
+if ( ! function_exists( 're_style_is_account_page' ) ) {
+	/**
+	 * Returns whether the current request is the WooCommerce account page.
+	 *
+	 * @return bool
+	 */
+	function re_style_is_account_page() {
+		return function_exists( 'is_account_page' ) && is_account_page();
+	}
+}
+
 if ( ! function_exists( 're_style_get_shop_page_url' ) ) {
 	/**
 	 * Returns the canonical shop page URL.
@@ -650,10 +661,87 @@ if ( ! function_exists( 're_style_body_classes_woocommerce' ) ) {
 			$classes[] = 're-style-single-product';
 		}
 
+		if ( re_style_is_account_page() ) {
+			$classes[] = 're-style-account-page';
+		}
+
 		return $classes;
 	}
 }
 add_filter( 'body_class', 're_style_body_classes_woocommerce' );
+
+if ( ! function_exists( 're_style_get_account_intro_markup' ) ) {
+	/**
+	 * Returns the theme-owned account intro markup.
+	 *
+	 * @return string
+	 */
+	function re_style_get_account_intro_markup() {
+		if ( ! function_exists( 're_style_get_account_page_data' ) ) {
+			return '';
+		}
+
+		$data = re_style_get_account_page_data();
+
+		ob_start();
+		?>
+		<section class="re-style-account-intro" aria-label="<?php esc_attr_e( 'Introduzione area account', 're-style' ); ?>">
+			<div class="re-style-account-intro__copy">
+				<span class="re-style-page-label"><?php echo esc_html( $data['label'] ); ?></span>
+				<h1 class="re-style-account-intro__title"><?php echo esc_html( $data['title'] ); ?></h1>
+				<p class="re-style-account-intro__description"><?php echo esc_html( $data['description'] ); ?></p>
+			</div>
+
+			<div class="re-style-page-actions re-style-account-intro__actions">
+				<?php if ( '' !== $data['primary_label'] && '' !== $data['primary_url'] ) : ?>
+					<a class="re-style-page-btn re-style-page-btn--primary" href="<?php echo esc_url( $data['primary_url'] ); ?>">
+						<?php echo esc_html( $data['primary_label'] ); ?>
+					</a>
+				<?php endif; ?>
+
+				<?php if ( '' !== $data['secondary_label'] && '' !== $data['secondary_url'] ) : ?>
+					<a class="re-style-page-btn re-style-page-btn--secondary" href="<?php echo esc_url( $data['secondary_url'] ); ?>">
+						<?php echo esc_html( $data['secondary_label'] ); ?>
+					</a>
+				<?php endif; ?>
+			</div>
+		</section>
+		<?php
+
+		return (string) ob_get_clean();
+	}
+}
+
+if ( ! function_exists( 're_style_prepend_account_intro_to_content' ) ) {
+	/**
+	 * Prepends the account intro to the My Account page content.
+	 *
+	 * @param string $content Original page content.
+	 * @return string
+	 */
+	function re_style_prepend_account_intro_to_content( $content ) {
+		if ( is_admin() || ! re_style_is_account_page() || ! in_the_loop() || ! is_main_query() ) {
+			return $content;
+		}
+
+		$post = get_post();
+
+		if ( ! $post instanceof WP_Post ) {
+			return $content;
+		}
+
+		static $rendered = false;
+
+		if ( $rendered ) {
+			return $content;
+		}
+
+		$rendered = true;
+
+		return re_style_get_account_intro_markup() . $content;
+	}
+}
+add_filter( 'the_content', 're_style_prepend_account_intro_to_content', 5 );
 
 if ( ! function_exists( 're_style_customize_single_product_layout' ) ) {
 	/**

@@ -2727,3 +2727,98 @@ instead of relying on plugin-side DOM injection.
   explicit grid columns to gallery/summary, force a square main media viewport
   and normalize WooCommerce review-template wrappers/avatar/comment-text
   spacing.
+
+---
+
+## T033
+
+### Objective
+
+Implement a branded 404 page and a theme-aligned WooCommerce My Account page,
+both responsive and scalable, while keeping WooCommerce account work as
+hook/CSS-first as possible and exposing key copy/CTA controls through the
+Customizer.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `404.php`
+- `page.php`
+- `template-parts/content/content-page.php`
+- `inc/customizer.php`
+- `inc/front-page-data.php`
+- `inc/woocommerce.php`
+- `assets/css/main.css`
+- `assets/css/woocommerce.css`
+- `functions.php`
+
+### Files Created/Modified
+
+- `404.php`
+- `template-parts/content/content-page.php`
+- `inc/customizer.php`
+- `inc/woocommerce.php`
+- `assets/css/main.css`
+- `assets/css/woocommerce.css`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The 404 page now has a dedicated branded layout in the theme template, but
+  its label, title, description and CTA links are driven by Customizer
+  settings rather than being hardcoded.
+- The My Account page intentionally stays on WooCommerce core templates: no new
+  `woocommerce/myaccount/*` override was introduced for this task.
+- A theme-owned account intro block is prepended via `the_content` on the
+  account page, which keeps the solution lightweight and compatible with the
+  existing page-based WooCommerce account flow.
+- The default page title is suppressed only on the account page content
+  template so the new intro can own the primary heading cleanly without showing
+  duplicate visible titles.
+- My Account styling is handled in `assets/css/woocommerce.css` using
+  WooCommerce core selectors for navigation, dashboard content, login/register
+  forms, orders tables, addresses and buttons, with responsive fallbacks for
+  narrower screens.
+
+### Assumptions
+
+- The site should keep using the standard WooCommerce My Account page with its
+  shortcode/content model; the theme's responsibility in this task is visual
+  integration and light contextual framing rather than replacing the page
+  architecture.
+- Making the 404 and account intro copy editable from the Customizer is
+  sufficient for the current editorial need, without introducing new admin
+  option screens or a custom data model.
+- The built-in page search form is acceptable for the 404 flow as long as the
+  surrounding presentation matches the theme.
+
+### Verification
+
+- Manually reviewed the new Customizer helpers and settings to confirm they add
+  dedicated sections for 404 and account copy/links under the existing theme
+  options panel.
+- Manually reviewed the updated 404 template to confirm it consumes the
+  Customizer-driven data and renders branded CTA/search structure.
+- Manually reviewed the My Account integration to confirm it uses page content
+  filtering plus WooCommerce core markup, rather than introducing new account
+  template overrides.
+- Manually reviewed the new responsive CSS for 404 and My Account, including
+  navigation, forms, orders tables and mobile stacking behavior.
+- Automated PHP lint and runtime browser verification could not be run here
+  because no local `php` executable or live WordPress/WooCommerce runtime is
+  available in the workspace.
+
+### TODO / Residual Risks
+
+- Validate the My Account page in the live browser across logged-out, logged-in
+  dashboard, orders, addresses and edit-account endpoints, because WooCommerce
+  endpoint content can vary with store configuration.
+- Confirm whether the account intro buttons should later change per endpoint
+  (for example dashboard vs. orders vs. login state); this pass keeps one
+  scalable shared intro for maintainability.
+- If the project later requires stronger account-layout parity beyond what core
+  WooCommerce markup allows, reassess whether a very narrow template override
+  becomes justified and document the reason explicitly.

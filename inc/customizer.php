@@ -170,6 +170,106 @@ if ( ! function_exists( 're_style_sanitize_checkbox' ) ) {
 	}
 }
 
+if ( ! function_exists( 're_style_get_theme_option_value' ) ) {
+	/**
+	 * Returns a scalar theme-mod value with fallback for non-home sections.
+	 *
+	 * @param string $scope   Setting scope.
+	 * @param string $key     Setting key.
+	 * @param string $default Default value.
+	 * @return string
+	 */
+	function re_style_get_theme_option_value( $scope, $key, $default ) {
+		$value = get_theme_mod( 're_style_' . $scope . '_' . $key, $default );
+
+		return is_string( $value ) && '' !== trim( $value ) ? trim( $value ) : $default;
+	}
+}
+
+if ( ! function_exists( 're_style_get_404_defaults' ) ) {
+	/**
+	 * Returns default 404-page content.
+	 *
+	 * @return array<string, string>
+	 */
+	function re_style_get_404_defaults() {
+		$shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
+
+		return array(
+			'label'           => __( 'Errore 404', 're-style' ),
+			'title'           => __( 'Pagina non trovata', 're-style' ),
+			'description'     => __( 'La pagina che stai cercando potrebbe essere stata spostata, rinominata oppure non essere piu disponibile. Puoi tornare alla home, visitare lo shop oppure usare la ricerca.', 're-style' ),
+			'primary_label'   => __( 'Torna alla home', 're-style' ),
+			'primary_url'     => home_url( '/' ),
+			'secondary_label' => __( 'Vai allo shop', 're-style' ),
+			'secondary_url'   => $shop_url ? $shop_url : home_url( '/' ),
+		);
+	}
+}
+
+if ( ! function_exists( 're_style_get_404_data' ) ) {
+	/**
+	 * Returns 404-page content with Customizer overrides.
+	 *
+	 * @return array<string, string>
+	 */
+	function re_style_get_404_data() {
+		$defaults = re_style_get_404_defaults();
+
+		return array(
+			'label'           => re_style_get_theme_option_value( '404', 'label', $defaults['label'] ),
+			'title'           => re_style_get_theme_option_value( '404', 'title', $defaults['title'] ),
+			'description'     => re_style_get_theme_option_value( '404', 'description', $defaults['description'] ),
+			'primary_label'   => re_style_get_theme_option_value( '404', 'primary_label', $defaults['primary_label'] ),
+			'primary_url'     => re_style_get_theme_option_value( '404', 'primary_url', $defaults['primary_url'] ),
+			'secondary_label' => re_style_get_theme_option_value( '404', 'secondary_label', $defaults['secondary_label'] ),
+			'secondary_url'   => re_style_get_theme_option_value( '404', 'secondary_url', $defaults['secondary_url'] ),
+		);
+	}
+}
+
+if ( ! function_exists( 're_style_get_account_page_defaults' ) ) {
+	/**
+	 * Returns default account-page intro content.
+	 *
+	 * @return array<string, string>
+	 */
+	function re_style_get_account_page_defaults() {
+		$shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
+
+		return array(
+			'label'           => __( 'Area personale', 're-style' ),
+			'title'           => __( 'Il tuo account Re Style', 're-style' ),
+			'description'     => __( 'Da qui puoi accedere ai tuoi ordini, modificare indirizzi e dettagli profilo oppure consultare i contenuti riservati del tuo account.', 're-style' ),
+			'primary_label'   => __( 'Vai allo shop', 're-style' ),
+			'primary_url'     => $shop_url ? $shop_url : home_url( '/' ),
+			'secondary_label' => __( 'Torna alla home', 're-style' ),
+			'secondary_url'   => home_url( '/' ),
+		);
+	}
+}
+
+if ( ! function_exists( 're_style_get_account_page_data' ) ) {
+	/**
+	 * Returns account-page intro content with Customizer overrides.
+	 *
+	 * @return array<string, string>
+	 */
+	function re_style_get_account_page_data() {
+		$defaults = re_style_get_account_page_defaults();
+
+		return array(
+			'label'           => re_style_get_theme_option_value( 'account', 'label', $defaults['label'] ),
+			'title'           => re_style_get_theme_option_value( 'account', 'title', $defaults['title'] ),
+			'description'     => re_style_get_theme_option_value( 'account', 'description', $defaults['description'] ),
+			'primary_label'   => re_style_get_theme_option_value( 'account', 'primary_label', $defaults['primary_label'] ),
+			'primary_url'     => re_style_get_theme_option_value( 'account', 'primary_url', $defaults['primary_url'] ),
+			'secondary_label' => re_style_get_theme_option_value( 'account', 'secondary_label', $defaults['secondary_label'] ),
+			'secondary_url'   => re_style_get_theme_option_value( 'account', 'secondary_url', $defaults['secondary_url'] ),
+		);
+	}
+}
+
 if ( ! function_exists( 're_style_customize_register' ) ) {
 	/**
 	 * Registers Customizer settings for design tokens and homepage content.
@@ -180,6 +280,8 @@ if ( ! function_exists( 're_style_customize_register' ) ) {
 	function re_style_customize_register( $wp_customize ) {
 		$token_defaults      = re_style_get_design_token_defaults();
 		$front_page_defaults = re_style_get_front_page_defaults();
+		$error_404_defaults  = re_style_get_404_defaults();
+		$account_defaults    = re_style_get_account_page_defaults();
 
 		$wp_customize->add_panel(
 			're_style_theme_options',
@@ -296,6 +398,24 @@ if ( ! function_exists( 're_style_customize_register' ) ) {
 				)
 			);
 		}
+
+		$wp_customize->add_section(
+			're_style_error_404',
+			array(
+				'title'    => __( '404 Page', 're-style' ),
+				'panel'    => 're_style_theme_options',
+				'priority' => 22,
+			)
+		);
+
+		$wp_customize->add_section(
+			're_style_account_page',
+			array(
+				'title'    => __( 'Account Page', 're-style' ),
+				'panel'    => 're_style_theme_options',
+				'priority' => 23,
+			)
+		);
 
 		$controls = array(
 			array( 'id' => 'topbar_messages', 'section' => 'site_shell', 'label' => __( 'Topbar messages', 're-style' ), 'default' => implode( "\n", re_style_get_topbar_default_messages() ), 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field', 'description' => __( 'One message per line.', 're-style' ) ),
@@ -423,6 +543,44 @@ if ( ! function_exists( 're_style_customize_register' ) ) {
 					'section'     => 're_style_home_' . $control['section'],
 					'type'        => isset( $control['type'] ) ? $control['type'] : 'text',
 					'description' => isset( $control['description'] ) ? $control['description'] : '',
+				)
+			);
+		}
+
+		$page_controls = array(
+			array( 'scope' => '404', 'section' => 'error_404', 'id' => 'label', 'label' => __( 'Eyebrow label', 're-style' ), 'default' => $error_404_defaults['label'] ),
+			array( 'scope' => '404', 'section' => 'error_404', 'id' => 'title', 'label' => __( 'Title', 're-style' ), 'default' => $error_404_defaults['title'] ),
+			array( 'scope' => '404', 'section' => 'error_404', 'id' => 'description', 'label' => __( 'Description', 're-style' ), 'default' => $error_404_defaults['description'], 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
+			array( 'scope' => '404', 'section' => 'error_404', 'id' => 'primary_label', 'label' => __( 'Primary button label', 're-style' ), 'default' => $error_404_defaults['primary_label'] ),
+			array( 'scope' => '404', 'section' => 'error_404', 'id' => 'primary_url', 'label' => __( 'Primary button URL', 're-style' ), 'default' => $error_404_defaults['primary_url'], 'sanitize' => 'esc_url_raw' ),
+			array( 'scope' => '404', 'section' => 'error_404', 'id' => 'secondary_label', 'label' => __( 'Secondary button label', 're-style' ), 'default' => $error_404_defaults['secondary_label'] ),
+			array( 'scope' => '404', 'section' => 'error_404', 'id' => 'secondary_url', 'label' => __( 'Secondary button URL', 're-style' ), 'default' => $error_404_defaults['secondary_url'], 'sanitize' => 'esc_url_raw' ),
+			array( 'scope' => 'account', 'section' => 'account_page', 'id' => 'label', 'label' => __( 'Eyebrow label', 're-style' ), 'default' => $account_defaults['label'] ),
+			array( 'scope' => 'account', 'section' => 'account_page', 'id' => 'title', 'label' => __( 'Title', 're-style' ), 'default' => $account_defaults['title'] ),
+			array( 'scope' => 'account', 'section' => 'account_page', 'id' => 'description', 'label' => __( 'Description', 're-style' ), 'default' => $account_defaults['description'], 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
+			array( 'scope' => 'account', 'section' => 'account_page', 'id' => 'primary_label', 'label' => __( 'Primary button label', 're-style' ), 'default' => $account_defaults['primary_label'] ),
+			array( 'scope' => 'account', 'section' => 'account_page', 'id' => 'primary_url', 'label' => __( 'Primary button URL', 're-style' ), 'default' => $account_defaults['primary_url'], 'sanitize' => 'esc_url_raw' ),
+			array( 'scope' => 'account', 'section' => 'account_page', 'id' => 'secondary_label', 'label' => __( 'Secondary button label', 're-style' ), 'default' => $account_defaults['secondary_label'] ),
+			array( 'scope' => 'account', 'section' => 'account_page', 'id' => 'secondary_url', 'label' => __( 'Secondary button URL', 're-style' ), 'default' => $account_defaults['secondary_url'], 'sanitize' => 'esc_url_raw' ),
+		);
+
+		foreach ( $page_controls as $control ) {
+			$setting_id = 're_style_' . $control['scope'] . '_' . $control['id'];
+
+			$wp_customize->add_setting(
+				$setting_id,
+				array(
+					'default'           => $control['default'],
+					'sanitize_callback' => isset( $control['sanitize'] ) ? $control['sanitize'] : 'sanitize_text_field',
+				)
+			);
+
+			$wp_customize->add_control(
+				$setting_id,
+				array(
+					'label'   => $control['label'],
+					'section' => 're_style_' . $control['section'],
+					'type'    => isset( $control['type'] ) ? $control['type'] : 'text',
 				)
 			);
 		}

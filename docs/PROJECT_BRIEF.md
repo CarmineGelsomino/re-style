@@ -64,6 +64,13 @@ The scaffold currently includes:
 
 This baseline is intentionally minimal and contains no business logic.
 
+Internal-page coverage now also includes:
+
+- a branded 404 template with Customizer-managed copy and CTA links
+- a WooCommerce My Account presentation layer styled from theme CSS and
+  lightweight hooks/filters, without introducing a dedicated legacy account
+  template override
+
 The global shell now also includes:
 
 - WordPress-native primary navigation in `header.php`
@@ -356,6 +363,11 @@ Current implementation status:
   summary is now rendered by the theme using the shared `icon-favourite` and
   `icon-favourite-solid` symbols, while keeping compatibility with the plugin's
   current `localStorage` key for stored items
+- implemented: the 404 page now follows the theme visual language and exposes
+  editable label/title/description/buttons through the Customizer
+- implemented: the WooCommerce My Account page now keeps WooCommerce core
+  markup and is restyled through theme CSS plus a theme-owned introductory
+  block fed by the Customizer, avoiding new account template overrides
 - current compromise: the single-product wishlist position is styled
   defensively when a wishlist plugin injects markup into the summary, but the
   theme still does not hard-depend on any one plugin implementation
@@ -436,11 +448,11 @@ Recommended asset grouping:
 
 Planned next tasks after the mapping phase:
 
-1. `T032` - Implement WooCommerce cart, checkout and account styling using
-   hooks/CSS first, documenting any override that proves necessary.
-2. `T033` - Convert the information area into native WordPress pages or focused
+1. `T034` - Implement WooCommerce cart and checkout styling using hooks/CSS
+   first, documenting any override that proves necessary.
+2. `T035` - Convert the information area into native WordPress pages or focused
    page templates and define handling for legal/support content.
-3. `T034` - Run hardening pass on responsiveness, accessibility, encoding,
+3. `T036` - Run hardening pass on responsiveness, accessibility, encoding,
    missing assets/content placeholders and documentation updates.
 
 ## Open Decisions
