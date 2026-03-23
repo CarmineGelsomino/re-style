@@ -312,6 +312,38 @@ if ( ! function_exists( 're_style_get_brand_logo_url' ) ) {
 
 if ( ! function_exists( 're_style_get_header_action_links' ) ) {
 	/**
+	 * Returns the current WooCommerce cart item count.
+	 *
+	 * @return int
+	 */
+	function re_style_get_cart_item_count() {
+		if ( ! class_exists( 'WooCommerce' ) || ! WC()->cart ) {
+			return 0;
+		}
+
+		return (int) WC()->cart->get_cart_contents_count();
+	}
+}
+
+if ( ! function_exists( 're_style_get_cart_badge_html' ) ) {
+	/**
+	 * Returns the cart badge HTML for header icons.
+	 *
+	 * @return string
+	 */
+	function re_style_get_cart_badge_html() {
+		$count = re_style_get_cart_item_count();
+
+		return sprintf(
+			'<span class="site-header__cart-badge%1$s" aria-hidden="true">%2$d</span>',
+			$count > 0 ? ' is-visible' : '',
+			$count
+		);
+	}
+}
+
+if ( ! function_exists( 're_style_get_header_action_links' ) ) {
+	/**
 	 * Returns header action links with conservative WordPress/WooCommerce fallbacks.
 	 *
 	 * @return array<string, array<string, string>>
@@ -353,10 +385,29 @@ if ( ! function_exists( 're_style_get_header_action_links' ) ) {
 				'label' => __( 'Cart', 're-style' ),
 				'icon'  => 'icon-cart',
 				'url'   => $cart_url,
+				'badge' => re_style_get_cart_badge_html(),
 			),
 		);
 	}
 }
+
+if ( ! function_exists( 're_style_cart_link_fragment' ) ) {
+	/**
+	 * Refreshes the header cart badge when WooCommerce cart fragments update.
+	 *
+	 * @param array<string, string> $fragments Existing fragments.
+	 * @return array<string, string>
+	 */
+	function re_style_cart_link_fragment( $fragments ) {
+		$badge_html = re_style_get_cart_badge_html();
+
+		$fragments['.site-header__action-link--cart .site-header__cart-badge']       = $badge_html;
+		$fragments['.site-header__mobile-icon-link--cart .site-header__cart-badge'] = $badge_html;
+
+		return $fragments;
+	}
+}
+add_filter( 'woocommerce_add_to_cart_fragments', 're_style_cart_link_fragment' );
 
 if ( ! function_exists( 're_style_body_classes' ) ) {
 	/**

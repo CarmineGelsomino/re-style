@@ -326,6 +326,30 @@ quantityWrappers.forEach((wrapper) => {
     plusButton.addEventListener("click", () => updateValue(1));
 });
 
+const reviewSections = document.querySelectorAll(".single-product .re-style-single-reviews-section");
+
+reviewSections.forEach((section) => {
+    const reviewsRoot = section.querySelector("#reviews");
+
+    if (!reviewsRoot) {
+        return;
+    }
+
+    const allowedSelectors = ["#comments", "#review_form_wrapper", ".woocommerce-verification-required"];
+
+    Array.from(reviewsRoot.children).forEach((child) => {
+        const isAllowed = allowedSelectors.some((selector) => child.matches(selector));
+
+        if (!isAllowed) {
+            child.remove();
+        }
+    });
+
+    reviewsRoot.querySelectorAll(
+        "aside, .widget, .widget-area, .sidebar, .site-sidebar, #secondary, #primary-sidebar"
+    ).forEach((node) => node.remove());
+});
+
 const shopFiltersToggle = document.querySelector(".shop-filters-toggle");
 const shopFiltersPanel = document.getElementById("shop-filters-panel");
 const shopFiltersClose = document.querySelector(".shop-filters-close");

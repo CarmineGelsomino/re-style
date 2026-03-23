@@ -368,6 +368,10 @@ Current implementation status:
 - implemented: the WooCommerce My Account page now keeps WooCommerce core
   markup and is restyled through theme CSS plus a theme-owned introductory
   block fed by the Customizer, avoiding new account template overrides
+- implemented: a narrow `woocommerce/single-product-reviews.php` override is
+  now in place because the hook-only review rendering still proved unreliable
+  in the custom single-product layout; the override is limited to the reviews
+  block and keeps the rest of the single-product template on WooCommerce core
 - current compromise: the single-product wishlist position is styled
   defensively when a wishlist plugin injects markup into the summary, but the
   theme still does not hard-depend on any one plugin implementation

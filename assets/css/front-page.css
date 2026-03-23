@@ -1297,6 +1297,20 @@ html:has(body.re-style-front-page) {
     color: var(--icon-clr);
 }
 
+.site-main--front-page .newsletter-success {
+    width: 100%;
+    max-width: 640px;
+    margin: 0;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border-clr);
+    border-radius: 8px;
+    background-color: var(--bg-clr);
+    color: var(--font-clr);
+    font-family: var(--secondary-font);
+    font-size: var(--font-sm);
+    line-height: 1.6;
+}
+
 .floating-book-btn,
 .floating-whatsapp-btn {
     position: fixed;

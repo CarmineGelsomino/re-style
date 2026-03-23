@@ -929,8 +929,10 @@ if ( ! function_exists( 're_style_output_single_product_reviews_section' ) ) {
 		}
 
 		echo '<section class="re-style-single-reviews-section" aria-label="' . esc_attr__( 'Recensioni prodotto', 're-style' ) . '">';
-		if ( function_exists( 'comments_template' ) ) {
-			comments_template( '/single-product-reviews.php' );
+		if ( function_exists( 'wc_get_template' ) ) {
+			wc_get_template( 'single-product-reviews.php' );
+		} elseif ( function_exists( 'comments_template' ) ) {
+			comments_template();
 		}
 		echo '</section>';
 	}
@@ -1004,6 +1006,40 @@ if ( ! function_exists( 're_style_related_products_heading' ) ) {
 	}
 }
 add_filter( 'woocommerce_product_related_products_heading', 're_style_related_products_heading' );
+
+if ( ! function_exists( 're_style_single_product_gallery_classes' ) ) {
+	/**
+	 * Adds stable theme classes to the single-product gallery wrapper.
+	 *
+	 * @param string[] $classes Existing gallery classes.
+	 * @return string[]
+	 */
+	function re_style_single_product_gallery_classes( $classes ) {
+		if ( ! re_style_is_single_product() ) {
+			return $classes;
+		}
+
+		global $product;
+
+		if ( ! $product instanceof WC_Product ) {
+			return $classes;
+		}
+
+		$attachment_ids = $product->get_gallery_image_ids();
+		$image_count    = count( $attachment_ids );
+
+		if ( $product->get_image_id() ) {
+			++$image_count;
+		}
+
+		if ( $image_count <= 1 ) {
+			$classes[] = 're-style-gallery--single-image';
+		}
+
+		return array_values( array_unique( $classes ) );
+	}
+}
+add_filter( 'woocommerce_single_product_image_gallery_classes', 're_style_single_product_gallery_classes' );
 
 if ( ! function_exists( 're_style_modify_shop_query' ) ) {
 	/**

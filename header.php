@@ -40,12 +40,15 @@
 			<div class="site-header__mobile-controls">
 				<?php foreach ( array( 'wishlist', 'cart' ) as $mobile_action_key ) : ?>
 					<?php if ( isset( $header_actions[ $mobile_action_key ] ) ) : ?>
-						<a class="site-header__mobile-icon-link" href="<?php echo esc_url( $header_actions[ $mobile_action_key ]['url'] ); ?>" aria-label="<?php echo esc_attr( $header_actions[ $mobile_action_key ]['label'] ); ?>">
+						<a class="site-header__mobile-icon-link<?php echo 'cart' === $mobile_action_key ? ' site-header__mobile-icon-link--cart' : ''; ?>" href="<?php echo esc_url( $header_actions[ $mobile_action_key ]['url'] ); ?>" aria-label="<?php echo esc_attr( $header_actions[ $mobile_action_key ]['label'] ); ?>">
 							<span class="site-header__mobile-icon" aria-hidden="true">
 								<svg viewBox="0 0 1024 1024" focusable="false">
 									<use href="#<?php echo esc_attr( $header_actions[ $mobile_action_key ]['icon'] ); ?>"></use>
 								</svg>
 							</span>
+							<?php if ( ! empty( $header_actions[ $mobile_action_key ]['badge'] ) ) : ?>
+								<?php echo $header_actions[ $mobile_action_key ]['badge']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Theme-generated cart badge HTML with controlled numeric output. ?>
+							<?php endif; ?>
 						</a>
 					<?php endif; ?>
 				<?php endforeach; ?>
@@ -81,14 +84,17 @@
 			</nav>
 
 			<ul class="site-header__actions nav-right" aria-label="<?php esc_attr_e( 'Quick actions', 're-style' ); ?>">
-				<?php foreach ( $header_actions as $action ) : ?>
+				<?php foreach ( $header_actions as $action_key => $action ) : ?>
 					<li class="site-header__action-item">
-						<a class="site-header__action-link" href="<?php echo esc_url( $action['url'] ); ?>" aria-label="<?php echo esc_attr( $action['label'] ); ?>">
+						<a class="site-header__action-link<?php echo 'cart' === $action_key ? ' site-header__action-link--cart' : ''; ?>" href="<?php echo esc_url( $action['url'] ); ?>" aria-label="<?php echo esc_attr( $action['label'] ); ?>">
 							<span class="site-header__action-icon" aria-hidden="true">
 								<svg viewBox="0 0 1024 1024" focusable="false">
 									<use href="#<?php echo esc_attr( $action['icon'] ); ?>"></use>
 								</svg>
 							</span>
+							<?php if ( ! empty( $action['badge'] ) ) : ?>
+								<?php echo $action['badge']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Theme-generated cart badge HTML with controlled numeric output. ?>
+							<?php endif; ?>
 						</a>
 					</li>
 				<?php endforeach; ?>

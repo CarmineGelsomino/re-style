@@ -2883,6 +2883,168 @@ Customizer.
   the `edit-address` endpoint so the cards stack and align consistently across
   viewport sizes.
 
+### Additional Note 7
+
+- A subsequent live review of the single-product page showed two regressions:
+  the review area could still fall back to the wrong template flow and surface
+  unrelated theme/sidebar markup, and the main product gallery could collapse
+  visually into a very small image inside an oversized empty column.
+- The single-product reviews output was therefore switched to the WooCommerce
+  template loader (`wc_get_template( 'single-product-reviews.php' )`) with a
+  `comments_template()` fallback only when WooCommerce helpers are unavailable.
+- The single-product CSS was also strengthened to give the gallery viewport a
+  real minimum height, force the inner gallery wrapper/image chain to fill that
+  space, and hard-reset any stray sidebar/widget wrappers inside the dedicated
+  reviews section so both the upper product layout and the reviews panel stay
+  coherent on desktop and mobile.
+
+### Additional Note 8
+
+- A further browser report confirmed two issues still remained on the single
+  product page: when a product had no thumbnail rail the gallery still reserved
+  the left thumbnail column and visually shrank the main image, and the reviews
+  section could still display the wrong fallback content in the live runtime.
+- A narrow WooCommerce override was therefore introduced at
+  `woocommerce/single-product-reviews.php`, documented as justified because the
+  hook-only reviews insertion proved insufficient to guarantee the correct
+  markup in this theme context.
+- The gallery CSS was also extended with a no-thumbnails branch so
+  `.woocommerce-product-gallery` collapses back to a single full-width column
+  when no `flex-control-thumbs` items exist, allowing the main media area to
+  occupy the full left column as intended.
+
+### Additional Note 9
+
+- A final verification of the repository confirmed that the visible "sidebar"
+  content reported inside the reviews area did not originate from any theme
+  sidebar template or widget registration in this codebase.
+- The single-product integration was therefore hardened in two ways:
+  WooCommerce gallery classes now receive a theme-owned `re-style-gallery--single-image`
+  marker when the product has only one image, and the theme script now removes
+  any unexpected sidebar/widget nodes that may be injected into the dedicated
+  reviews block at runtime.
+
+### Additional Note 10
+
+- A later live HTML inspection clarified that the visible `#sidebar` node was
+  not inside the reviews block at all: it was being printed after `#primary`
+  and before the footer, while the single-product gallery markup on the page
+  also lacked the expected `.flex-viewport` wrapper at the moment of render.
+- The single-product CSS was therefore tightened again so a direct child
+  `.woocommerce-product-gallery__wrapper` is assigned to the main media column
+  even before FlexSlider-enhanced markup exists, with a dedicated branch for
+  `re-style-gallery--single-image` products.
+- As a defensive presentation fix, `body.single-product #sidebar` is now hidden
+  in the theme stylesheet because that node is not part of the intended Re
+  Style single-product layout and does not originate from the tracked theme
+  templates in this repository.
+
+### Additional Note 11
+
+- A later single-product/header refinement pass adjusted three presentation
+  details without introducing new WooCommerce template overrides for the main
+  product flow.
+- The desktop gallery viewport was reduced slightly so the media column feels
+  less dominant relative to the summary column.
+- WooCommerce success/info/error notices on the single-product page are now
+  styled in the same visual language as the rest of the theme, including the
+  cart CTA button.
+- The header cart icon now includes a theme-owned quantity badge on both
+  desktop and mobile, and WooCommerce cart fragments refresh that badge when
+  the cart changes via AJAX.
+
+### Additional Note 12
+
+- A further visual review showed that variable products were still not
+  inheriting a polished single-product layout: variation selects, stock text,
+  reset links and the variation add-to-cart area were rendering too close to
+  WooCommerce defaults, and the gallery still needed stronger constraints when
+  multiple images/FlexSlider markup were present.
+- The single-product stylesheet was therefore extended to cover
+  `.variations_form`, `table.variations`, `select`, `reset_variations`,
+  `single_variation_wrap`, variation price/availability states and the
+  variation add-to-cart row, while keeping the implementation CSS-first.
+- The gallery CSS was also reinforced for multi-image products by assigning a
+  stable minimum height and full-width behavior to the direct
+  `.woocommerce-product-gallery__wrapper` branch as well as the FlexSlider
+  viewport branch, so variable products stay visually aligned with the custom
+  single-product layout.
+
+### Additional Note 13
+
+- A follow-up browser report showed that gallery images selected from the
+  thumbnail rail could still disappear instead of occupying the main viewport.
+- The single-product gallery CSS was therefore tightened again for the
+  FlexSlider-enhanced branch: the inner `.woocommerce-product-gallery__wrapper`
+  now behaves as a stretching flex track and each
+  `.woocommerce-product-gallery__image` inside the viewport is forced to occupy
+  the full viewport width and a stable minimum height, so selected images stay
+  visible when the active slide changes.
+
+---
+
+## T034
+
+### Objective
+
+Connect the existing homepage newsletter section to the provided `oc-newsletter`
+ plugin without modifying the plugin itself and without changing the current
+ section layout.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `oc-newsletter/oc-newsletter/oc-newsletter.php`
+- `oc-newsletter/oc-newsletter/includes/class-oc-newsletter.php`
+- `oc-newsletter/oc-newsletter/assets/js/newsletter.js`
+- `oc-newsletter/oc-newsletter/templates/newsletter-form.php`
+- `template-parts/front-page/newsletter.php`
+- `assets/css/front-page.css`
+
+### Files Created/Modified
+
+- `template-parts/front-page/newsletter.php`
+- `assets/css/front-page.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The plugin was left untouched; the theme-side newsletter form was adapted to
+  the plugin's expected DOM/API contract instead.
+- The existing theme markup structure and visual layout were preserved, with
+  only the technical form identifiers/names updated so the plugin's frontend
+  script can submit the form to `oc_newsletter_signup`.
+- A minimal `.newsletter-success` state was added in theme CSS so the plugin's
+  success/error replacement message remains visually coherent when the form is
+  replaced after submission.
+
+### Assumptions
+
+- The provided `oc-newsletter` plugin will be active on the site, so its
+  localized `oc_ajax.ajaxurl` object and frontend script are available.
+- Preserving the layout means preserving the current section structure,
+  spacing and styling rather than preserving the previous inactive form wiring.
+
+### Verification
+
+- Reviewed the plugin code to confirm it expects a form with
+  `id="oc-newsletter-form"`, an `email` field and a `consent` field, then
+  submits through AJAX action `oc_newsletter_signup`.
+- Reviewed the updated theme newsletter partial to confirm those attributes now
+  match the plugin contract without changing the rendered layout structure.
+- Reviewed the added CSS success state to confirm the plugin-injected response
+  text stays aligned with the current front-page newsletter design.
+
+### TODO / Residual Risks
+
+- Validate the live submission flow with the plugin active, because the plugin
+  currently replaces the entire form with a message on success/error and does
+  not expose nonce handling or richer field/state hooks.
+- If the plugin's frontend script changes its expected selectors in the future,
+  the theme-side newsletter partial may need a small compatibility update.
+
 ### Additional Note 3
 
 - A later live check showed the My Account screen still rendering almost
