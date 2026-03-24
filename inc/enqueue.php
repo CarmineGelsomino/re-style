@@ -9,6 +9,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if ( ! function_exists( 're_style_get_asset_version' ) ) {
+	/**
+	 * Returns a cache-busting version for a theme asset.
+	 *
+	 * @param string $relative_path Asset path relative to the theme root.
+	 * @return string
+	 */
+	function re_style_get_asset_version( $relative_path ) {
+		$asset_path = get_template_directory() . '/' . ltrim( $relative_path, '/' );
+
+		if ( file_exists( $asset_path ) ) {
+			return (string) filemtime( $asset_path );
+		}
+
+		return wp_get_theme()->get( 'Version' );
+	}
+}
+
 if ( ! function_exists( 're_style_enqueue_assets' ) ) {
 	/**
 	 * Enqueues frontend assets.
@@ -16,8 +34,6 @@ if ( ! function_exists( 're_style_enqueue_assets' ) ) {
 	 * @return void
 	 */
 	function re_style_enqueue_assets() {
-		$theme = wp_get_theme();
-
 		wp_enqueue_style(
 			're-style-fonts',
 			re_style_get_google_fonts_url(),
@@ -29,7 +45,7 @@ if ( ! function_exists( 're_style_enqueue_assets' ) ) {
 			're-style-main',
 			get_template_directory_uri() . '/assets/css/main.css',
 			array( 're-style-fonts' ),
-			$theme->get( 'Version' )
+			re_style_get_asset_version( 'assets/css/main.css' )
 		);
 
 		wp_add_inline_style( 're-style-main', re_style_get_design_tokens_css() );
@@ -39,7 +55,7 @@ if ( ! function_exists( 're_style_enqueue_assets' ) ) {
 				're-style-front-page',
 				get_template_directory_uri() . '/assets/css/front-page.css',
 				array( 're-style-main' ),
-				$theme->get( 'Version' )
+				re_style_get_asset_version( 'assets/css/front-page.css' )
 			);
 		}
 
@@ -48,6 +64,8 @@ if ( ! function_exists( 're_style_enqueue_assets' ) ) {
 			&& (
 				is_woocommerce()
 				|| re_style_is_shop_archive()
+				|| ( function_exists( 'is_cart' ) && is_cart() )
+				|| ( function_exists( 'is_checkout' ) && is_checkout() )
 				|| ( function_exists( 'is_account_page' ) && is_account_page() )
 			)
 		) {
@@ -55,7 +73,7 @@ if ( ! function_exists( 're_style_enqueue_assets' ) ) {
 				're-style-woocommerce',
 				get_template_directory_uri() . '/assets/css/woocommerce.css',
 				array( 're-style-main' ),
-				$theme->get( 'Version' )
+				re_style_get_asset_version( 'assets/css/woocommerce.css' )
 			);
 		}
 
@@ -63,7 +81,7 @@ if ( ! function_exists( 're_style_enqueue_assets' ) ) {
 			're-style-theme',
 			get_template_directory_uri() . '/assets/js/theme.js',
 			array(),
-			$theme->get( 'Version' ),
+			re_style_get_asset_version( 'assets/js/theme.js' ),
 			true
 		);
 	}

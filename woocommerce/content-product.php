@@ -15,7 +15,6 @@ if ( ! $product || ! $product->is_visible() ) {
 
 $badge        = re_style_get_product_badge( $product );
 $category     = re_style_get_product_primary_category_name( $product );
-$description  = re_style_get_loop_product_description( $product );
 $price_html   = re_style_get_product_loop_price_html( $product );
 $button_html  = re_style_get_loop_add_to_cart_html( $product );
 $wishlist     = re_style_get_wishlist_button_html( $product, 'loop' );
@@ -42,10 +41,6 @@ $product_link = get_permalink( $product->get_id() );
 		<?php endif; ?>
 
 		<h3><a href="<?php echo esc_url( $product_link ); ?>"><?php echo esc_html( get_the_title( $product->get_id() ) ); ?></a></h3>
-
-		<?php if ( '' !== $description ) : ?>
-			<p><?php echo esc_html( $description ); ?></p>
-		<?php endif; ?>
 
 		<div class="product-bottom">
 			<div class="product-price-group"><?php echo wp_kses_post( $price_html ); ?></div>

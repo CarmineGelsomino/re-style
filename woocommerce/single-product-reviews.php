@@ -12,7 +12,20 @@ defined( 'ABSPATH' ) || exit;
 
 global $product;
 
-if ( ! comments_open() ) {
+if ( ! $product instanceof WC_Product ) {
+	return;
+}
+
+$product_id = $product->get_id();
+$comments   = get_comments(
+	array(
+		'post_id' => $product_id,
+		'status'  => 'approve',
+		'parent'  => 0,
+	)
+);
+
+if ( ! comments_open( $product_id ) && empty( $comments ) ) {
 	return;
 }
 
@@ -31,7 +44,7 @@ $fields   = array(
 );
 
 $comment_form = array(
-	'title_reply'          => have_comments()
+	'title_reply'          => ! empty( $comments )
 		? esc_html__( 'Aggiungi una recensione', 're-style' )
 		: sprintf(
 			/* translators: %s product title. */
@@ -69,13 +82,23 @@ $comment_form['comment_field'] .= '<p class="comment-form-comment"><label for="c
 			<?php esc_html_e( 'Recensioni', 're-style' ); ?>
 		</h2>
 
-		<?php if ( have_comments() ) : ?>
+		<?php if ( ! empty( $comments ) ) : ?>
 			<ol class="commentlist">
-				<?php wp_list_comments( apply_filters( 'woocommerce_product_review_list_args', array( 'callback' => 'woocommerce_comments' ) ) ); ?>
+				<?php
+				wp_list_comments(
+					apply_filters(
+						'woocommerce_product_review_list_args',
+						array(
+							'callback' => 'woocommerce_comments',
+						)
+					),
+					$comments
+				);
+				?>
 			</ol>
 
 			<?php
-			if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) :
+			if ( get_comment_pages_count( $comments ) > 1 && get_option( 'page_comments' ) ) :
 				echo '<nav class="woocommerce-pagination">';
 				paginate_comments_links(
 					apply_filters(

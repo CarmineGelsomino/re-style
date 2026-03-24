@@ -45,23 +45,23 @@
       "wideSize": "1200px"
     },
     "spacing": {
-      "blockGap": "1.5rem",
-      "units": ["px", "rem", "vw", "%"],
+      "blockGap": "24px",
+      "units": ["px", "vw", "%"],
       "spacingSizes": [
         {
           "slug": "gutter",
           "name": "Gutter",
-          "size": "1rem"
+          "size": "16px"
         },
         {
           "slug": "stack",
           "name": "Stack",
-          "size": "1.5rem"
+          "size": "24px"
         },
         {
           "slug": "section",
           "name": "Section",
-          "size": "4rem"
+          "size": "64px"
         }
       ]
     },
@@ -85,32 +85,32 @@
         {
           "slug": "label",
           "name": "Label",
-          "size": "0.75rem"
+          "size": "12px"
         },
         {
           "slug": "body",
           "name": "Body",
-          "size": "1rem"
+          "size": "16px"
         },
         {
           "slug": "lead",
           "name": "Lead",
-          "size": "1.125rem"
+          "size": "18px"
         },
         {
           "slug": "title",
           "name": "Title",
-          "size": "1.5rem"
+          "size": "24px"
         },
         {
           "slug": "heading-xl",
           "name": "Heading XL",
-          "size": "2.5rem"
+          "size": "40px"
         },
         {
           "slug": "display",
           "name": "Display",
-          "size": "4.5rem"
+          "size": "72px"
         }
       ]
     }

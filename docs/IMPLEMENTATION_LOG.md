@@ -2521,6 +2521,100 @@ sidebar and padding alignment closer to the static prototype.
 
 ### Objective
 
+Refine the mobile header cart badge so its colors match the requested token
+combination and the badge/icon group no longer sits too close to the hamburger
+menu.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `assets/css/main.css`
+- `header.php`
+- `inc/template-tags.php`
+
+### Files Created/Modified
+
+- `assets/css/main.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The mobile cart badge now uses `var(--bg-clr)` for text and
+  `var(--font-clr)` for its background, matching the requested token pairing
+  directly in the shared badge selector.
+- The mobile controls cluster received a slightly larger gap and the hamburger
+  toggle gained a small left margin so the cart badge has clearer separation
+  from the menu button without changing desktop spacing.
+
+### Assumptions
+
+- The reported overlap is limited to the mobile header control cluster under the
+  existing `782px` breakpoint, so the fix stays scoped to the mobile media
+  query.
+
+### Verification
+
+- Manually reviewed the shared cart badge selector to confirm the requested
+  colors now come from `var(--bg-clr)` and `var(--font-clr)`.
+- Manually reviewed the mobile header breakpoint rules to confirm the added
+  spacing affects only `.site-header__mobile-controls` and
+  `.site-header__menu-toggle`.
+
+### TODO / Residual Risks
+
+- Validate the spacing on a real mobile viewport with a non-zero cart count,
+  since larger badge numbers can slightly change the perceived overlap.
+
+---
+
+## T032
+
+### Objective
+
+Tighten the spacing between the mobile header icon links while keeping a clearer
+separation between the icon group and the hamburger toggle.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `assets/css/main.css`
+
+### Files Created/Modified
+
+- `assets/css/main.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The mobile control cluster gap was reduced so the wishlist/cart icon links
+  read more as one grouped unit.
+- The hamburger toggle left margin was increased at the same time, preserving a
+  clearer break between the icon group and the menu trigger.
+
+### Assumptions
+
+- The requested adjustment refers to the mobile-only header controls under the
+  existing `782px` breakpoint.
+
+### Verification
+
+- Manually reviewed the mobile header CSS to confirm the tighter icon-link
+  spacing and the larger toggle offset are both scoped to the mobile media
+  query only.
+
+### TODO / Residual Risks
+
+- Validate the cluster visually on a real mobile viewport, especially when the
+  cart badge is visible with multi-digit quantities.
+
+---
+
+## T031
+
+### Objective
+
 Implement the WooCommerce single product page to match the provided layout on
 desktop and mobile, staying visually coherent with the current site and
 minimizing legacy template overrides while also providing a dedicated reviews
@@ -3055,3 +3149,298 @@ Connect the existing homepage newsletter section to the provided `oc-newsletter`
 - The enqueue rule was therefore extended so the WooCommerce stylesheet also
   loads on the account page, allowing the previously added account/menu/endpoint
   styling to actually apply in the browser.
+
+---
+
+## T035
+
+### Objective
+
+Restore 1:1 dimensional fidelity with the static prototype by replacing
+theme-side `rem` frontend/token values with the corresponding `px` values used
+by the provided static CSS.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `sito-statico/assets/css/style.css`
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+- `assets/css/woocommerce.css`
+- `assets/css/editor.css`
+- `theme.json`
+- `inc/customizer.php`
+
+### Files Created/Modified
+
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+- `assets/css/woocommerce.css`
+- `assets/css/editor.css`
+- `theme.json`
+- `inc/customizer.php`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- Frontend CSS and theme token defaults were realigned to `px` wherever the
+  static prototype expresses the corresponding dimensions in `px`.
+- `theme.json` spacing units no longer advertise `rem`, reducing the chance of
+  reintroducing non-parity values from the editor-facing token layer.
+- The Customizer CSS-length sanitizer and helper copy were tightened so theme
+  token inputs now prefer `px` and responsive units, instead of presenting
+  `rem` as a normal default choice.
+
+### Assumptions
+
+- The user's parity requirement applies not only to section CSS, but also to
+  theme-owned design-token defaults that feed the frontend and editor styles.
+- Keeping `vw`, `vh` and `%` available remains acceptable for responsive or
+  contextual sizing, because the static prototype constraint raised here
+  specifically concerns prior theme conversions from `px` to `rem`.
+
+### Verification
+
+- Compared the static prototype token values in
+  `sito-statico/assets/css/style.css` against the theme token defaults and
+  frontend stylesheets.
+- Replaced remaining `rem` values in `assets/css/main.css`,
+  `assets/css/front-page.css`, `assets/css/woocommerce.css`,
+  `assets/css/editor.css`, `theme.json` and `inc/customizer.php` with their
+  `px` equivalents where applicable.
+- Re-ran a repository search for `rem` across the updated frontend/token files
+  and confirmed only two intentional references remained before cleanup: the
+  Customizer validation regex/help text and `theme.json` allowed units.
+- Updated those last two configuration/documentation points so the active theme
+  implementation no longer uses or promotes `rem` for the parity-sensitive
+  token layer.
+
+### TODO / Residual Risks
+
+- Live browser verification in WordPress is still recommended to confirm there
+  are no visual regressions from the unit normalization, especially in areas
+  later adapted for responsiveness beyond the static prototype.
+- The repository still contains many non-parity responsive refinements added in
+  later tasks; this pass normalizes units but does not remove those structural
+  adaptations outside the explicit scope of the request.
+
+### Additional Note
+
+- A follow-up check after the `px` normalization showed the homepage could
+  still appear unchanged in the browser because frontend styles were versioned
+  only with the static theme version string.
+- The enqueue layer was therefore updated to use `filemtime()`-based asset
+  versions for `main.css`, `front-page.css`, `woocommerce.css` and `theme.js`,
+  so browser and WordPress cache invalidation now follows the actual file
+  change timestamp instead of requiring a manual theme version bump.
+
+---
+
+## T036
+
+### Objective
+
+Refine targeted frontend parity and WooCommerce presentation details across the
+homepage location section, 404 page, My Account addresses, cart, single
+product and shop filter drawer without expanding scope beyond the reported UI
+issues.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `template-parts/site/icon-sprite.php`
+- `template-parts/front-page/location-hours.php`
+- `404.php`
+- `inc/customizer.php`
+- `woocommerce/content-product.php`
+- `woocommerce/archive-product.php`
+- `inc/woocommerce.php`
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+- `assets/css/woocommerce.css`
+- `sito-statico/index.html`
+- `sito-statico/assets/css/style.css`
+
+### Files Created/Modified
+
+- `template-parts/site/icon-sprite.php`
+- `404.php`
+- `inc/customizer.php`
+- `woocommerce/content-product.php`
+- `assets/css/main.css`
+- `assets/css/woocommerce.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The homepage location pin was realigned to the static prototype by restoring
+  the missing inner-circle path in the shared `icon-position` sprite symbol.
+- The branded 404 page now removes the search form entirely, and the default
+  Customizer description was updated so it no longer mentions search.
+- My Account desktop address cards were reinforced to stretch the full content
+  width; only the billing card now uses the secondary-button visual treatment
+  via CSS-level color alignment rather than template overrides.
+- Product-card descriptive copy was removed from the custom loop card template.
+- The cart page now uses a two-column desktop layout with separate themed
+  panels for line items and totals, while the page background inherits the
+  former container background and cart item meta/description text is hidden.
+- Single-product refinements were handled CSS-first: wider desktop reviews
+  block, larger centered wishlist button, mobile quantity alignment fix,
+  desktop sale badge repositioning, and price-decoration normalization.
+- Shop mobile filters now open full-screen; the ordering select now has
+  theme-colored option base styling, while browser-native option hover
+  behavior remains partially system-controlled.
+
+### Assumptions
+
+- The user's cart "description" request was interpreted as hiding extra
+  meta/description text shown beneath the product name, not removing the
+  product title itself.
+- Applying the secondary-button palette to the billing address card means
+  reusing its transparent/light treatment and border language rather than
+  introducing a new dedicated account-card component.
+- Native browser control rendering may still keep system hover colors for
+  `<option>` rows in some environments even when base option colors are set.
+
+### Verification
+
+- Compared the static homepage sprite/icon definition against the theme-owned
+  sprite and confirmed the missing `icon-position` inner path before patching.
+- Reviewed the 404 template and defaults to confirm the search form and search
+  wording were both removed.
+- Reviewed the updated WooCommerce CSS selectors for account addresses, cart,
+  single-product and mobile shop filters to confirm each change stays scoped to
+  the requested contexts and breakpoints.
+- Reviewed the custom product loop template to confirm descriptive copy is no
+  longer rendered.
+- Automated PHP lint and live browser verification could not be run here
+  because this workspace does not provide a local WordPress/PHP runtime.
+
+### TODO / Residual Risks
+
+- Verify the live cart layout with real coupon/notice/empty-cart states because
+  WooCommerce can vary markup slightly across versions and extensions.
+- Verify the live My Account `edit-address` endpoint on desktop with real
+  billing/shipping content lengths to confirm the card proportions now match
+  the intended rectangular presentation.
+- Confirm in-browser whether the cart description the user referenced is fully
+  covered by the hidden meta selectors; if a plugin injects additional custom
+  description markup, a narrower selector may need a follow-up pass.
+- On Windows browsers the orderby dropdown option hover state may still remain
+  OS-controlled despite the new themed option colors; this is a platform
+  limitation rather than a missing theme selector.
+
+### Additional Note
+
+- A follow-up QA pass highlighted that some of the first T036 fixes were still
+  being neutralized by the real page wrappers and later mobile breakpoint
+  overrides.
+- The cart layout was therefore rebound from a direct `.site-main > .woocommerce`
+  assumption to the actual `.entry-content > .woocommerce` structure, and the
+  cart background/panel colors were inverted to match the requested visual
+  hierarchy.
+- The single-product sale badge was moved from the default
+  `woocommerce_before_single_product_summary` position into the gallery via the
+  `woocommerce_product_thumbnails` hook so desktop placement can stay on the
+  image rather than drifting into the summary column.
+- The My Account address endpoint was simplified from a two-column card grid to
+  a single-column stack on desktop, because the user's requested "rectangular"
+  cards require two rows rather than two square tiles.
+- The mobile shop filter drawer was also corrected a second time because the
+  narrower `@media (max-width: 782px)` override was still shrinking the panel
+  after the first full-screen pass.
+
+### Additional Note 2
+
+- A later QA pass clarified two concrete causes behind the remaining regressions:
+  the WooCommerce stylesheet was not being enqueued on cart/checkout screens at
+  all, and the product reviews override was returning too early whenever new
+  comments were closed even if existing reviews should still be visible.
+- The enqueue condition was therefore extended to include `is_cart()` and
+  `is_checkout()`, while the reviews template guard now allows existing review
+  output to remain visible when comments exist.
+- The account address stack was also adjusted again so shipping now appears
+  before billing, matching the requested order on the `edit-address` endpoint.
+
+### Additional Note 3
+
+- A subsequent QA pass showed three narrower refinements were still needed on
+  the single-product page: review visibility still depended too much on the
+  global comments loop state, the sale-price decoration fix was over-coupled to
+  descendant font sizing, and the quantity field change had unintentionally
+  affected desktop as well as mobile.
+- The reviews override now loads approved comments directly for the current
+  product instead of relying on `have_comments()` from the surrounding page
+  context, the old-price typography is now applied on the `del` wrapper rather
+  than forcing decoration inheritance through child nodes, and the quantity
+  field returns to its desktop width while keeping the mobile-only full-width
+  expansion.
+
+### Additional Note 4
+
+- A later visual pass requested only a presentation refinement for the
+  single-product reviews block after the functional visibility issue had been
+  addressed.
+- The reviews section was therefore restyled without changing its rendering
+  logic: the outer panel now reads as a softer editorial surface, review items
+  behave more like elevated cards, author/meta typography is clearer, the form
+  fields have stronger focus treatment, and the submit button was refined to
+  better match the rest of the theme actions.
+
+### Additional Note 5
+
+- A final visual tweak was requested specifically for the review cards and the
+  review submit button.
+- The individual review items now use a true white card surface with a slightly
+  stronger shadow so they detach cleanly from the surrounding reviews panel,
+  and the `Invia` button now enforces the darker primary CTA treatment with the
+  warmer hover state already used elsewhere in the theme.
+
+### Additional Note 6
+
+- A final follow-up clarified that the review-card background should remain on
+  the theme's `var(--bg-clr)` token rather than pure white.
+- The review-item selector was therefore corrected directly at the main
+  `.commentlist li` rule with an explicit token-based background assignment.
+
+### Additional Note 7
+
+- A later shop QA pass surfaced two layout-specific issues unrelated to the
+  product-card component itself: on desktop the WooCommerce clearfix pseudo
+  elements could still occupy the first grid slot, and on mobile the current
+  breakpoint was still collapsing the catalog to a single column.
+- The shop grid therefore now suppresses the `::before` / `::after` pseudo
+  items on the product list and uses a two-column mobile grid at the narrowest
+  shop breakpoint.
+
+### Additional Note 8
+
+- A final single-product review refinement focused only on the internal layout
+  of each review item.
+- The review `comment_container` now gives the avatar more breathing room and a
+  clearer content column, while the avatar itself uses a larger framed circle
+  with `object-fit: cover` so profile images read more cleanly inside the card.
+
+### Additional Note 9
+
+- A follow-up desktop screenshot showed WooCommerce's internal review meta still
+  producing awkward visual artifacts inside the custom review cards.
+- The review layout was therefore tightened again by anchoring the avatar and
+  `.comment-text` to explicit grid columns and hiding the default
+  `woocommerce-review__dash` separator inside the meta row.
+
+### Additional Note 9
+
+- A later shop QA pass showed the sidebar filters were not consistently
+  affecting the catalog, while the price range still worked.
+- The shop query builder was therefore hardened so taxonomy and meta clauses are
+  rebuilt from clean numeric query fragments, category filters explicitly use
+  `include_children`, and `on_sale` / `new_arrivals` now intersect safely with
+  any existing `post__in` constraints instead of clobbering one another.
+- The `new_arrivals` toggle also now behaves as a true filter over the latest
+  products instead of only changing the sort order.

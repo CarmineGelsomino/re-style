@@ -43,10 +43,6 @@ $error_404 = function_exists( 're_style_get_404_data' ) ? re_style_get_404_data(
 						</a>
 					<?php endif; ?>
 				</div>
-
-				<div class="re-style-404-search">
-					<?php get_search_form(); ?>
-				</div>
 			</div>
 		</div>
 	</section>

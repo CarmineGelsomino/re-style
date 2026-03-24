@@ -25,20 +25,20 @@ if ( ! function_exists( 're_style_get_design_token_defaults' ) ) {
 			'muted'           => '#8a8a8a',
 			'font_primary'    => '"Poppins", sans-serif',
 			'font_secondary'  => '"Raleway", sans-serif',
-			'font_size_label' => '0.75rem',
-			'font_size_body'  => '1rem',
-			'font_size_lead'  => '1.125rem',
-			'font_size_title' => '1.5rem',
-			'font_size_h2'    => '2.5rem',
-			'font_size_hero'  => '4.5rem',
-			'space_gutter'    => '1rem',
-			'space_section'   => '4rem',
-			'space_stack'     => '1.5rem',
-			'radius'          => '0.5rem',
+			'font_size_label' => '12px',
+			'font_size_body'  => '16px',
+			'font_size_lead'  => '18px',
+			'font_size_title' => '24px',
+			'font_size_h2'    => '40px',
+			'font_size_hero'  => '72px',
+			'space_gutter'    => '16px',
+			'space_section'   => '64px',
+			'space_stack'     => '24px',
+			'radius'          => '8px',
 			'content_width'   => '1200px',
 			'content_narrow'  => '760px',
-			'topbar_height'   => '1.875rem',
-			'header_height'   => '4.5rem',
+			'topbar_height'   => '30px',
+			'header_height'   => '72px',
 		);
 	}
 }
@@ -64,7 +64,7 @@ if ( ! function_exists( 're_style_sanitize_css_length' ) ) {
 	function re_style_sanitize_css_length( $value ) {
 		$value = is_string( $value ) ? trim( $value ) : '';
 
-		if ( preg_match( '/^\d+(?:\.\d+)?(?:px|rem|em|vw|vh|%)$/', $value ) ) {
+		if ( preg_match( '/^\d+(?:\.\d+)?(?:px|vw|vh|%)$/', $value ) ) {
 			return $value;
 		}
 
@@ -198,7 +198,7 @@ if ( ! function_exists( 're_style_get_404_defaults' ) ) {
 		return array(
 			'label'           => __( 'Errore 404', 're-style' ),
 			'title'           => __( 'Pagina non trovata', 're-style' ),
-			'description'     => __( 'La pagina che stai cercando potrebbe essere stata spostata, rinominata oppure non essere piu disponibile. Puoi tornare alla home, visitare lo shop oppure usare la ricerca.', 're-style' ),
+			'description'     => __( 'La pagina che stai cercando potrebbe essere stata spostata, rinominata oppure non essere piu disponibile. Puoi tornare alla home oppure visitare lo shop.', 're-style' ),
 			'primary_label'   => __( 'Torna alla home', 're-style' ),
 			'primary_url'     => home_url( '/' ),
 			'secondary_label' => __( 'Vai allo shop', 're-style' ),
@@ -369,7 +369,7 @@ if ( ! function_exists( 're_style_customize_register' ) ) {
 					'label'       => $label,
 					'section'     => 're_style_design_tokens',
 					'type'        => 'text',
-					'description' => in_array( $key, array( 'font_primary', 'font_secondary' ), true ) ? __( 'Insert a valid CSS font-family stack.', 're-style' ) : __( 'Use a CSS length such as 1rem, 1200px or 4rem.', 're-style' ),
+					'description' => in_array( $key, array( 'font_primary', 'font_secondary' ), true ) ? __( 'Insert a valid CSS font-family stack.', 're-style' ) : __( 'Use a CSS length such as 12px, 1200px or 64px. Responsive values like vw, vh and % remain allowed where needed.', 're-style' ),
 				)
 			);
 		}

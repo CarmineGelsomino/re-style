@@ -187,6 +187,9 @@ Current direction after the design-token migration:
 - parity work should restore the static prototype CSS as faithfully as
   possible, reusing the original values and behavior instead of reinterpreting
   them for the theme unless a task explicitly asks for adaptation
+- when the static prototype expresses dimensions in `px`, the theme should
+  preserve those `px` values in frontend CSS and token defaults instead of
+  converting them to `rem`
 - `assets/css/editor.css` mirrors frontend tokens and editorial typography
   rather than duplicating all frontend component rules
 - homepage content editing remains native and conservative: Customizer settings

@@ -8,18 +8,18 @@
     --re-style-color-muted: var(--wp--preset--color--muted, #8a8a8a);
     --re-style-font-primary: var(--wp--preset--font-family--primary, "Poppins", sans-serif);
     --re-style-font-secondary: var(--wp--preset--font-family--secondary, "Raleway", sans-serif);
-    --re-style-font-size-label: var(--wp--preset--font-size--label, 0.75rem);
-    --re-style-font-size-body: var(--wp--preset--font-size--body, 1rem);
-    --re-style-font-size-lead: var(--wp--preset--font-size--lead, 1.125rem);
-    --re-style-font-size-title: var(--wp--preset--font-size--title, 1.5rem);
-    --re-style-font-size-heading: var(--wp--preset--font-size--heading-xl, 2.5rem);
-    --re-style-font-size-display: var(--wp--preset--font-size--display, 4.5rem);
-    --re-style-space-gutter: var(--wp--preset--spacing--gutter, 1rem);
-    --re-style-space-section: var(--wp--preset--spacing--section, 4rem);
-    --re-style-space-stack: var(--wp--preset--spacing--stack, 1.5rem);
+    --re-style-font-size-label: var(--wp--preset--font-size--label, 12px);
+    --re-style-font-size-body: var(--wp--preset--font-size--body, 16px);
+    --re-style-font-size-lead: var(--wp--preset--font-size--lead, 18px);
+    --re-style-font-size-title: var(--wp--preset--font-size--title, 24px);
+    --re-style-font-size-heading: var(--wp--preset--font-size--heading-xl, 40px);
+    --re-style-font-size-display: var(--wp--preset--font-size--display, 72px);
+    --re-style-space-gutter: var(--wp--preset--spacing--gutter, 16px);
+    --re-style-space-section: var(--wp--preset--spacing--section, 64px);
+    --re-style-space-stack: var(--wp--preset--spacing--stack, 24px);
     --re-style-content-width: 1200px;
     --re-style-content-narrow: 760px;
-    --re-style-radius: 0.5rem;
+    --re-style-radius: 8px;
 }
 
 .editor-styles-wrapper {
@@ -55,11 +55,11 @@
 }
 
 .editor-styles-wrapper h1 {
-    font-size: clamp(2.5rem, 5vw, var(--re-style-font-size-display));
+    font-size: clamp(40px, 5vw, var(--re-style-font-size-display));
 }
 
 .editor-styles-wrapper h2 {
-    font-size: clamp(2rem, 4vw, var(--re-style-font-size-heading));
+    font-size: clamp(32px, 4vw, var(--re-style-font-size-heading));
 }
 
 .editor-styles-wrapper h3 {

@@ -835,12 +835,14 @@ if ( ! function_exists( 're_style_customize_single_product_layout' ) ) {
 		}
 
 		remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
+		remove_action( 'woocommerce_before_single_product_summary', 'woocommerce_show_product_sale_flash', 10 );
 		remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10 );
 		remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_excerpt', 20 );
 		remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
 		remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10 );
 		remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_upsell_display', 15 );
 
+		add_action( 'woocommerce_product_thumbnails', 'woocommerce_show_product_sale_flash', 4 );
 		add_action( 'woocommerce_single_product_summary', 're_style_output_single_product_wishlist_button', 6 );
 		add_action( 'woocommerce_single_product_summary', 're_style_output_single_product_description', 20 );
 		add_action( 'woocommerce_after_single_product_summary', 're_style_output_single_product_reviews_section', 30 );
@@ -970,6 +972,23 @@ if ( ! function_exists( 're_style_output_single_quantity_increase_button' ) ) {
 }
 add_action( 'woocommerce_after_quantity_input_field', 're_style_output_single_quantity_increase_button' );
 
+if ( ! function_exists( 're_style_hide_cart_item_meta' ) ) {
+	/**
+	 * Removes cart item meta/details from the cart list.
+	 *
+	 * @param array $item_data Existing cart item data.
+	 * @return array
+	 */
+	function re_style_hide_cart_item_meta( $item_data ) {
+		if ( function_exists( 'is_cart' ) && is_cart() ) {
+			return array();
+		}
+
+		return $item_data;
+	}
+}
+add_filter( 'woocommerce_get_item_data', 're_style_hide_cart_item_meta', 10, 1 );
+
 if ( ! function_exists( 're_style_related_products_args' ) ) {
 	/**
 	 * Normalizes related products output for the custom single-product layout.
@@ -1053,7 +1072,16 @@ if ( ! function_exists( 're_style_modify_shop_query' ) ) {
 			return;
 		}
 
-		$tax_query = (array) $query->get( 'tax_query', array() );
+		$existing_tax_query = (array) $query->get( 'tax_query', array() );
+		$tax_query          = array();
+
+		foreach ( $existing_tax_query as $key => $clause ) {
+			if ( 'relation' === $key || ! is_array( $clause ) ) {
+				continue;
+			}
+
+			$tax_query[] = $clause;
+		}
 
 		foreach ( re_style_get_shop_taxonomy_filters() as $filter ) {
 			if ( empty( $filter['selected'] ) ) {
@@ -1061,19 +1089,29 @@ if ( ! function_exists( 're_style_modify_shop_query' ) ) {
 			}
 
 			$tax_query[] = array(
-				'taxonomy' => $filter['taxonomy'],
-				'field'    => 'slug',
-				'terms'    => $filter['selected'],
+				'taxonomy'         => $filter['taxonomy'],
+				'field'            => 'slug',
+				'terms'            => $filter['selected'],
+				'operator'         => 'IN',
+				'include_children' => 'product_cat' === $filter['taxonomy'],
 			);
 		}
 
-		if ( count( $tax_query ) > 1 ) {
+		if ( ! empty( $tax_query ) ) {
 			$tax_query['relation'] = 'AND';
+			$query->set( 'tax_query', $tax_query );
 		}
 
-		$query->set( 'tax_query', $tax_query );
+		$existing_meta_query = (array) $query->get( 'meta_query', array() );
+		$meta_query          = array();
 
-		$meta_query = (array) $query->get( 'meta_query', array() );
+		foreach ( $existing_meta_query as $key => $clause ) {
+			if ( 'relation' === $key || ! is_array( $clause ) ) {
+				continue;
+			}
+
+			$meta_query[] = $clause;
+		}
 
 		if ( ! empty( $_GET['in_stock'] ) ) {
 			$meta_query[] = array(
@@ -1097,14 +1135,47 @@ if ( ! function_exists( 're_style_modify_shop_query' ) ) {
 			);
 		}
 
-		$query->set( 'meta_query', $meta_query );
+		if ( ! empty( $meta_query ) ) {
+			$meta_query['relation'] = 'AND';
+			$query->set( 'meta_query', $meta_query );
+		}
 
 		if ( ! empty( $_GET['on_sale'] ) && function_exists( 'wc_get_product_ids_on_sale' ) ) {
 			$on_sale_ids = wc_get_product_ids_on_sale();
-			$query->set( 'post__in', ! empty( $on_sale_ids ) ? array_map( 'absint', $on_sale_ids ) : array( 0 ) );
+			$on_sale_ids = ! empty( $on_sale_ids ) ? array_map( 'absint', $on_sale_ids ) : array( 0 );
+			$current_ids = (array) $query->get( 'post__in', array() );
+
+			if ( ! empty( $current_ids ) ) {
+				$on_sale_ids = array_values( array_intersect( array_map( 'absint', $current_ids ), $on_sale_ids ) );
+			}
+
+			$query->set( 'post__in', ! empty( $on_sale_ids ) ? $on_sale_ids : array( 0 ) );
 		}
 
 		if ( ! empty( $_GET['new_arrivals'] ) ) {
+			$new_arrival_ids = get_posts(
+				array(
+					'post_type'              => 'product',
+					'post_status'            => 'publish',
+					'fields'                 => 'ids',
+					'posts_per_page'         => 12,
+					'orderby'                => 'date',
+					'order'                  => 'DESC',
+					'ignore_sticky_posts'    => true,
+					'no_found_rows'          => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
+				)
+			);
+
+			$new_arrival_ids = ! empty( $new_arrival_ids ) ? array_map( 'absint', $new_arrival_ids ) : array( 0 );
+			$current_ids     = (array) $query->get( 'post__in', array() );
+
+			if ( ! empty( $current_ids ) ) {
+				$new_arrival_ids = array_values( array_intersect( array_map( 'absint', $current_ids ), $new_arrival_ids ) );
+			}
+
+			$query->set( 'post__in', ! empty( $new_arrival_ids ) ? $new_arrival_ids : array( 0 ) );
 			$query->set(
 				'orderby',
 				array(
