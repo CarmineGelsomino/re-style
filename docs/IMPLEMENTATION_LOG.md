@@ -3033,7 +3033,7 @@ Customizer.
   Style single-product layout and does not originate from the tracked theme
   templates in this repository.
 
-### Additional Note 11
+### Additional Note 12
 
 - A later single-product/header refinement pass adjusted three presentation
   details without introducing new WooCommerce template overrides for the main
@@ -3444,3 +3444,71 @@ issues.
   any existing `post__in` constraints instead of clobbering one another.
 - The `new_arrivals` toggle also now behaves as a true filter over the latest
   products instead of only changing the sort order.
+
+### Additional Note 10
+
+- A follow-up report narrowed the remaining shop issue specifically to category
+  filtering.
+- The shop query now treats `product_cat` as a first-class WooCommerce archive
+  parameter by feeding selected category slugs into the native `product_cat`
+  query var and skipping duplicate `product_cat` clauses inside the rebuilt
+  `tax_query`, reducing the risk of empty results caused by overlapping
+  category constraints.
+
+### Additional Note 12
+
+- A later integration pass showed two practical follow-ups were still needed:
+  category filters remained fragile when combined with the custom archive
+  wrapper, and the newly added wishlist plugin could not be trusted to create
+  its own page because its activation hook targets the wrong bootstrap file.
+- The shop query therefore now applies selected `product_cat` values through an
+  explicit `tax_query` clause with `include_children`, while clearing the native
+  `product_cat` query var to avoid mixed strategies inside the same request.
+- The wishlist integration was then constrained back to theme-only scope: the
+  temporary plugin-side data/rendering extensions were removed, while the theme
+  keeps responsibility only for creating a fallback `lista-preferiti` page,
+  injecting the shortcode when needed, and restyling the plugin output to match
+  the site's visual language.
+
+### Additional Note 13
+
+- A later QA pass surfaced two narrower follow-ups: the wishlist page could
+  show the plugin title twice when the stored page content duplicated the same
+  heading, and the category filter URL proved the form was submitting correct
+  values while the WooCommerce main query still behaved inconsistently.
+- The wishlist content filter now collapses duplicate title-only content into a
+  single shortcode render, while the shop query hook now runs later on
+  `pre_get_posts` so its custom taxonomy constraints are less likely to be
+  overwritten by WooCommerce's own query assembly.
+
+### Additional Note 14
+
+- A final follow-up isolated the remaining catalog regression to requests where
+  `min_price` and `max_price` were present in the URL but empty, which caused
+  the custom price parser to treat those parameters as meaningful values and
+  unintentionally exclude products without stored prices.
+- The price filter helper now ignores empty price query vars before calling
+  WooCommerce decimal formatting, and the wishlist page filter was simplified
+  further so the wishlist page always renders only the plugin shortcode,
+  preventing any duplicate title stored in page content from appearing above
+  the plugin output.
+
+### Additional Note 15
+
+- A final cleanup pass focused on the shop URL shape rather than query parsing:
+  empty GET fields such as `min_price=` and `max_price=` were still being sent
+  by the archive forms even after the backend stopped treating them as active
+  filters.
+- The theme script now disables empty GET inputs, unchecked checkboxes and
+  other blank filter fields right before submission on the search, sorting and
+  filter forms, so the resulting shop URL contains only meaningful parameters.
+
+### Additional Note 16
+
+- A later UI refinement on the shop toolbar addressed a browser-level styling
+  limitation rather than a WooCommerce data issue: native `<option>` hover
+  states could not be themed consistently across platforms.
+- The sort control therefore now keeps the native WooCommerce `<select>` for
+  compatibility and form submission, but enhances it with a theme-side custom
+  dropdown UI that mirrors the selected value, supports keyboard navigation,
+  and allows fully themed hover and selected states for the visible options.

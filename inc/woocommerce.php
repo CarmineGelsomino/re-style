@@ -231,8 +231,10 @@ if ( ! function_exists( 're_style_get_shop_price_filter_values' ) ) {
 	 * @return array<string, string>
 	 */
 	function re_style_get_shop_price_filter_values() {
-		$min_price = isset( $_GET['min_price'] ) && function_exists( 'wc_format_decimal' ) ? wc_format_decimal( wp_unslash( $_GET['min_price'] ) ) : '';
-		$max_price = isset( $_GET['max_price'] ) && function_exists( 'wc_format_decimal' ) ? wc_format_decimal( wp_unslash( $_GET['max_price'] ) ) : '';
+		$raw_min_price = isset( $_GET['min_price'] ) ? trim( (string) wp_unslash( $_GET['min_price'] ) ) : '';
+		$raw_max_price = isset( $_GET['max_price'] ) ? trim( (string) wp_unslash( $_GET['max_price'] ) ) : '';
+		$min_price     = '' !== $raw_min_price && function_exists( 'wc_format_decimal' ) ? wc_format_decimal( $raw_min_price ) : '';
+		$max_price     = '' !== $raw_max_price && function_exists( 'wc_format_decimal' ) ? wc_format_decimal( $raw_max_price ) : '';
 
 		return array(
 			'min' => '' !== $min_price ? (string) $min_price : '',
@@ -1073,18 +1075,39 @@ if ( ! function_exists( 're_style_modify_shop_query' ) ) {
 		}
 
 		$existing_tax_query = (array) $query->get( 'tax_query', array() );
-		$tax_query          = array();
+		$tax_query           = array();
+		$selected_categories = re_style_get_shop_filter_values( 'product_cat' );
 
 		foreach ( $existing_tax_query as $key => $clause ) {
 			if ( 'relation' === $key || ! is_array( $clause ) ) {
 				continue;
 			}
 
+			if ( ! empty( $selected_categories ) && isset( $clause['taxonomy'] ) && 'product_cat' === $clause['taxonomy'] ) {
+				continue;
+			}
+
 			$tax_query[] = $clause;
+		}
+
+		if ( ! empty( $selected_categories ) ) {
+			$query->set( 'product_cat', '' );
+
+			$tax_query[] = array(
+				'taxonomy'         => 'product_cat',
+				'field'            => 'slug',
+				'terms'            => $selected_categories,
+				'operator'         => 'IN',
+				'include_children' => true,
+			);
 		}
 
 		foreach ( re_style_get_shop_taxonomy_filters() as $filter ) {
 			if ( empty( $filter['selected'] ) ) {
+				continue;
+			}
+
+			if ( 'product_cat' === $filter['taxonomy'] ) {
 				continue;
 			}
 
@@ -1192,7 +1215,7 @@ if ( ! function_exists( 're_style_modify_shop_query' ) ) {
 		}
 	}
 }
-add_action( 'pre_get_posts', 're_style_modify_shop_query' );
+add_action( 'pre_get_posts', 're_style_modify_shop_query', 20 );
 
 if ( ! function_exists( 're_style_filter_loop_add_to_cart_args' ) ) {
 	/**

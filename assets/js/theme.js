@@ -354,6 +354,201 @@ const shopFiltersToggle = document.querySelector(".shop-filters-toggle");
 const shopFiltersPanel = document.getElementById("shop-filters-panel");
 const shopFiltersClose = document.querySelector(".shop-filters-close");
 const shopFiltersOverlay = document.querySelector(".shop-filters-overlay");
+const shopForms = document.querySelectorAll(".shop-search, .shop-toolbar-actions, .shop-filters-card");
+const shopSortSelects = document.querySelectorAll(".shop-toolbar-actions select");
+
+const closeAllShopCustomSelects = (exception) => {
+    document.querySelectorAll(".shop-custom-select.is-open").forEach((customSelect) => {
+        if (exception && customSelect === exception) {
+            return;
+        }
+
+        const trigger = customSelect.querySelector(".shop-custom-select__trigger");
+
+        customSelect.classList.remove("is-open");
+
+        if (trigger) {
+            trigger.setAttribute("aria-expanded", "false");
+        }
+    });
+};
+
+shopSortSelects.forEach((select, selectIndex) => {
+    if (!(select instanceof HTMLSelectElement) || select.dataset.customized === "true") {
+        return;
+    }
+
+    const form = select.closest("form");
+    const wrapper = document.createElement("div");
+    const trigger = document.createElement("button");
+    const list = document.createElement("div");
+    const optionButtons = [];
+
+    select.dataset.customized = "true";
+    select.classList.add("shop-native-select");
+
+    wrapper.className = "shop-custom-select";
+    trigger.className = "shop-custom-select__trigger";
+    trigger.type = "button";
+    trigger.setAttribute("aria-haspopup", "listbox");
+    trigger.setAttribute("aria-expanded", "false");
+    trigger.setAttribute("aria-controls", `shop-custom-select-${selectIndex}`);
+
+    list.className = "shop-custom-select__list";
+    list.id = `shop-custom-select-${selectIndex}`;
+    list.setAttribute("role", "listbox");
+    list.tabIndex = -1;
+
+    const openSelect = () => {
+        closeAllShopCustomSelects(wrapper);
+        wrapper.classList.add("is-open");
+        trigger.setAttribute("aria-expanded", "true");
+    };
+
+    const closeSelect = () => {
+        wrapper.classList.remove("is-open");
+        trigger.setAttribute("aria-expanded", "false");
+    };
+
+    const syncSelectedOption = () => {
+        const selectedOption = select.options[select.selectedIndex];
+        const selectedValue = selectedOption ? selectedOption.value : "";
+        const selectedLabel = selectedOption ? selectedOption.textContent.trim() : "";
+
+        trigger.textContent = selectedLabel;
+
+        optionButtons.forEach((button) => {
+            const isSelected = button.dataset.value === selectedValue;
+
+            button.classList.toggle("is-selected", isSelected);
+            button.setAttribute("aria-selected", isSelected ? "true" : "false");
+        });
+    };
+
+    Array.from(select.options).forEach((option) => {
+        const optionButton = document.createElement("button");
+
+        optionButton.type = "button";
+        optionButton.className = "shop-custom-select__option";
+        optionButton.setAttribute("role", "option");
+        optionButton.dataset.value = option.value;
+        optionButton.textContent = option.textContent.trim();
+
+        optionButton.addEventListener("click", () => {
+            if (select.value !== option.value) {
+                select.value = option.value;
+                select.dispatchEvent(new Event("change", { bubbles: true }));
+
+                if (!select.getAttribute("onchange") && form instanceof HTMLFormElement) {
+                    if (typeof form.requestSubmit === "function") {
+                        form.requestSubmit();
+                    } else {
+                        form.submit();
+                    }
+                }
+            }
+
+            syncSelectedOption();
+            closeSelect();
+            trigger.focus();
+        });
+
+        optionButton.addEventListener("keydown", (event) => {
+            const currentIndex = optionButtons.indexOf(optionButton);
+            const previousButton = optionButtons[currentIndex - 1];
+            const nextButton = optionButtons[currentIndex + 1];
+
+            if (event.key === "ArrowDown") {
+                event.preventDefault();
+                (nextButton || optionButtons[0])?.focus();
+            }
+
+            if (event.key === "ArrowUp") {
+                event.preventDefault();
+                (previousButton || optionButtons[optionButtons.length - 1])?.focus();
+            }
+
+            if (event.key === "Escape") {
+                event.preventDefault();
+                closeSelect();
+                trigger.focus();
+            }
+        });
+
+        optionButtons.push(optionButton);
+        list.append(optionButton);
+    });
+
+    trigger.addEventListener("click", () => {
+        const isOpen = wrapper.classList.contains("is-open");
+
+        if (isOpen) {
+            closeSelect();
+            return;
+        }
+
+        openSelect();
+    });
+
+    trigger.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openSelect();
+
+            const selectedButton = optionButtons.find((button) => button.classList.contains("is-selected"));
+            (selectedButton || optionButtons[0])?.focus();
+        }
+
+        if (event.key === "Escape") {
+            closeSelect();
+        }
+    });
+
+    select.addEventListener("change", syncSelectedOption);
+
+    wrapper.append(trigger, list);
+    select.insertAdjacentElement("afterend", wrapper);
+    syncSelectedOption();
+});
+
+shopForms.forEach((form) => {
+    if (!(form instanceof HTMLFormElement) || form.method.toLowerCase() !== "get") {
+        return;
+    }
+
+    form.addEventListener("submit", () => {
+        const fields = form.querySelectorAll("input[name], select[name], textarea[name]");
+
+        fields.forEach((field) => {
+            if (
+                field instanceof HTMLInputElement ||
+                field instanceof HTMLSelectElement ||
+                field instanceof HTMLTextAreaElement
+            ) {
+                const isCheckbox = field instanceof HTMLInputElement && (field.type === "checkbox" || field.type === "radio");
+                const value = typeof field.value === "string" ? field.value.trim() : "";
+
+                if ((isCheckbox && !field.checked) || (!isCheckbox && value === "")) {
+                    field.disabled = true;
+                }
+            }
+        });
+    });
+});
+
+document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element) || event.target.closest(".shop-custom-select")) {
+        return;
+    }
+
+    closeAllShopCustomSelects();
+});
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        closeAllShopCustomSelects();
+    }
+});
 
 if (shopFiltersToggle && shopFiltersPanel && shopFiltersClose && shopFiltersOverlay) {
     const mobileBreakpoint = 1024;

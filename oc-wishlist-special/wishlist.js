@@ -171,16 +171,20 @@ jQuery(document).ready(function($) {
 
             response.data.forEach(product => {
                 const itemHtml = `
-                    <div class="wishlist-item" data-product-id="${product.id}">
-                        <a href="${product.permalink}">
+                    <article class="wishlist-item" data-product-id="${product.id}">
+                        <a href="${product.permalink}" class="wishlist-item-media">
                             <img src="${product.image_url || ''}" alt="${product.name}" class="wishlist-item-image">
                         </a>
                         <div class="wishlist-item-content">
-                            <h3 class="wishlist-item-name">${product.name}</h3>
-                            <div class="wishlist-item-price"><span class="price-label">${settings.label_price}</span> ${product.price_html}</div>
-                            <button class="wishlist-item-remove" data-product-id="${product.id}">${settings.label_remove_item}</button>
+                            <h3 class="wishlist-item-name"><a href="${product.permalink}">${product.name}</a></h3>
+                            <div class="wishlist-item-price">${product.price_html}</div>
+                            <div class="wishlist-item-actions">
+                                <button class="wishlist-item-remove" data-product-id="${product.id}" aria-label="${settings.label_remove_item}">
+                                    ${settings.label_remove_item}
+                                </button>
+                            </div>
                         </div>
-                    </div>`;
+                    </article>`;
                 container.append(itemHtml);
             });
         });
