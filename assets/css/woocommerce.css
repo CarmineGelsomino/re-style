@@ -3077,3 +3077,29 @@ body.re-style-account-endpoint-subscriptions .woocommerce-MyAccount-navigation u
         grid-template-columns: minmax(0, 1fr);
     }
 }
+
+
+/* START PAGINA CARRELLO */
+
+.wp-block-woocommerce-cart .wc-block-components-sidebar-layout .wc-block-components-main, .wc-block-cart .wc-block-components-sidebar {
+    background: var(--bg-clr);
+    padding: 20px;
+    border-radius: var(--re-style-radius);
+}
+
+.wp-block-woocommerce-cart .wc-block-components-sidebar-layout .wc-block-components-main {
+    width: 60%;
+}
+
+.wp-block-woocommerce-cart .wc-block-components-sidebar-layout.wc-block-cart {
+    gap: 20px;
+    justify-content: space-around;
+}
+
+@media (max-width: 699px) {
+    .wp-block-woocommerce-cart .wc-block-components-sidebar-layout .wc-block-components-main, .wc-block-components-sidebar-layout .wc-block-components-sidebar {
+        width: 100%;
+    }
+}
+
+/* END PAGINA CARRELLO */
