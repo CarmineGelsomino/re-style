@@ -14,7 +14,7 @@
 			);
 			?>
 			<div class="gallery-card" data-images="<?php echo esc_attr( implode( ',', $images ) ); ?>">
-				<img src="<?php echo esc_url( $images[0] ); ?>" alt="">
+				<img src="<?php echo esc_url( $images[0] ); ?>" alt="" loading="lazy" decoding="async">
 			</div>
 		<?php endforeach; ?>
 	</div>

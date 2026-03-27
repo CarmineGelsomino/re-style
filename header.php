@@ -16,6 +16,7 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 <?php get_template_part( 'template-parts/site/icon-sprite' ); ?>
+<a class="skip-link screen-reader-text" href="#site-navigation"><?php esc_html_e( 'Skip to navigation', 're-style' ); ?></a>
 <a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e( 'Skip to content', 're-style' ); ?></a>
 <div id="page" class="site">
 	<?php get_template_part( 'template-parts/site/topbar' ); ?>
@@ -58,6 +59,8 @@
 					type="button"
 					aria-expanded="false"
 					aria-controls="site-navigation"
+					data-open-label="<?php esc_attr_e( 'Open menu', 're-style' ); ?>"
+					data-close-label="<?php esc_attr_e( 'Close menu', 're-style' ); ?>"
 					aria-label="<?php esc_attr_e( 'Open menu', 're-style' ); ?>">
 					<span class="site-header__menu-toggle-line" aria-hidden="true"></span>
 					<span class="site-header__menu-toggle-line" aria-hidden="true"></span>
@@ -83,21 +86,23 @@
 				<?php endif; ?>
 			</nav>
 
-			<ul class="site-header__actions nav-right" aria-label="<?php esc_attr_e( 'Quick actions', 're-style' ); ?>">
-				<?php foreach ( $header_actions as $action_key => $action ) : ?>
-					<li class="site-header__action-item">
-						<a class="site-header__action-link<?php echo 'cart' === $action_key ? ' site-header__action-link--cart' : ''; ?>" href="<?php echo esc_url( $action['url'] ); ?>" aria-label="<?php echo esc_attr( $action['label'] ); ?>">
-							<span class="site-header__action-icon" aria-hidden="true">
-								<svg viewBox="0 0 1024 1024" focusable="false">
-									<use href="#<?php echo esc_attr( $action['icon'] ); ?>"></use>
-								</svg>
-							</span>
-							<?php if ( ! empty( $action['badge'] ) ) : ?>
-								<?php echo $action['badge']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Theme-generated cart badge HTML with controlled numeric output. ?>
-							<?php endif; ?>
-						</a>
-					</li>
-				<?php endforeach; ?>
-			</ul>
+			<nav class="site-header__actions-nav" aria-label="<?php esc_attr_e( 'Quick actions', 're-style' ); ?>">
+				<ul class="site-header__actions nav-right">
+					<?php foreach ( $header_actions as $action_key => $action ) : ?>
+						<li class="site-header__action-item">
+							<a class="site-header__action-link<?php echo 'cart' === $action_key ? ' site-header__action-link--cart' : ''; ?>" href="<?php echo esc_url( $action['url'] ); ?>" aria-label="<?php echo esc_attr( $action['label'] ); ?>">
+								<span class="site-header__action-icon" aria-hidden="true">
+									<svg viewBox="0 0 1024 1024" focusable="false">
+										<use href="#<?php echo esc_attr( $action['icon'] ); ?>"></use>
+									</svg>
+								</span>
+								<?php if ( ! empty( $action['badge'] ) ) : ?>
+									<?php echo $action['badge']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Theme-generated cart badge HTML with controlled numeric output. ?>
+								<?php endif; ?>
+							</a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			</nav>
 		</div>
 	</header>

@@ -7,7 +7,7 @@
 
 get_header();
 ?>
-<main id="primary" class="site-main">
+<main id="primary" class="site-main" tabindex="-1">
 	<header class="archive-header">
 		<?php the_archive_title( '<h1 class="archive-title">', '</h1>' ); ?>
 		<?php the_archive_description( '<div class="archive-description">', '</div>' ); ?>

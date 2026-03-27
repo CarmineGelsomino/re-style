@@ -14,7 +14,7 @@
 					data-video-mode="<?php echo esc_attr( isset( $item['video_mode'] ) ? $item['video_mode'] : 'file' ); ?>"
 					data-video-src="<?php echo esc_attr( $item['video_src'] ); ?>"
 					data-video-title="<?php echo esc_attr( $item['title'] ); ?>">
-					<img src="<?php echo esc_url( $item['cover'] ); ?>" alt="<?php echo esc_attr( $item['cover_alt'] ); ?>">
+					<img src="<?php echo esc_url( $item['cover'] ); ?>" alt="<?php echo esc_attr( $item['cover_alt'] ); ?>" loading="lazy" decoding="async">
 					<span class="video-tip-play" aria-hidden="true">
 						<svg><use href="#icon-play-video"></use></svg>
 					</span>

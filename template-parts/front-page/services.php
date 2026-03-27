@@ -5,7 +5,7 @@
 	<p><?php echo esc_html( $section['description'] ); ?></p>
 	<div class="services-layout">
 		<div class="services-img">
-			<img src="<?php echo esc_url( $section['image']['src'] ); ?>" alt="<?php echo esc_attr( $section['image']['alt'] ); ?>">
+			<img src="<?php echo esc_url( $section['image']['src'] ); ?>" alt="<?php echo esc_attr( $section['image']['alt'] ); ?>" loading="lazy" decoding="async">
 		</div>
 		<div class="service-right">
 			<div class="services-grid">
@@ -19,7 +19,7 @@
 		</div>
 	</div>
 	<div class="service-modal" id="serviceModal" aria-hidden="true">
-		<div class="service-modal-content" role="dialog" aria-modal="true" aria-labelledby="serviceModalTitle">
+		<div class="service-modal-content" role="dialog" aria-modal="true" aria-labelledby="serviceModalTitle" aria-describedby="serviceModalDescription">
 			<button class="service-modal-close" id="closeServiceModal" type="button" aria-label="<?php esc_attr_e( 'Chiudi finestra', 're-style' ); ?>">
 				<svg aria-hidden="true"><use href="#icon-close-modal"></use></svg>
 			</button>

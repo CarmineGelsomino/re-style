@@ -58,7 +58,7 @@
 
 			<div class="footer-bottom">
 				<p>
-					<?php echo esc_html( sprintf( __( '© %s Re Style. Tutti i diritti sono riservati. Sito realizzato da', 're-style' ), gmdate( 'Y' ) ) ); ?>
+					<?php echo esc_html( sprintf( __( 'Copyright %s Re Style. Tutti i diritti sono riservati. Sito realizzato da', 're-style' ), gmdate( 'Y' ) ) ); ?>
 					<span><?php esc_html_e( 'OC Corporation', 're-style' ); ?></span>.
 				</p>
 			</div>

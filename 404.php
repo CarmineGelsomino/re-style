@@ -17,7 +17,7 @@ $error_404 = function_exists( 're_style_get_404_data' ) ? re_style_get_404_data(
 	'secondary_url'   => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' ),
 );
 ?>
-<main id="primary" class="site-main site-main--404">
+<main id="primary" class="site-main site-main--404" tabindex="-1">
 	<section class="error-404 not-found re-style-404-shell">
 		<div class="re-style-404-copy">
 			<span class="re-style-page-label"><?php echo esc_html( $error_404['label'] ); ?></span>

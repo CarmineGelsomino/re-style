@@ -334,6 +334,12 @@ textarea:focus-visible {
     flex-shrink: 0;
 }
 
+.site-header__actions-nav {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
 .site-header__action-link {
     position: relative;
     display: inline-flex;
@@ -1053,9 +1059,12 @@ body.re-style-wishlist-page #mio-wishlist-page .wishlist-empty .button:hover {
     width: 100%;
 }
 
-.footer-col > a.section-label {
+.footer-col__title {
+    margin: 0 0 14px;
+}
+
+.footer-col__title > a.section-label {
     display: inline-block;
-    margin-bottom: 14px;
     font-family: var(--primary-font);
     font-size: var(--font-sm);
     text-transform: uppercase;
@@ -1066,14 +1075,13 @@ body.re-style-wishlist-page #mio-wishlist-page .wishlist-empty .button:hover {
     transition: color 0.2s ease;
 }
 
-.footer-col > a.section-label:hover {
+.footer-col__title > a.section-label:hover {
     opacity: 1;
     color: var(--font-clr);
 }
 
-.footer-col > .section-label {
+.footer-col__title > .section-label {
     display: inline-block;
-    margin-bottom: 14px;
     font-family: var(--primary-font);
     font-size: var(--font-sm);
     text-transform: uppercase;
@@ -1421,8 +1429,7 @@ body.re-style-front-page .footer-bottom span {
         justify-self: stretch;
     }
 
-    body.re-style-front-page .footer-col > a.section-label,
-    body.re-style-front-page .footer-col > .section-label {
+    body.re-style-front-page .footer-col__title {
         margin-bottom: 14px;
     }
 

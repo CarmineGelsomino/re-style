@@ -28,7 +28,7 @@
 			</div>
 		</div>
 		<div class="contacts-owner">
-			<img src="<?php echo esc_url( $section['owner']['image'] ); ?>" alt="<?php echo esc_attr( $section['owner']['alt'] ); ?>">
+			<img src="<?php echo esc_url( $section['owner']['image'] ); ?>" alt="<?php echo esc_attr( $section['owner']['alt'] ); ?>" loading="lazy" decoding="async">
 			<p><?php echo esc_html( $section['owner']['name'] ); ?></p>
 		</div>
 	</div>

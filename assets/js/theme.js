@@ -1,18 +1,102 @@
 document.documentElement.classList.add("js");
 
+const focusableSelector = [
+    'a[href]',
+    'button:not([disabled])',
+    'input:not([disabled]):not([type="hidden"])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    '[tabindex]:not([tabindex="-1"])'
+].join(",");
+
+const getFocusableElements = (container) => {
+    if (!(container instanceof Element)) {
+        return [];
+    }
+
+    return Array.from(container.querySelectorAll(focusableSelector)).filter((element) => {
+        return !element.hasAttribute("hidden") && element.getAttribute("aria-hidden") !== "true";
+    });
+};
+
+const createFocusTrap = (container, onEscape, initialFocus) => {
+    const handleKeydown = (event) => {
+        if (event.key === "Escape") {
+            event.preventDefault();
+            onEscape();
+            return;
+        }
+
+        if (event.key !== "Tab") {
+            return;
+        }
+
+        const focusableElements = getFocusableElements(container);
+
+        if (!focusableElements.length) {
+            return;
+        }
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (event.shiftKey && document.activeElement === firstElement) {
+            event.preventDefault();
+            lastElement.focus();
+        } else if (!event.shiftKey && document.activeElement === lastElement) {
+            event.preventDefault();
+            firstElement.focus();
+        }
+    };
+
+    document.addEventListener("keydown", handleKeydown);
+
+    window.requestAnimationFrame(() => {
+        const focusTarget = initialFocus || getFocusableElements(container)[0];
+
+        if (focusTarget instanceof HTMLElement) {
+            focusTarget.focus();
+        }
+    });
+
+    return () => {
+        document.removeEventListener("keydown", handleKeydown);
+    };
+};
+
 const siteHeader = document.querySelector(".site-header");
 const siteMenuToggle = document.querySelector(".site-header__menu-toggle");
 const siteNavigation = document.getElementById("site-navigation");
 
 if (siteHeader && siteMenuToggle && siteNavigation) {
-    const closeSiteMenu = () => {
+    const setSiteMenuLabel = (isOpen) => {
+        const openLabel = siteMenuToggle.getAttribute("data-open-label") || "Open menu";
+        const closeLabel = siteMenuToggle.getAttribute("data-close-label") || "Close menu";
+        siteMenuToggle.setAttribute("aria-label", isOpen ? closeLabel : openLabel);
+    };
+
+    const closeSiteMenu = (returnFocus = false) => {
         siteHeader.classList.remove("is-menu-open");
         siteMenuToggle.setAttribute("aria-expanded", "false");
+        setSiteMenuLabel(false);
+
+        if (returnFocus) {
+            siteMenuToggle.focus();
+        }
     };
 
     siteMenuToggle.addEventListener("click", () => {
         const isOpen = siteHeader.classList.toggle("is-menu-open");
         siteMenuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        setSiteMenuLabel(isOpen);
+
+        if (isOpen && window.innerWidth <= 782) {
+            const firstMenuItem = getFocusableElements(siteNavigation)[0];
+
+            if (firstMenuItem instanceof HTMLElement) {
+                window.requestAnimationFrame(() => firstMenuItem.focus());
+            }
+        }
     });
 
     siteNavigation.querySelectorAll("a").forEach((link) => {
@@ -30,10 +114,12 @@ if (siteHeader && siteMenuToggle && siteNavigation) {
     });
 
     document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-            closeSiteMenu();
+        if (event.key === "Escape" && siteHeader.classList.contains("is-menu-open")) {
+            closeSiteMenu(true);
         }
     });
+
+    setSiteMenuLabel(false);
 }
 
 const serviceCards = document.querySelectorAll(".service-card");
@@ -43,21 +129,35 @@ const serviceModalDescription = document.getElementById("serviceModalDescription
 const closeServiceModal = document.getElementById("closeServiceModal");
 
 if (serviceCards.length && serviceModal && serviceModalTitle && serviceModalDescription && closeServiceModal) {
+    let activeServiceTrigger = null;
+    let releaseServiceFocusTrap = null;
+
     const closeModal = () => {
         serviceModal.classList.remove("active");
         serviceModal.classList.remove("is-active");
         serviceModal.setAttribute("aria-hidden", "true");
         document.body.style.overflow = "";
+
+        if (typeof releaseServiceFocusTrap === "function") {
+            releaseServiceFocusTrap();
+            releaseServiceFocusTrap = null;
+        }
+
+        if (activeServiceTrigger instanceof HTMLElement) {
+            activeServiceTrigger.focus();
+        }
     };
 
     serviceCards.forEach((card) => {
         card.addEventListener("click", () => {
+            activeServiceTrigger = card;
             serviceModalTitle.textContent = card.dataset.title || "";
             serviceModalDescription.textContent = card.dataset.description || "";
             serviceModal.classList.add("active");
             serviceModal.classList.add("is-active");
             serviceModal.setAttribute("aria-hidden", "false");
             document.body.style.overflow = "hidden";
+            releaseServiceFocusTrap = createFocusTrap(serviceModal, closeModal, closeServiceModal);
         });
     });
 
@@ -65,12 +165,6 @@ if (serviceCards.length && serviceModal && serviceModalTitle && serviceModalDesc
 
     serviceModal.addEventListener("click", (event) => {
         if (event.target === serviceModal) {
-            closeModal();
-        }
-    });
-
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && serviceModal.classList.contains("is-active")) {
             closeModal();
         }
     });
@@ -164,6 +258,9 @@ const videoModalEmbed = document.getElementById("videoModalEmbed");
 const videoModalTitle = document.getElementById("videoModalTitle");
 
 if (videoTipTriggers.length && videoModal && closeVideoModal && videoModalPlayer && videoModalSource && videoModalEmbed && videoModalTitle) {
+    let activeVideoTrigger = null;
+    let releaseVideoFocusTrap = null;
+
     const openVideoModal = (mode, src, title) => {
         videoModalTitle.textContent = title;
 
@@ -186,6 +283,7 @@ if (videoTipTriggers.length && videoModal && closeVideoModal && videoModalPlayer
         videoModal.classList.add("active");
         videoModal.setAttribute("aria-hidden", "false");
         document.body.style.overflow = "hidden";
+        releaseVideoFocusTrap = createFocusTrap(videoModal, closeVideo, closeVideoModal);
     };
 
     const closeVideo = () => {
@@ -199,10 +297,20 @@ if (videoTipTriggers.length && videoModal && closeVideoModal && videoModalPlayer
         videoModalEmbed.src = "";
         videoModalEmbed.hidden = true;
         document.body.style.overflow = "";
+
+        if (typeof releaseVideoFocusTrap === "function") {
+            releaseVideoFocusTrap();
+            releaseVideoFocusTrap = null;
+        }
+
+        if (activeVideoTrigger instanceof HTMLElement) {
+            activeVideoTrigger.focus();
+        }
     };
 
     videoTipTriggers.forEach((trigger) => {
         trigger.addEventListener("click", () => {
+            activeVideoTrigger = trigger;
             openVideoModal(trigger.dataset.videoMode || "file", trigger.dataset.videoSrc || "", trigger.dataset.videoTitle || "");
         });
     });
@@ -211,12 +319,6 @@ if (videoTipTriggers.length && videoModal && closeVideoModal && videoModalPlayer
 
     videoModal.addEventListener("click", (event) => {
         if (event.target === videoModal) {
-            closeVideo();
-        }
-    });
-
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && videoModal.classList.contains("active")) {
             closeVideo();
         }
     });
@@ -552,17 +654,28 @@ document.addEventListener("keydown", (event) => {
 
 if (shopFiltersToggle && shopFiltersPanel && shopFiltersClose && shopFiltersOverlay) {
     const mobileBreakpoint = 1024;
+    let releaseShopFiltersFocusTrap = null;
 
-    const closeShopFilters = () => {
+    const closeShopFilters = (returnFocus = false) => {
         document.body.classList.remove("shop-filters-open");
         shopFiltersToggle.setAttribute("aria-expanded", "false");
         shopFiltersPanel.setAttribute("aria-hidden", "true");
+
+        if (typeof releaseShopFiltersFocusTrap === "function") {
+            releaseShopFiltersFocusTrap();
+            releaseShopFiltersFocusTrap = null;
+        }
+
+        if (returnFocus) {
+            shopFiltersToggle.focus();
+        }
     };
 
     const openShopFilters = () => {
         document.body.classList.add("shop-filters-open");
         shopFiltersToggle.setAttribute("aria-expanded", "true");
         shopFiltersPanel.setAttribute("aria-hidden", "false");
+        releaseShopFiltersFocusTrap = createFocusTrap(shopFiltersPanel, () => closeShopFilters(true), shopFiltersClose);
     };
 
     if (window.innerWidth <= mobileBreakpoint) {
@@ -573,7 +686,7 @@ if (shopFiltersToggle && shopFiltersPanel && shopFiltersClose && shopFiltersOver
         const isOpen = document.body.classList.contains("shop-filters-open");
 
         if (isOpen) {
-            closeShopFilters();
+            closeShopFilters(true);
             return;
         }
 
@@ -598,7 +711,7 @@ if (shopFiltersToggle && shopFiltersPanel && shopFiltersClose && shopFiltersOver
 
     document.addEventListener("keydown", (event) => {
         if (event.key === "Escape" && document.body.classList.contains("shop-filters-open")) {
-            closeShopFilters();
+            closeShopFilters(true);
         }
     });
 }

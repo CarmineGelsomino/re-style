@@ -143,16 +143,20 @@ $price_values      = re_style_get_shop_price_filter_values();
 				<div class="shop-filter-block">
 					<h3><?php esc_html_e( 'Fascia prezzo', 're-style' ); ?></h3>
 					<div class="shop-price-range">
+						<label for="shop-min-price" class="screen-reader-text"><?php esc_html_e( 'Prezzo minimo', 're-style' ); ?></label>
 						<input
 							type="number"
+							id="shop-min-price"
 							name="min_price"
 							min="0"
 							step="0.01"
 							inputmode="decimal"
 							value="<?php echo esc_attr( $price_values['min'] ); ?>"
 							placeholder="<?php esc_attr_e( 'Min', 're-style' ); ?>">
+						<label for="shop-max-price" class="screen-reader-text"><?php esc_html_e( 'Prezzo massimo', 're-style' ); ?></label>
 						<input
 							type="number"
+							id="shop-max-price"
 							name="max_price"
 							min="0"
 							step="0.01"

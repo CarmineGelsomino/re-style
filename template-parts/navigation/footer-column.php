@@ -18,11 +18,13 @@ $args = wp_parse_args(
 ?>
 <section class="footer-col">
 	<?php if ( $args['title'] ) : ?>
-		<?php if ( ! empty( $args['title_url'] ) ) : ?>
-			<a href="<?php echo esc_url( $args['title_url'] ); ?>" class="section-label"><?php echo esc_html( $args['title'] ); ?></a>
-		<?php else : ?>
-			<span class="section-label"><?php echo esc_html( $args['title'] ); ?></span>
-		<?php endif; ?>
+		<h2 class="footer-col__title">
+			<?php if ( ! empty( $args['title_url'] ) ) : ?>
+				<a href="<?php echo esc_url( $args['title_url'] ); ?>" class="section-label"><?php echo esc_html( $args['title'] ); ?></a>
+			<?php else : ?>
+				<span class="section-label"><?php echo esc_html( $args['title'] ); ?></span>
+			<?php endif; ?>
+		</h2>
 	<?php endif; ?>
 
 	<nav class="footer-navigation" aria-label="<?php echo esc_attr( $args['aria_label'] ); ?>">

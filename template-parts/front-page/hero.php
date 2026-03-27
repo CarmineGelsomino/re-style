@@ -16,7 +16,7 @@
 		</div>
 		<div class="hero-visual-col">
 			<div class="hero-visual-frame">
-				<img src="<?php echo esc_url( $section['image']['src'] ); ?>" alt="<?php echo esc_attr( $section['image']['alt'] ); ?>">
+				<img src="<?php echo esc_url( $section['image']['src'] ); ?>" alt="<?php echo esc_attr( $section['image']['alt'] ); ?>" fetchpriority="high">
 			</div>
 		</div>
 	</div>

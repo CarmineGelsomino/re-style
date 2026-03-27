@@ -18,7 +18,7 @@ $front_page = re_style_front_page_data();
 ?>
 <?php get_template_part( 'template-parts/site/floating-actions' ); ?>
 
-<main id="primary" class="site-main site-main--front-page">
+<main id="primary" class="site-main site-main--front-page" tabindex="-1">
 	<h1 class="screen-reader-text"><?php echo esc_html( $page_title ); ?></h1>
 
 	<?php get_template_part( 'template-parts/front-page/hero', null, array( 'section' => $front_page['hero'] ) ); ?>

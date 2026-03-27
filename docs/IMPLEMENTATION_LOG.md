@@ -790,6 +790,127 @@ changing the established desktop presentation.
 - Revisit menu ergonomics later if the primary navigation grows in depth or
   item count beyond the current CSS-only mobile handling.
 
+### Additional Note - Accessibility And SEO Hardening Pass
+
+#### Objective
+
+Run a focused accessibility and SEO technical pass on the classic theme,
+verifying landmarks, heading hierarchy, skip links, focus states, keyboard
+navigation, form labels and SEO-safe markup without duplicating plugin
+responsibilities.
+
+#### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `header.php`
+- `footer.php`
+- `front-page.php`
+- `page.php`
+- `archive.php`
+- `search.php`
+- `single.php`
+- `index.php`
+- `home.php`
+- `404.php`
+- `searchform.php`
+- `comments.php`
+- `template-parts/navigation/footer-column.php`
+- `template-parts/content/content-none.php`
+- `template-parts/front-page/hero.php`
+- `template-parts/front-page/services.php`
+- `template-parts/front-page/shop-categories.php`
+- `template-parts/front-page/gallery.php`
+- `template-parts/front-page/video-tips.php`
+- `template-parts/front-page/contacts.php`
+- `woocommerce/archive-product.php`
+- `assets/css/main.css`
+- `assets/css/front-page.css`
+- `assets/css/woocommerce.css`
+- `assets/js/theme.js`
+- `inc/theme-setup.php`
+- `inc/template-tags.php`
+- `inc/enqueue.php`
+
+#### Files Created/Modified
+
+- `header.php`
+- `footer.php`
+- `front-page.php`
+- `page.php`
+- `archive.php`
+- `search.php`
+- `single.php`
+- `index.php`
+- `home.php`
+- `404.php`
+- `searchform.php`
+- `template-parts/navigation/footer-column.php`
+- `template-parts/content/content-none.php`
+- `template-parts/front-page/hero.php`
+- `template-parts/front-page/services.php`
+- `template-parts/front-page/shop-categories.php`
+- `template-parts/front-page/gallery.php`
+- `template-parts/front-page/video-tips.php`
+- `template-parts/front-page/contacts.php`
+- `woocommerce/archive-product.php`
+- `assets/css/main.css`
+- `assets/css/woocommerce.css`
+- `assets/js/theme.js`
+- `docs/IMPLEMENTATION_LOG.md`
+
+#### Decisions Made
+
+- Added two skip links and made every `#primary` main landmark programmatically
+  focusable so keyboard users can reliably bypass repeated chrome.
+- Promoted the header quick-action group to a real navigation landmark and
+  converted footer column labels into semantic headings without changing the
+  visual treatment.
+- Reduced heading-hierarchy noise by downgrading the generic empty-state title
+  from `h1` to `h2` in contexts that already expose a page-level heading.
+- Hardened modal and mobile filter interactions with focus return and focus
+  trapping, keeping the current UX while making keyboard use more predictable.
+- Added explicit labels to the WooCommerce price-range inputs and reinforced
+  focus styling where later component CSS had neutralized the global outline.
+- Kept SEO compatibility plugin-first: no theme-side meta tags, canonical tags,
+  schema duplication or title handling beyond existing WordPress supports.
+- Applied only native, markup-level performance refinements: hero
+  `fetchpriority="high"` and lazy/async loading for non-critical manual images.
+
+#### Assumptions
+
+- Existing WordPress core supports already provide the correct baseline for SEO
+  plugins, so this pass should avoid adding overlapping head/meta features.
+- Focus trapping was applied only to the theme-owned modal/off-canvas surfaces,
+  not to every navigation context, to avoid broader behavioral regressions.
+- The footer copyright line was normalized with ASCII-safe copy because the
+  repository still shows intermittent encoding artifacts in terminal output.
+
+#### Verification
+
+- Re-reviewed theme templates for landmarks, heading levels, form labels and
+  skip-link targets after the patch.
+- Verified via repository search that the new skip links, focus-trap helper,
+  semantic footer heading class, focusable `main` landmarks and price-input
+  labels are present in the expected files.
+- Confirmed the theme still relies on `wp_head()`, `wp_footer()`,
+  `language_attributes()`, `body_class()`, `wp_body_open()` and `title-tag`
+  support for SEO-plugin compatibility.
+- Automated PHP lint, browser tab-order testing and screen-reader testing could
+  not be run here because this workspace does not provide a local WordPress/PHP
+  runtime or browser automation target.
+
+#### TODO / Residual Risks
+
+- Validate the new focus-trap behavior in a real browser on mobile and desktop,
+  especially around the service modal, video modal and shop filters drawer.
+- Check the visible skip-link offset against the live fixed header in WordPress
+  once real content and admin-bar states are present.
+- Run a follow-up accessibility sweep with browser devtools or aXe/Lighthouse
+  when a runtime environment is available, because this pass relied on source
+  review rather than executable QA.
+
 ---
 
 ## T009

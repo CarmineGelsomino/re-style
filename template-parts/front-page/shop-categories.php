@@ -8,7 +8,7 @@
 	<div class="shop-grid">
 		<?php foreach ( $section['items'] as $item ) : ?>
 			<a href="<?php echo esc_url( $item['url'] ); ?>" class="shop-card">
-				<img src="<?php echo esc_url( $item['image'] ); ?>" alt="<?php echo esc_attr( $item['alt'] ); ?>">
+				<img src="<?php echo esc_url( $item['image'] ); ?>" alt="<?php echo esc_attr( $item['alt'] ); ?>" loading="lazy" decoding="async">
 				<span><?php echo esc_html( $item['title'] ); ?></span>
 			</a>
 		<?php endforeach; ?>
