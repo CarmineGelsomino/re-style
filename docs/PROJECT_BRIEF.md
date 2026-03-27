@@ -70,6 +70,9 @@ Internal-page coverage now also includes:
 - a WooCommerce My Account presentation layer styled from theme CSS and
   lightweight hooks/filters, without introducing a dedicated legacy account
   template override
+- dedicated `resi-e-rimborsi` and `spedizioni` page templates that reuse the
+  same informational-page visual system, with the shipping page copy and key
+  operational details managed through the Customizer
 
 The global shell now also includes:
 
@@ -313,6 +316,12 @@ Current recommendation:
 - start with standard `page.php` plus content-aware partials
 - introduce a custom page template only if the anchor navigation and repeated
   info-card layout become awkward in the default page flow
+
+Current implementation status:
+
+- implemented: a focused `page-resi-e-rimborsi.php` template now covers the
+  dedicated returns/refunds page with theme-owned structured sections and
+  native page-hierarchy targeting via the `resi-e-rimborsi` slug
 
 ### Shop And WooCommerce Mapping
 

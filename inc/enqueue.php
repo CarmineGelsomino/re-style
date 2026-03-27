@@ -59,6 +59,15 @@ if ( ! function_exists( 're_style_enqueue_assets' ) ) {
 			);
 		}
 
+		if ( is_page( array( 'resi-e-rimborsi', 'spedizioni' ) ) ) {
+			wp_enqueue_style(
+				're-style-pages',
+				get_template_directory_uri() . '/assets/css/pages.css',
+				array( 're-style-main' ),
+				re_style_get_asset_version( 'assets/css/pages.css' )
+			);
+		}
+
 		if (
 			function_exists( 'is_woocommerce' )
 			&& (

@@ -270,6 +270,111 @@ if ( ! function_exists( 're_style_get_account_page_data' ) ) {
 	}
 }
 
+if ( ! function_exists( 're_style_get_shipping_page_defaults' ) ) {
+	/**
+	 * Returns default shipping-page content.
+	 *
+	 * @return array<string, mixed>
+	 */
+	function re_style_get_shipping_page_defaults() {
+		$shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop/' );
+
+		return array(
+			'label'                => __( 'Spedizioni', 're-style' ),
+			'title'                => __( 'Consegna veloce e sicura per i tuoi prodotti beauty', 're-style' ),
+			'description'          => __( 'Acquista i tuoi prodotti di bellezza preferiti con una consegna veloce e sicura. Qui trovi tutte le informazioni sulle modalita di spedizione disponibili.', 're-style' ),
+			'costs_title'          => __( 'Costi e tempi di spedizione', 're-style' ),
+			'costs_items'          => array(
+				array(
+					'label' => __( 'Costo standard', 're-style' ),
+					'value' => __( '7,50 euro', 're-style' ),
+				),
+				array(
+					'label' => __( 'Tempi di consegna', 're-style' ),
+					'value' => __( "Entro 2 giorni lavorativi dall'elaborazione dell'ordine.", 're-style' ),
+				),
+				array(
+					'label' => __( 'Spedizione gratuita', 're-style' ),
+					'value' => __( 'Per ordini a partire da 79,90 euro.', 're-style' ),
+				),
+			),
+			'costs_note'           => __( 'Le condizioni di spedizione possono variare in base a promozioni attive o codici sconto. Ti invitiamo a verificare le offerte in corso prima di completare il pagamento.', 're-style' ),
+			'process_title'        => __( 'Processo di spedizione', 're-style' ),
+			'process_steps'        => array(
+				array(
+					'text' => __( "Conferma il tuo ordine e scegli l'indirizzo di spedizione.", 're-style' ),
+				),
+				array(
+					'text' => __( 'Ricevi una mail con il tracking per monitorare lo stato della consegna.', 're-style' ),
+				),
+				array(
+					'text' => __( 'Il tuo pacco sara consegnato entro il tempo indicato.', 're-style' ),
+				),
+			),
+			'delivery_title'       => __( 'Metodi di consegna', 're-style' ),
+			'delivery_description' => __( 'Collaboriamo con corrieri affidabili per garantire la massima sicurezza e puntualita nella consegna.', 're-style' ),
+			'faq_title'            => __( 'Domande frequenti', 're-style' ),
+			'faq_items'            => array(
+				array(
+					'question' => __( 'Quando viene spedito il mio ordine?', 're-style' ),
+					'answer'   => __( 'Gli ordini vengono elaborati entro 24 ore e consegnati entro 2 giorni lavorativi.', 're-style' ),
+				),
+				array(
+					'question' => __( "Posso modificare l'indirizzo di spedizione dopo l'ordine?", 're-style' ),
+					'answer'   => __( 'Contatta il nostro servizio clienti il prima possibile per verificare la disponibilita della modifica.', 're-style' ),
+				),
+				array(
+					'question' => __( 'Cosa succede se non sono presente alla consegna?', 're-style' ),
+					'answer'   => __( 'Il corriere effettuera un secondo tentativo di consegna o lascera istruzioni per il ritiro presso un punto di raccolta.', 're-style' ),
+				),
+			),
+			'support_title'        => __( 'Hai bisogno di aiuto?', 're-style' ),
+			'support_description'  => __( 'Per qualsiasi domanda sulla spedizione, puoi contattarci direttamente a', 're-style' ),
+			'support_email'        => 'servizio-clienti@site.com',
+			'primary_label'        => __( 'Contattaci', 're-style' ),
+			'primary_url'          => home_url( '/#contatti' ),
+			'secondary_label'      => __( 'Torna allo shop', 're-style' ),
+			'secondary_url'        => $shop_url ? $shop_url : home_url( '/' ),
+		);
+	}
+}
+
+if ( ! function_exists( 're_style_get_shipping_page_data' ) ) {
+	/**
+	 * Returns shipping-page content with Customizer overrides.
+	 *
+	 * @return array<string, mixed>
+	 */
+	function re_style_get_shipping_page_data() {
+		$defaults      = re_style_get_shipping_page_defaults();
+		$costs_items   = re_style_parse_pair_lines( re_style_get_theme_option_value( 'shipping', 'costs_items', re_style_serialize_pair_list( $defaults['costs_items'], 'label', 'value' ) ), 'label', 'value' );
+		$process_steps = re_style_parse_single_value_lines( re_style_get_theme_option_value( 'shipping', 'process_steps', re_style_serialize_single_value_list( $defaults['process_steps'], 'text' ) ), 'text' );
+		$faq_items     = re_style_parse_pair_lines( re_style_get_theme_option_value( 'shipping', 'faq_items', re_style_serialize_pair_list( $defaults['faq_items'], 'question', 'answer' ) ), 'question', 'answer' );
+
+		return array(
+			'label'                => re_style_get_theme_option_value( 'shipping', 'label', $defaults['label'] ),
+			'title'                => re_style_get_theme_option_value( 'shipping', 'title', $defaults['title'] ),
+			'description'          => re_style_get_theme_option_value( 'shipping', 'description', $defaults['description'] ),
+			'costs_title'          => re_style_get_theme_option_value( 'shipping', 'costs_title', $defaults['costs_title'] ),
+			'costs_items'          => ! empty( $costs_items ) ? $costs_items : $defaults['costs_items'],
+			'costs_note'           => re_style_get_theme_option_value( 'shipping', 'costs_note', $defaults['costs_note'] ),
+			'process_title'        => re_style_get_theme_option_value( 'shipping', 'process_title', $defaults['process_title'] ),
+			'process_steps'        => ! empty( $process_steps ) ? $process_steps : $defaults['process_steps'],
+			'delivery_title'       => re_style_get_theme_option_value( 'shipping', 'delivery_title', $defaults['delivery_title'] ),
+			'delivery_description' => re_style_get_theme_option_value( 'shipping', 'delivery_description', $defaults['delivery_description'] ),
+			'faq_title'            => re_style_get_theme_option_value( 'shipping', 'faq_title', $defaults['faq_title'] ),
+			'faq_items'            => ! empty( $faq_items ) ? $faq_items : $defaults['faq_items'],
+			'support_title'        => re_style_get_theme_option_value( 'shipping', 'support_title', $defaults['support_title'] ),
+			'support_description'  => re_style_get_theme_option_value( 'shipping', 'support_description', $defaults['support_description'] ),
+			'support_email'        => re_style_get_theme_option_value( 'shipping', 'support_email', $defaults['support_email'] ),
+			'primary_label'        => re_style_get_theme_option_value( 'shipping', 'primary_label', $defaults['primary_label'] ),
+			'primary_url'          => re_style_get_theme_option_value( 'shipping', 'primary_url', $defaults['primary_url'] ),
+			'secondary_label'      => re_style_get_theme_option_value( 'shipping', 'secondary_label', $defaults['secondary_label'] ),
+			'secondary_url'        => re_style_get_theme_option_value( 'shipping', 'secondary_url', $defaults['secondary_url'] ),
+		);
+	}
+}
+
 if ( ! function_exists( 're_style_customize_register' ) ) {
 	/**
 	 * Registers Customizer settings for design tokens and homepage content.
@@ -282,6 +387,7 @@ if ( ! function_exists( 're_style_customize_register' ) ) {
 		$front_page_defaults = re_style_get_front_page_defaults();
 		$error_404_defaults  = re_style_get_404_defaults();
 		$account_defaults    = re_style_get_account_page_defaults();
+		$shipping_defaults   = re_style_get_shipping_page_defaults();
 
 		$wp_customize->add_panel(
 			're_style_theme_options',
@@ -414,6 +520,15 @@ if ( ! function_exists( 're_style_customize_register' ) ) {
 				'title'    => __( 'Account Page', 're-style' ),
 				'panel'    => 're_style_theme_options',
 				'priority' => 23,
+			)
+		);
+
+		$wp_customize->add_section(
+			're_style_shipping_page',
+			array(
+				'title'    => __( 'Shipping Page', 're-style' ),
+				'panel'    => 're_style_theme_options',
+				'priority' => 24,
 			)
 		);
 
@@ -562,6 +677,25 @@ if ( ! function_exists( 're_style_customize_register' ) ) {
 			array( 'scope' => 'account', 'section' => 'account_page', 'id' => 'primary_url', 'label' => __( 'Primary button URL', 're-style' ), 'default' => $account_defaults['primary_url'], 'sanitize' => 'esc_url_raw' ),
 			array( 'scope' => 'account', 'section' => 'account_page', 'id' => 'secondary_label', 'label' => __( 'Secondary button label', 're-style' ), 'default' => $account_defaults['secondary_label'] ),
 			array( 'scope' => 'account', 'section' => 'account_page', 'id' => 'secondary_url', 'label' => __( 'Secondary button URL', 're-style' ), 'default' => $account_defaults['secondary_url'], 'sanitize' => 'esc_url_raw' ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'label', 'label' => __( 'Eyebrow label', 're-style' ), 'default' => $shipping_defaults['label'] ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'title', 'label' => __( 'Title', 're-style' ), 'default' => $shipping_defaults['title'] ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'description', 'label' => __( 'Description', 're-style' ), 'default' => $shipping_defaults['description'], 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'costs_title', 'label' => __( 'Costs section title', 're-style' ), 'default' => $shipping_defaults['costs_title'] ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'costs_items', 'label' => __( 'Costs and timing items', 're-style' ), 'default' => re_style_serialize_pair_list( $shipping_defaults['costs_items'], 'label', 'value' ), 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'costs_note', 'label' => __( 'Costs note', 're-style' ), 'default' => $shipping_defaults['costs_note'], 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'process_title', 'label' => __( 'Process section title', 're-style' ), 'default' => $shipping_defaults['process_title'] ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'process_steps', 'label' => __( 'Process steps', 're-style' ), 'default' => re_style_serialize_single_value_list( $shipping_defaults['process_steps'], 'text' ), 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'delivery_title', 'label' => __( 'Delivery section title', 're-style' ), 'default' => $shipping_defaults['delivery_title'] ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'delivery_description', 'label' => __( 'Delivery description', 're-style' ), 'default' => $shipping_defaults['delivery_description'], 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'faq_title', 'label' => __( 'FAQ section title', 're-style' ), 'default' => $shipping_defaults['faq_title'] ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'faq_items', 'label' => __( 'FAQ items', 're-style' ), 'default' => re_style_serialize_pair_list( $shipping_defaults['faq_items'], 'question', 'answer' ), 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'support_title', 'label' => __( 'Support title', 're-style' ), 'default' => $shipping_defaults['support_title'] ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'support_description', 'label' => __( 'Support description', 're-style' ), 'default' => $shipping_defaults['support_description'], 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'support_email', 'label' => __( 'Support email', 're-style' ), 'default' => $shipping_defaults['support_email'], 'sanitize' => 'sanitize_email' ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'primary_label', 'label' => __( 'Primary button label', 're-style' ), 'default' => $shipping_defaults['primary_label'] ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'primary_url', 'label' => __( 'Primary button URL', 're-style' ), 'default' => $shipping_defaults['primary_url'], 'sanitize' => 'esc_url_raw' ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'secondary_label', 'label' => __( 'Secondary button label', 're-style' ), 'default' => $shipping_defaults['secondary_label'] ),
+			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'secondary_url', 'label' => __( 'Secondary button URL', 're-style' ), 'default' => $shipping_defaults['secondary_url'], 'sanitize' => 'esc_url_raw' ),
 		);
 
 		foreach ( $page_controls as $control ) {

@@ -3684,3 +3684,180 @@ issues.
 - The cart `td.product-name` cleanup was therefore broadened to cover the most
   common short-description wrapper classes as well, so the cart keeps only the
   essential product information.
+
+---
+
+## T037
+
+### Objective
+
+Create a dedicated "Resi e rimborsi" page that matches the existing theme
+language closely, uses the theme design variables, and incorporates the
+client-provided refund copy plus a complementary returns section.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `page.php`
+- `index.php`
+- `single.php`
+- `search.php`
+- `searchform.php`
+- `template-parts/content/content-page.php`
+- `assets/css/main.css`
+- `inc/enqueue.php`
+- `inc/template-tags.php`
+- `header.php`
+- `footer.php`
+- `sito-statico/informazioni.html`
+- `sito-statico/assets/css/style.css`
+
+### Files Created/Modified
+
+- `page-resi-e-rimborsi.php`
+- `assets/css/pages.css`
+- `inc/enqueue.php`
+- `inc/template-tags.php`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The new page is implemented as `page-resi-e-rimborsi.php`, so WordPress can
+  target it natively through the `resi-e-rimborsi` page slug without changing
+  the generic `page.php` flow.
+- The layout reuses the established information-page language from the static
+  prototype, but is adapted into a dedicated single-topic page with internal
+  anchor navigation, structured cards and shared theme button styles.
+- A dedicated `assets/css/pages.css` stylesheet was introduced and loaded only
+  for the `resi-e-rimborsi` page, keeping informational-page styling isolated
+  from the global and WooCommerce stylesheets.
+- All new visual values reference the existing theme token system and CSS
+  variables already exposed by `main.css`, instead of introducing a separate
+  page-specific palette.
+- The fallback footer information link for "Resi e rimborsi" now points to the
+  new dedicated page URL rather than the old anchor inside `/informazioni/`.
+
+### Assumptions
+
+- The intended WordPress page slug for this content is `resi-e-rimborsi`.
+- Using a theme-owned dedicated template is acceptable for this legal/support
+  content because the request asked for a specific page to be created with
+  curated copy and strict visual consistency.
+- The existing site contact anchor `/#contatti` remains a valid assistance
+  destination until a dedicated support/contact page is requested.
+- The secondary CTA safely points to `/shop/`, consistent with the theme's
+  existing WooCommerce-first direction.
+
+### Verification
+
+- Reviewed the static `informazioni.html` section structure and its CSS card /
+  anchor layout before recreating the page in theme form.
+- Confirmed the new stylesheet is conditionally enqueued only on
+  `is_page( 'resi-e-rimborsi' )`.
+- Checked the new template markup against the theme's existing button, label,
+  content-width and spacing conventions in `assets/css/main.css`.
+- Updated the project brief and implementation log to record the dedicated
+  information-page template decision and its scope.
+- Automated PHP lint and live WordPress rendering could not be run here because
+  the workspace does not provide a local PHP / WordPress runtime.
+
+### TODO / Residual Risks
+
+- Verify in the live WordPress install that the target page slug is exactly
+  `resi-e-rimborsi`; if the page uses a different slug, the dedicated template
+  file name or enqueue condition should be aligned.
+- Review the final in-browser typography for curly apostrophes in the provided
+  Italian copy under the site's real encoding/runtime environment.
+- If the broader information area is later split into multiple dedicated pages,
+  consider extracting these information-page patterns into reusable partials to
+  avoid duplication.
+
+---
+
+## T038
+
+### Objective
+
+Create a dedicated "Spedizioni" page that preserves the existing theme style,
+uses the shared theme variables, and makes the key shipping information
+editable through a dedicated Customizer section.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `inc/customizer.php`
+- `inc/enqueue.php`
+- `page.php`
+- `page-resi-e-rimborsi.php`
+- `assets/css/main.css`
+- `assets/css/pages.css`
+- `inc/front-page-data.php`
+- `sito-statico/informazioni.html`
+
+### Files Created/Modified
+
+- `page-spedizioni.php`
+- `inc/customizer.php`
+- `inc/enqueue.php`
+- `assets/css/pages.css`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The new page is implemented as `page-spedizioni.php`, so WordPress can target
+  it natively via the `spedizioni` page slug without changing the generic
+  `page.php` behavior.
+- The layout deliberately reuses the same informational-page design language
+  already introduced for `resi-e-rimborsi`, keeping card structure, anchor
+  navigation and support CTA patterns visually coherent across both pages.
+- Shipping content is split between stable layout copy and Customizer-managed
+  operational data, using the existing theme helper pattern:
+  `get_*_defaults()`, `get_*_data()` and a dedicated page section in the
+  Customizer panel.
+- Dynamic multi-item data such as shipping highlights, process steps and FAQ
+  entries are stored in textarea controls using the same serialized list
+  helpers already used by the homepage Customizer data model.
+- Page-specific styles stay inside `assets/css/pages.css` and continue to rely
+  on the shared theme CSS variables rather than introducing any new palette or
+  spacing constants.
+
+### Assumptions
+
+- The intended WordPress page slug for this content is `spedizioni`.
+- The user wants the changing shipping information to be manageable from the
+  Customizer rather than embedded as hardcoded-only template copy.
+- Reusing the existing informational-page component language is preferable to
+  introducing a new visual treatment for a single support page.
+- The contact anchor `/#contatti` remains a valid primary assistance
+  destination until the project introduces a dedicated customer-support page.
+
+### Verification
+
+- Checked the existing `page-resi-e-rimborsi.php` and `assets/css/pages.css`
+  implementation before extending the same pattern to the shipping page.
+- Confirmed the page stylesheet is now conditionally enqueued for both
+  `resi-e-rimborsi` and `spedizioni`.
+- Verified the new shipping-page data model reuses the existing serialized-list
+  helpers from `inc/front-page-data.php` instead of duplicating parsing logic.
+- Reviewed the new template and CSS against the existing theme token variables
+  exposed by `assets/css/main.css`.
+- Automated live rendering in a WordPress runtime was not available in this
+  workspace.
+
+### TODO / Residual Risks
+
+- Verify in the live WordPress install that the target page slug is exactly
+  `spedizioni`; if it differs, the template filename and enqueue condition
+  should be aligned.
+- Confirm in wp-admin that the Customizer labels are sufficiently clear for the
+  editorial workflow, especially for textarea controls that expect one item per
+  line.
+- If the information area grows further, consider extracting these repeated
+  page sections into reusable template parts instead of keeping them in
+  dedicated page templates.
