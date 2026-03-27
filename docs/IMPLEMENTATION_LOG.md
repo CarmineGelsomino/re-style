@@ -3554,3 +3554,12 @@ issues.
   language used by the single-product add-to-cart button to the common
   WooPayments / Stripe payment-request button selectors, while keeping the
   standard checkout button unchanged.
+
+### Additional Note 21
+
+- A later cart QA screenshot showed some product rows were still rendering a
+  visible short description beneath the item title despite the earlier cart
+  cleanup rules.
+- The cart `td.product-name` cleanup was therefore broadened to cover the most
+  common short-description wrapper classes as well, so the cart keeps only the
+  essential product information.

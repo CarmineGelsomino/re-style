@@ -109,7 +109,13 @@ body.woocommerce-cart table.shop_table td.product-name > *:not(a):not(.screen-re
 body.woocommerce-cart table.shop_table td.product-name p,
 body.woocommerce-cart table.shop_table td.product-name small,
 body.woocommerce-cart table.shop_table td.product-name dl.variation,
-body.woocommerce-cart table.shop_table td.product-name .wc-item-meta {
+body.woocommerce-cart table.shop_table td.product-name .wc-item-meta,
+body.woocommerce-cart table.shop_table td.product-name .product-short-description,
+body.woocommerce-cart .woocommerce-product-details__short-description,
+.woocommerce-cart .wc-block-components-product-metadata__description,
+body.woocommerce-cart table.shop_table td.product-name .short-description,
+body.woocommerce-cart table.shop_table td.product-name .description,
+body.woocommerce-cart table.shop_table td.product-name .re-style-cart-item-description {
     display: none;
 }
 
