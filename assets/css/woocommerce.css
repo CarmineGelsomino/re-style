@@ -2825,8 +2825,8 @@ body.re-style-account-endpoint-subscriptions .woocommerce-MyAccount-navigation u
 
 @media (max-width: 782px) {
     .shop-page-main {
-        padding-right: var(--re-style-space-gutter);
-        padding-left: var(--re-style-space-gutter);
+        padding-right: var(--re-style-mobile-main-padding, 20px);
+        padding-left: var(--re-style-mobile-main-padding, 20px);
         padding-top: 24px;
         padding-bottom: 56px;
     }
@@ -2910,8 +2910,8 @@ body.re-style-account-endpoint-subscriptions .woocommerce-MyAccount-navigation u
     }
 
     body.woocommerce-account .site-main {
-        padding-right: var(--re-style-space-gutter);
-        padding-left: var(--re-style-space-gutter);
+        padding-right: var(--re-style-mobile-main-padding, 20px);
+        padding-left: var(--re-style-mobile-main-padding, 20px);
         padding-top: 24px;
         padding-bottom: 56px;
     }
@@ -2964,8 +2964,8 @@ body.re-style-account-endpoint-subscriptions .woocommerce-MyAccount-navigation u
     }
 
     body.single-product .site-main {
-        padding-right: var(--re-style-space-gutter);
-        padding-left: var(--re-style-space-gutter);
+        padding-right: var(--re-style-mobile-main-padding, 20px);
+        padding-left: var(--re-style-mobile-main-padding, 20px);
         padding-top: 24px;
         padding-bottom: 56px;
     }
@@ -3068,8 +3068,8 @@ body.re-style-account-endpoint-subscriptions .woocommerce-MyAccount-navigation u
     }
 
     body.woocommerce-cart .site-main {
-        padding-right: 32px;
-        padding-left: 32px;
+        padding-right: var(--re-style-mobile-main-padding, 20px);
+        padding-left: var(--re-style-mobile-main-padding, 20px);
         padding-bottom: 64px;
     }
 

@@ -1233,8 +1233,21 @@ body.re-style-front-page .footer-bottom span {
 }
 
 @media (max-width: 782px) {
+    :root {
+        --re-style-mobile-main-padding: 20px;
+    }
+
     body {
         padding-top: 0;
+    }
+
+    .site-main {
+        width: min(100% - (var(--re-style-mobile-main-padding) * 2), var(--re-style-content-width));
+    }
+
+    .site-main.site-main--front-page {
+        padding-right: var(--re-style-mobile-main-padding);
+        padding-left: var(--re-style-mobile-main-padding);
     }
 
     .topbar,

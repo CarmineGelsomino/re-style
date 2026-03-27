@@ -3512,3 +3512,15 @@ issues.
   compatibility and form submission, but enhances it with a theme-side custom
   dropdown UI that mirrors the selected value, supports keyboard navigation,
   and allows fully themed hover and selected states for the visible options.
+
+### Additional Note 17
+
+- A later responsive polish pass requested slightly stronger and more uniform
+  lateral breathing room on mobile across the site's main content areas,
+  without affecting desktop spacing.
+- A dedicated mobile main-padding token was therefore introduced and applied to
+  the generic `.site-main`, the front page shell, and the WooCommerce mobile
+  page wrappers so the perceived edge spacing stays consistent across pages.
+- The homepage hero image overlay was also adjusted on desktop to strengthen
+  the lower fade, bringing the bottom edge treatment in line with the already
+  softened left, right and top sides of the visual.

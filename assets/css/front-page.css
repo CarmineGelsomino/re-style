@@ -241,7 +241,7 @@ html:has(body.re-style-front-page) {
         linear-gradient(to right, var(--re-style-color-background) 0%, rgba(247, 247, 247, 0.96) 10%, rgba(247, 247, 247, 0.72) 20%, rgba(247, 247, 247, 0) 38%),
         linear-gradient(to left, var(--re-style-color-background) 0%, rgba(247, 247, 247, 0.88) 8%, rgba(247, 247, 247, 0.35) 18%, rgba(247, 247, 247, 0) 30%),
         linear-gradient(to bottom, var(--re-style-color-background) 0%, rgba(247, 247, 247, 0.72) 10%, rgba(247, 247, 247, 0.18) 24%, rgba(247, 247, 247, 0) 36%),
-        linear-gradient(to top, var(--re-style-color-background) 0%, rgba(247, 247, 247, 0.82) 10%, rgba(247, 247, 247, 0.24) 24%, rgba(247, 247, 247, 0) 38%);
+        linear-gradient(to top, var(--re-style-color-background) 0%, rgba(247, 247, 247, 0.94) 12%, rgba(247, 247, 247, 0.56) 24%, rgba(247, 247, 247, 0.16) 36%, rgba(247, 247, 247, 0) 50%);
 }
 
 .site-main--front-page .services {
