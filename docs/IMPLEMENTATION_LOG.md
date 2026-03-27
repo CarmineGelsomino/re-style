@@ -4292,3 +4292,67 @@ already managed elsewhere in the theme.
   without country prefix.
 - Review the final editorial copy in wp-admin after Customizer entry to confirm
   the textarea-based support topics and checklist remain easy to manage.
+
+---
+
+## T044
+
+### Objective
+
+Add a WordPress-compatible fallback meta description so the theme no longer
+ships pages without a basic SEO description when no dedicated SEO plugin is
+active.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `header.php`
+- `inc/theme-setup.php`
+- `inc/template-tags.php`
+
+### Files Created/Modified
+
+- `inc/template-tags.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- Kept the existing WordPress-standard head setup unchanged because the theme
+  already declares `title-tag` support and calls `wp_head()` correctly.
+- Added a theme fallback on `wp_head` that prints a single
+  `<meta name="description">` only when common SEO plugins are not active.
+- The fallback description is generated conservatively from the current
+  request context: post/page excerpt or content for singular views, term or
+  archive descriptions where available, and site-level fallback text for home,
+  search and 404.
+- The output is trimmed and sanitized so the theme exposes a clean short
+  description without introducing a plugin dependency.
+
+### Assumptions
+
+- The SEO warning reported by PageSpeed referred to pages rendered without any
+  SEO plugin currently generating a meta description.
+- Avoiding duplicate meta descriptions is more important than forcing this
+  fallback to render when a dedicated SEO plugin is already installed.
+
+### Verification
+
+- Re-read `header.php` and `inc/theme-setup.php` to confirm the standard
+  WordPress title/head integration was already present before changing
+  anything.
+- Reviewed the new helper logic in `inc/template-tags.php` to confirm it
+  skips admin/feed contexts, detects common SEO plugins and always falls back
+  to a non-empty sanitized string.
+- Automated runtime verification in a live WordPress environment was not
+  available in this workspace.
+
+### TODO / Residual Risks
+
+- If the site later adopts a dedicated SEO plugin such as Yoast, Rank Math,
+  SEOPress or AIOSEO, that plugin should become the canonical source for the
+  final per-page meta descriptions.
+- The fallback currently uses generic site/page content; if stricter SEO
+  control is needed later, a dedicated editorial field or plugin-managed meta
+  description workflow may still be preferable.

@@ -425,3 +425,86 @@ if ( ! function_exists( 're_style_body_classes' ) ) {
 	}
 }
 add_filter( 'body_class', 're_style_body_classes' );
+
+if ( ! function_exists( 're_style_has_active_seo_plugin' ) ) {
+	/**
+	 * Checks for common SEO plugins that already output meta descriptions.
+	 *
+	 * @return bool
+	 */
+	function re_style_has_active_seo_plugin() {
+		return defined( 'WPSEO_VERSION' )
+			|| defined( 'RANK_MATH_VERSION' )
+			|| defined( 'SEOPRESS_VERSION' )
+			|| defined( 'AIOSEO_VERSION' )
+			|| class_exists( 'All_in_One_SEO_Pack' );
+	}
+}
+
+if ( ! function_exists( 're_style_build_meta_description' ) ) {
+	/**
+	 * Builds a conservative fallback meta description for the current request.
+	 *
+	 * @return string
+	 */
+	function re_style_build_meta_description() {
+		$description = '';
+
+		if ( is_singular() ) {
+			$post = get_queried_object();
+
+			if ( $post instanceof WP_Post ) {
+				$description = has_excerpt( $post ) ? $post->post_excerpt : $post->post_content;
+			}
+		} elseif ( is_category() || is_tag() || is_tax() ) {
+			$description = term_description();
+		} elseif ( is_post_type_archive() ) {
+			$description = get_the_archive_description();
+		} elseif ( is_home() || is_front_page() ) {
+			$description = get_bloginfo( 'description' );
+		} elseif ( is_search() ) {
+			$description = sprintf(
+				/* translators: %s search query. */
+				__( 'Risultati di ricerca per %s sul sito Re Style.', 're-style' ),
+				get_search_query()
+			);
+		} elseif ( is_404() ) {
+			$description = __( 'La pagina richiesta non e disponibile. Scopri i contenuti e i prodotti Re Style.', 're-style' );
+		}
+
+		$description = trim( wp_strip_all_tags( (string) $description ) );
+
+		if ( '' === $description ) {
+			$description = get_bloginfo( 'description' );
+		}
+
+		if ( '' === trim( $description ) ) {
+			$description = get_bloginfo( 'name' );
+		}
+
+		return wp_html_excerpt( preg_replace( '/\s+/', ' ', $description ), 160, '...' );
+	}
+}
+
+if ( ! function_exists( 're_style_output_meta_description' ) ) {
+	/**
+	 * Outputs a fallback meta description when no SEO plugin manages it.
+	 *
+	 * @return void
+	 */
+	function re_style_output_meta_description() {
+		if ( is_admin() || is_feed() || re_style_has_active_seo_plugin() ) {
+			return;
+		}
+
+		$description = re_style_build_meta_description();
+
+		if ( '' === $description ) {
+			return;
+		}
+		?>
+		<meta name="description" content="<?php echo esc_attr( $description ); ?>">
+		<?php
+	}
+}
+add_action( 'wp_head', 're_style_output_meta_description', 1 );
