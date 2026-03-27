@@ -1465,8 +1465,7 @@ body.single-product div.product form.cart {
     display: flex;
     flex-wrap: wrap;
     align-items: stretch;
-    gap: 14px;
-    margin-bottom: 0;
+    margin-bottom: 14px;
 }
 
 body.single-product div.product form.cart.variations_form {
@@ -1594,7 +1593,8 @@ body.single-product div.product form.cart .quantity {
     border: 1px solid var(--border-clr);
     border-radius: 8px;
     overflow: hidden;
-    background-color: #fff;
+    background-color: var(--bg-clr);
+    margin-right: 14px;
 }
 
 body.single-product div.product form.cart .quantity .qty {
@@ -3004,7 +3004,7 @@ body.re-style-account-endpoint-subscriptions .woocommerce-MyAccount-navigation u
     }
 
     body.single-product div.product form.cart .quantity {
-        margin: 0 auto;
+        margin: 0 auto 14px auto;
         grid-template-columns: 44px minmax(0, 1fr) 44px;
         justify-self: stretch;
     }

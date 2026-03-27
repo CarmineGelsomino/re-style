@@ -3524,3 +3524,23 @@ issues.
 - The homepage hero image overlay was also adjusted on desktop to strengthen
   the lower fade, bringing the bottom edge treatment in line with the already
   softened left, right and top sides of the visual.
+
+### Additional Note 18
+
+- A later desktop QA screenshot for the single-product page showed the quantity
+  box no longer starting flush with the product description column, even though
+  the mobile layout was already correct.
+- The quantity control now explicitly resets any inherited left offset and pins
+  itself to the start of the add-to-cart row on desktop, while keeping the
+  existing mobile full-width behavior unchanged.
+
+### Additional Note 19
+
+- A follow-up refinement on the same single-product add-to-cart row showed the
+  generic flex `gap` on `.woocommerce-variation-add-to-cart` was too blunt: it
+  contributed to the unwanted desktop spacing, but removing it entirely also
+  collapsed the separation between children.
+- The row now uses only vertical gap at the wrapper level, while the desktop
+  spacing between quantity and add-to-cart button is handled explicitly on the
+  button itself and reset again on mobile, so the two breakpoints stay
+  independently controllable.
