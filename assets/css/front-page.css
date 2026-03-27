@@ -1498,6 +1498,7 @@ html:has(body.re-style-front-page) {
 
     .site-main--front-page .contacts-owner {
         max-width: 320px;
+        justify-self: center;
     }
 
     .site-main--front-page .newsletter-inner {
