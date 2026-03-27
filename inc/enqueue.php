@@ -59,7 +59,7 @@ if ( ! function_exists( 're_style_enqueue_assets' ) ) {
 			);
 		}
 
-		if ( is_page( array( 'resi-e-rimborsi', 'spedizioni' ) ) ) {
+		if ( is_page( array( 'resi-e-rimborsi', 'spedizioni', 'pagamenti', 'supporto-clienti' ) ) ) {
 			wp_enqueue_style(
 				're-style-pages',
 				get_template_directory_uri() . '/assets/css/pages.css',

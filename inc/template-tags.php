@@ -76,7 +76,7 @@ if ( ! function_exists( 're_style_footer_menu_fallback' ) ) {
 				$items = array(
 					array( 'label' => __( 'Spedizioni', 're-style' ), 'url' => home_url( '/spedizioni' ) ),
 					array( 'label' => __( 'Resi e rimborsi', 're-style' ), 'url' => home_url( '/resi-e-rimborsi/' ) ),
-					array( 'label' => __( 'Metodi di pagamento', 're-style' ), 'url' => home_url( '/pagamenti' ) ),
+					array( 'label' => __( 'Metodi di pagamento', 're-style' ), 'url' => home_url( '/pagamenti/' ) ),
 					array( 'label' => __( 'Supporto clienti', 're-style' ), 'url' => home_url( '/supporto-clienti' ) ),
 					array( 'label' => __( 'Faq', 're-style' ), 'url' => home_url( '/#faq' ) ),
 				);

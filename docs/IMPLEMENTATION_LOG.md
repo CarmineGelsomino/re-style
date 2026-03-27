@@ -3861,3 +3861,434 @@ editable through a dedicated Customizer section.
 - If the information area grows further, consider extracting these repeated
   page sections into reusable template parts instead of keeping them in
   dedicated page templates.
+
+---
+
+## T039
+
+### Objective
+
+Create a dedicated "Metodi di pagamento" page that preserves the existing
+theme language, uses the shared theme variables, and lists WooCommerce payment
+methods dynamically from the currently enabled gateways.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `page-resi-e-rimborsi.php`
+- `page-spedizioni.php`
+- `assets/css/pages.css`
+- `inc/enqueue.php`
+- `inc/template-tags.php`
+- `inc/woocommerce.php`
+- `sito-statico/informazioni.html`
+
+### Files Created/Modified
+
+- `page-pagamenti.php`
+- `assets/css/pages.css`
+- `inc/enqueue.php`
+- `inc/template-tags.php`
+- `inc/woocommerce.php`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The new page is implemented as `page-pagamenti.php`, so WordPress can target
+  it natively through the `pagamenti` page slug without altering the generic
+  `page.php` flow.
+- The page intentionally reuses the same information-page visual system
+  already used by `resi-e-rimborsi` and `spedizioni`, keeping spacing, cards,
+  anchor navigation and CTA styling aligned with the existing theme language.
+- The active payment-method list is sourced dynamically from enabled
+  WooCommerce gateways via a dedicated helper in `inc/woocommerce.php`,
+  avoiding hardcoded card, wallet or provider names inside the template.
+- The payment page renders gateway titles, optional gateway descriptions and
+  optional provider icons when exposed by WooCommerce, with output sanitized in
+  the template before rendering.
+- Page-specific styling stays inside `assets/css/pages.css` and continues to
+  consume the existing theme tokens rather than introducing any separate page
+  palette.
+
+### Assumptions
+
+- The intended WordPress page slug for this content is `pagamenti`.
+- Reading enabled gateways is closer to the user request than hardcoding the
+  methods currently shown in the prototype, even though final checkout
+  availability can still vary by cart context or provider rules.
+- Reusing the same informational-page system is preferable to introducing a
+  distinct layout for a single support/legal page.
+- The existing shop and checkout URLs remain the most appropriate CTA targets
+  for this page until a dedicated support page is introduced.
+
+### Verification
+
+- Reviewed the existing `page-resi-e-rimborsi.php`, `page-spedizioni.php` and
+  `assets/css/pages.css` implementation before extending the same pattern to
+  the payment page.
+- Confirmed the informational-page stylesheet is now conditionally enqueued for
+  `resi-e-rimborsi`, `spedizioni` and `pagamenti`.
+- Verified the WooCommerce helper reads enabled gateway objects and returns
+  structured title/description/icon data instead of mock content.
+- Checked the new template and CSS against the theme's current token-based
+  typography, colors, border and spacing conventions.
+- Automated PHP lint and live WordPress rendering could not be run in this
+  workspace because no local PHP / WordPress runtime is available.
+
+### TODO / Residual Risks
+
+- Verify in the live WordPress install that the target page slug is exactly
+  `pagamenti`; if it differs, the template filename and enqueue condition
+  should be aligned.
+- Confirm in browser that every active gateway icon still renders cleanly,
+  because third-party plugins can output slightly different icon markup.
+- Keep in mind that some gateways may be enabled globally but become hidden at
+  checkout for specific carts, totals or customer contexts; this page shows the
+  enabled WooCommerce methods, not a cart-specific checkout snapshot.
+
+---
+
+## T040
+
+### Objective
+
+Refine the "Metodi di pagamento" page copy so it feels less technical and more
+commercial, removing low-value meta details and improving the gateway fallback
+descriptions.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `page-pagamenti.php`
+- `inc/woocommerce.php`
+
+### Files Created/Modified
+
+- `page-pagamenti.php`
+- `inc/woocommerce.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The informational summary at the top of the page now keeps only the active
+  gateway count, removing the overly technical "Origine dati" and
+  "Aggiornamento elenco" rows.
+- Gateway fallback descriptions are now generated through a dedicated helper in
+  `inc/woocommerce.php`, so empty WooCommerce gateway descriptions can still
+  render stronger sales-oriented copy instead of a generic technical sentence.
+- The new fallback copy adapts to common payment-method families such as
+  PayPal, cards, Apple Pay, Google Pay, Klarna, Satispay, bank transfer and
+  cash on delivery by checking gateway id/title keywords conservatively.
+
+### Assumptions
+
+- The user wanted the page to feel more premium and customer-facing, not more
+  admin-facing or explanatory.
+- Existing gateway descriptions provided directly by WooCommerce or plugins
+  should still take precedence when present, while only empty descriptions
+  should receive theme-generated fallback copy.
+
+### Verification
+
+- Re-read the payment page template and confirmed the removed summary rows are
+  no longer rendered.
+- Verified the template now outputs the description returned by the WooCommerce
+  helper without using the old generic fallback sentence.
+- Reviewed the new fallback-description helper to ensure it returns safe string
+  values for known gateway families and a branded generic fallback otherwise.
+- Automated PHP lint and live WordPress rendering could not be run in this
+  workspace because no local PHP / WordPress runtime is available.
+
+### TODO / Residual Risks
+
+- Confirm in browser that the real active gateways in the store either provide
+  their own suitable copy or benefit from the new theme-generated fallback
+  descriptions.
+- Some third-party gateways may use unusual ids/titles that do not match the
+  current keyword families; in those cases the generic premium fallback will be
+  used until a more specific variant is needed.
+
+---
+
+## T041
+
+### Objective
+
+Polish the "Metodi di pagamento" page copy by replacing the anchor intro line
+requested by the user and restoring the missing apostrophes across both the
+template text and the dynamic payment-method fallback descriptions.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `page-pagamenti.php`
+- `inc/woocommerce.php`
+
+### Files Created/Modified
+
+- `page-pagamenti.php`
+- `inc/woocommerce.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The first anchor-card description now reads "Elenco dei metodi di pagamenti
+  attualmente attivi." as explicitly requested.
+- Apostrophes were restored in the payment-page template copy so the page reads
+  naturally in Italian and remains aligned with the rest of the theme tone.
+- The same apostrophe cleanup was applied to the sales-oriented fallback
+  descriptions generated for gateways that do not provide their own
+  WooCommerce/plugin description.
+
+### Assumptions
+
+- The user wanted the copy cleanup limited to the payment page and its dynamic
+  method descriptions, without broader wording changes elsewhere in the theme.
+
+### Verification
+
+- Re-read `page-pagamenti.php` after the edit to confirm the requested anchor
+  sentence and the corrected apostrophes are present in the visible page copy.
+- Re-read `inc/woocommerce.php` to confirm the fallback gateway descriptions
+  now include the missing apostrophes.
+- Automated PHP lint and live WordPress rendering could not be run in this
+  workspace because no local PHP / WordPress runtime is available.
+
+### TODO / Residual Risks
+
+- Confirm in browser that all active gateway cards now read naturally when the
+  live store combines plugin-provided descriptions with the new theme fallback
+  copy.
+
+---
+
+## T042
+
+### Objective
+
+Fix one remaining missing apostrophe in the payment-page checkout confirmation
+copy.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `page-pagamenti.php`
+
+### Files Created/Modified
+
+- `page-pagamenti.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- Corrected the remaining string from `L ordine` to `L'ordine` in the payment
+  confirmation bullet list.
+
+### Assumptions
+
+- The user requested only this targeted copy correction.
+
+### Verification
+
+- Re-read the edited line in `page-pagamenti.php` after the change.
+- Automated PHP lint and live WordPress rendering could not be run in this
+  workspace because no local PHP / WordPress runtime is available.
+
+### TODO / Residual Risks
+
+- A final visual proofreading pass in browser may still be useful to catch any
+  remaining micro-copy inconsistencies on the page.
+
+---
+
+## T043
+
+### Objective
+
+Fix the remaining payment-page line flagged by the user around line 110 where
+`L ordine` was still missing the apostrophe.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `page-pagamenti.php`
+
+### Files Created/Modified
+
+- `page-pagamenti.php`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- Corrected the visible payment-page bullet from `L ordine` to `L'ordine`.
+
+### Assumptions
+
+- The user was referring specifically to the visible checkout confirmation list
+  in `page-pagamenti.php`.
+
+### Verification
+
+- Re-read the lines around the reported location before applying the fix.
+- Automated PHP lint and live WordPress rendering could not be run in this
+  workspace because no local PHP / WordPress runtime is available.
+
+### TODO / Residual Risks
+
+- A final manual proofreading pass may still be useful for any other minor copy
+  inconsistencies on the payment page.
+
+---
+
+## T041
+
+### Objective
+
+Align the WooCommerce checkout page styling with the cart page by applying the
+same background treatment and matching block-based content cards.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `assets/css/woocommerce.css`
+- `page-pagamenti.php`
+- `inc/enqueue.php`
+
+### Files Created/Modified
+
+- `assets/css/woocommerce.css`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The checkout refinement was implemented with CSS only, following the project
+  rule of preferring styling and wrapper alignment before any WooCommerce
+  template override.
+- The WooCommerce Blocks checkout layout now mirrors the cart treatment with
+  the same shared background, card padding and rounded corners.
+- The main checkout column was given a wider desktop proportion while the
+  layout collapses back to a single-column stack on small screens.
+
+### Assumptions
+
+- The active checkout experience is based on WooCommerce Blocks markup, using
+  selectors such as `.wp-block-woocommerce-checkout` and
+  `.wc-block-checkout__main`.
+- Matching the cart background visually means reusing the same
+  `var(--secondary-clr)` page shell and `var(--bg-clr)` inner card surfaces
+  already adopted for the cart page.
+
+### Verification
+
+- Re-read the current cart block selectors already added to
+  `assets/css/woocommerce.css` and mirrored their structure for checkout.
+- Confirmed that `inc/enqueue.php` already loads `assets/css/woocommerce.css`
+  on checkout pages through `is_checkout()`, so no enqueue changes were
+  necessary.
+- Automated browser verification and PHP/runtime validation could not be run in
+  this workspace because no local WordPress runtime is available here.
+
+### TODO / Residual Risks
+
+- Verify in browser that the store is using the block-based checkout rather
+  than the classic shortcode checkout, because these new selectors target the
+  WooCommerce Blocks structure.
+- If third-party checkout extensions inject extra wrappers or side panels, a
+  small follow-up selector pass may be needed to keep spacing perfectly aligned
+  with the cart page.
+
+---
+
+## T042
+
+### Objective
+
+Create a dedicated "Supporto clienti" page that preserves the existing
+information-page style, uses the shared theme variables, keeps the support
+email editable via the Customizer and reuses the existing contact phone data
+already managed elsewhere in the theme.
+
+### Files Read
+
+- `AGENTS.md`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+- `page-spedizioni.php`
+- `page-pagamenti.php`
+- `assets/css/pages.css`
+- `assets/css/main.css`
+- `inc/customizer.php`
+- `inc/front-page-data.php`
+- `inc/enqueue.php`
+- `inc/template-tags.php`
+- `sito-statico/informazioni.html`
+
+### Files Created/Modified
+
+- `page-supporto-clienti.php`
+- `inc/customizer.php`
+- `inc/enqueue.php`
+- `assets/css/pages.css`
+- `docs/PROJECT_BRIEF.md`
+- `docs/IMPLEMENTATION_LOG.md`
+
+### Decisions Made
+
+- The new page is implemented as `page-supporto-clienti.php`, so WordPress can
+  target it natively through the `supporto-clienti` page slug without changing
+  the generic `page.php` flow.
+- The page deliberately reuses the same visual system already established for
+  `resi-e-rimborsi`, `spedizioni` and `pagamenti`, extending `pages.css` only
+  with support-specific card variants instead of creating a parallel stylesheet.
+- The support email now has a dedicated Customizer-backed source for the new
+  page, with the requested default
+  `servizio-clienti@restyleparrucchieriperuomo.it`.
+- The support phone is intentionally not duplicated in a new option: it is read
+  from the existing homepage contacts data so the cellphone stays aligned
+  everywhere it is already managed.
+- The shipping-page default support email was also aligned to the same real
+  support address to avoid mixed fallback addresses across support-oriented
+  pages.
+
+### Assumptions
+
+- The intended WordPress page slug for this content is `supporto-clienti`.
+- Reusing the homepage contact phone for the support page is preferable to
+  introducing a second editable cellphone field that could drift out of sync.
+- A WhatsApp deep link derived from the configured cellphone is a useful
+  extension of the requested support experience and remains consistent with the
+  theme's existing contact language.
+
+### Verification
+
+- Re-read the existing informational page templates and extended the same
+  structure for hero, anchor navigation, card sections and support CTA blocks.
+- Confirmed `assets/css/pages.css` is now conditionally enqueued for the new
+  `supporto-clienti` page slug alongside the existing information pages.
+- Reviewed the new support-page data helper to ensure the email reads from a
+  dedicated Customizer field while the phone is sourced from the existing
+  homepage contacts configuration.
+- Automated PHP lint and live WordPress rendering could not be run in this
+  workspace because no local PHP / WordPress runtime is available.
+
+### TODO / Residual Risks
+
+- Verify in the live WordPress install that the target page slug is exactly
+  `supporto-clienti`; if it differs, the template filename and enqueue
+  condition should be aligned.
+- Confirm in browser that the WhatsApp deep link matches the stored cellphone
+  format in all environments, especially if the number is changed to a format
+  without country prefix.
+- Review the final editorial copy in wp-admin after Customizer entry to confirm
+  the textarea-based support topics and checklist remain easy to manage.

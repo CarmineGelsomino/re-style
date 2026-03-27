@@ -330,7 +330,7 @@ if ( ! function_exists( 're_style_get_shipping_page_defaults' ) ) {
 			),
 			'support_title'        => __( 'Hai bisogno di aiuto?', 're-style' ),
 			'support_description'  => __( 'Per qualsiasi domanda sulla spedizione, puoi contattarci direttamente a', 're-style' ),
-			'support_email'        => 'servizio-clienti@site.com',
+			'support_email'        => 'servizio-clienti@restyleparrucchieriperuomo.it',
 			'primary_label'        => __( 'Contattaci', 're-style' ),
 			'primary_url'          => home_url( '/#contatti' ),
 			'secondary_label'      => __( 'Torna allo shop', 're-style' ),
@@ -375,6 +375,100 @@ if ( ! function_exists( 're_style_get_shipping_page_data' ) ) {
 	}
 }
 
+if ( ! function_exists( 're_style_get_support_page_defaults' ) ) {
+	/**
+	 * Returns default customer-support page content.
+	 *
+	 * @return array<string, mixed>
+	 */
+	function re_style_get_support_page_defaults() {
+		$shop_url         = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop/' );
+		$front_page_data  = function_exists( 're_style_front_page_data' ) ? re_style_front_page_data() : re_style_get_front_page_defaults();
+		$contacts_data    = isset( $front_page_data['contacts'] ) && is_array( $front_page_data['contacts'] ) ? $front_page_data['contacts'] : array();
+		$default_phone    = isset( $contacts_data['phone'] ) && is_string( $contacts_data['phone'] ) ? $contacts_data['phone'] : '+39 328 550 5045';
+		$default_email    = 'servizio-clienti@restyleparrucchieriperuomo.it';
+
+		return array(
+			'label'               => __( 'Supporto clienti', 're-style' ),
+			'title'               => __( 'Hai bisogno di assistenza prima o dopo il tuo acquisto?', 're-style' ),
+			'description'         => __( 'Ti aiutiamo con ordini, spedizioni, resi, rimborsi e pagamenti, mantenendo la comunicazione semplice e diretta come il resto dell esperienza Re Style.', 're-style' ),
+			'channels_title'      => __( 'Contatti diretti', 're-style' ),
+			'channels_intro'      => __( 'Scegli il canale piu comodo per te. Per una gestione piu rapida della richiesta, ti consigliamo di indicare il numero ordine quando disponibile.', 're-style' ),
+			'response_title'      => __( 'Come possiamo aiutarti', 're-style' ),
+			'response_items'      => array(
+				array(
+					'title'       => __( 'Assistenza ordini', 're-style' ),
+					'description' => __( 'Supporto su acquisti effettuati, conferme ordine, disponibilita prodotti e aggiornamenti sullo stato della richiesta.', 're-style' ),
+				),
+				array(
+					'title'       => __( 'Spedizioni e consegna', 're-style' ),
+					'description' => __( 'Indicazioni su tempi di evasione, consegna, tracking e gestione di eventuali anomalie durante la spedizione.', 're-style' ),
+				),
+				array(
+					'title'       => __( 'Resi, rimborsi e pagamenti', 're-style' ),
+					'description' => __( 'Chiarimenti sulle procedure di reso, sui rimborsi approvati e sui dubbi incontrati in fase di checkout o pagamento.', 're-style' ),
+				),
+			),
+			'checklist_title'     => __( 'Prima di contattarci', 're-style' ),
+			'checklist_items'     => array(
+				array(
+					'text' => __( 'Prepara il numero ordine se la richiesta riguarda un acquisto gia effettuato.', 're-style' ),
+				),
+				array(
+					'text' => __( 'Descrivi brevemente il problema o il dubbio, cosi possiamo indirizzarti subito nel modo corretto.', 're-style' ),
+				),
+				array(
+					'text' => __( 'Se utile, allega foto o dettagli aggiuntivi quando ci scrivi via email.', 're-style' ),
+				),
+			),
+			'support_title'       => __( 'Un contatto rapido, chiaro e umano', 're-style' ),
+			'support_description' => __( 'Scrivici via email oppure chiamaci direttamente: il nostro supporto clienti ti aiuta a gestire la tua richiesta con la stessa attenzione che dedichiamo ai servizi e ai prodotti Re Style.', 're-style' ),
+			'support_email'       => $default_email,
+			'support_phone'       => $default_phone,
+			'primary_label'       => __( 'Vai allo shop', 're-style' ),
+			'primary_url'         => $shop_url ? $shop_url : home_url( '/' ),
+			'secondary_label'     => __( 'Torna ai contatti', 're-style' ),
+			'secondary_url'       => home_url( '/#contatti' ),
+		);
+	}
+}
+
+if ( ! function_exists( 're_style_get_support_page_data' ) ) {
+	/**
+	 * Returns customer-support page content with Customizer overrides.
+	 *
+	 * @return array<string, mixed>
+	 */
+	function re_style_get_support_page_data() {
+		$defaults        = re_style_get_support_page_defaults();
+		$front_page_data = function_exists( 're_style_front_page_data' ) ? re_style_front_page_data() : re_style_get_front_page_defaults();
+		$contacts_data   = isset( $front_page_data['contacts'] ) && is_array( $front_page_data['contacts'] ) ? $front_page_data['contacts'] : array();
+		$response_items  = re_style_parse_pair_lines( re_style_get_theme_option_value( 'support', 'response_items', re_style_serialize_pair_list( $defaults['response_items'], 'title', 'description' ) ), 'title', 'description' );
+		$checklist_items = re_style_parse_single_value_lines( re_style_get_theme_option_value( 'support', 'checklist_items', re_style_serialize_single_value_list( $defaults['checklist_items'], 'text' ) ), 'text' );
+		$support_phone   = isset( $contacts_data['phone'] ) && is_string( $contacts_data['phone'] ) && '' !== trim( $contacts_data['phone'] ) ? trim( $contacts_data['phone'] ) : $defaults['support_phone'];
+
+		return array(
+			'label'               => re_style_get_theme_option_value( 'support', 'label', $defaults['label'] ),
+			'title'               => re_style_get_theme_option_value( 'support', 'title', $defaults['title'] ),
+			'description'         => re_style_get_theme_option_value( 'support', 'description', $defaults['description'] ),
+			'channels_title'      => re_style_get_theme_option_value( 'support', 'channels_title', $defaults['channels_title'] ),
+			'channels_intro'      => re_style_get_theme_option_value( 'support', 'channels_intro', $defaults['channels_intro'] ),
+			'response_title'      => re_style_get_theme_option_value( 'support', 'response_title', $defaults['response_title'] ),
+			'response_items'      => ! empty( $response_items ) ? $response_items : $defaults['response_items'],
+			'checklist_title'     => re_style_get_theme_option_value( 'support', 'checklist_title', $defaults['checklist_title'] ),
+			'checklist_items'     => ! empty( $checklist_items ) ? $checklist_items : $defaults['checklist_items'],
+			'support_title'       => re_style_get_theme_option_value( 'support', 'support_title', $defaults['support_title'] ),
+			'support_description' => re_style_get_theme_option_value( 'support', 'support_description', $defaults['support_description'] ),
+			'support_email'       => re_style_get_theme_option_value( 'support', 'support_email', $defaults['support_email'] ),
+			'support_phone'       => $support_phone,
+			'primary_label'       => re_style_get_theme_option_value( 'support', 'primary_label', $defaults['primary_label'] ),
+			'primary_url'         => re_style_get_theme_option_value( 'support', 'primary_url', $defaults['primary_url'] ),
+			'secondary_label'     => re_style_get_theme_option_value( 'support', 'secondary_label', $defaults['secondary_label'] ),
+			'secondary_url'       => re_style_get_theme_option_value( 'support', 'secondary_url', $defaults['secondary_url'] ),
+		);
+	}
+}
+
 if ( ! function_exists( 're_style_customize_register' ) ) {
 	/**
 	 * Registers Customizer settings for design tokens and homepage content.
@@ -388,6 +482,7 @@ if ( ! function_exists( 're_style_customize_register' ) ) {
 		$error_404_defaults  = re_style_get_404_defaults();
 		$account_defaults    = re_style_get_account_page_defaults();
 		$shipping_defaults   = re_style_get_shipping_page_defaults();
+		$support_defaults    = re_style_get_support_page_defaults();
 
 		$wp_customize->add_panel(
 			're_style_theme_options',
@@ -529,6 +624,15 @@ if ( ! function_exists( 're_style_customize_register' ) ) {
 				'title'    => __( 'Shipping Page', 're-style' ),
 				'panel'    => 're_style_theme_options',
 				'priority' => 24,
+			)
+		);
+
+		$wp_customize->add_section(
+			're_style_support_page',
+			array(
+				'title'    => __( 'Support Page', 're-style' ),
+				'panel'    => 're_style_theme_options',
+				'priority' => 25,
 			)
 		);
 
@@ -696,6 +800,22 @@ if ( ! function_exists( 're_style_customize_register' ) ) {
 			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'primary_url', 'label' => __( 'Primary button URL', 're-style' ), 'default' => $shipping_defaults['primary_url'], 'sanitize' => 'esc_url_raw' ),
 			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'secondary_label', 'label' => __( 'Secondary button label', 're-style' ), 'default' => $shipping_defaults['secondary_label'] ),
 			array( 'scope' => 'shipping', 'section' => 'shipping_page', 'id' => 'secondary_url', 'label' => __( 'Secondary button URL', 're-style' ), 'default' => $shipping_defaults['secondary_url'], 'sanitize' => 'esc_url_raw' ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'label', 'label' => __( 'Eyebrow label', 're-style' ), 'default' => $support_defaults['label'] ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'title', 'label' => __( 'Title', 're-style' ), 'default' => $support_defaults['title'] ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'description', 'label' => __( 'Description', 're-style' ), 'default' => $support_defaults['description'], 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'channels_title', 'label' => __( 'Channels section title', 're-style' ), 'default' => $support_defaults['channels_title'] ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'channels_intro', 'label' => __( 'Channels intro', 're-style' ), 'default' => $support_defaults['channels_intro'], 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'response_title', 'label' => __( 'Support topics title', 're-style' ), 'default' => $support_defaults['response_title'] ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'response_items', 'label' => __( 'Support topics', 're-style' ), 'default' => re_style_serialize_pair_list( $support_defaults['response_items'], 'title', 'description' ), 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'checklist_title', 'label' => __( 'Checklist title', 're-style' ), 'default' => $support_defaults['checklist_title'] ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'checklist_items', 'label' => __( 'Checklist items', 're-style' ), 'default' => re_style_serialize_single_value_list( $support_defaults['checklist_items'], 'text' ), 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'support_title', 'label' => __( 'Closing title', 're-style' ), 'default' => $support_defaults['support_title'] ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'support_description', 'label' => __( 'Closing description', 're-style' ), 'default' => $support_defaults['support_description'], 'type' => 'textarea', 'sanitize' => 'sanitize_textarea_field' ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'support_email', 'label' => __( 'Support email', 're-style' ), 'default' => $support_defaults['support_email'], 'sanitize' => 'sanitize_email' ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'primary_label', 'label' => __( 'Primary button label', 're-style' ), 'default' => $support_defaults['primary_label'] ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'primary_url', 'label' => __( 'Primary button URL', 're-style' ), 'default' => $support_defaults['primary_url'], 'sanitize' => 'esc_url_raw' ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'secondary_label', 'label' => __( 'Secondary button label', 're-style' ), 'default' => $support_defaults['secondary_label'] ),
+			array( 'scope' => 'support', 'section' => 'support_page', 'id' => 'secondary_url', 'label' => __( 'Secondary button URL', 're-style' ), 'default' => $support_defaults['secondary_url'], 'sanitize' => 'esc_url_raw' ),
 		);
 
 		foreach ( $page_controls as $control ) {

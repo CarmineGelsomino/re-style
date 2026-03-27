@@ -70,9 +70,13 @@ Internal-page coverage now also includes:
 - a WooCommerce My Account presentation layer styled from theme CSS and
   lightweight hooks/filters, without introducing a dedicated legacy account
   template override
-- dedicated `resi-e-rimborsi` and `spedizioni` page templates that reuse the
-  same informational-page visual system, with the shipping page copy and key
-  operational details managed through the Customizer
+- dedicated `resi-e-rimborsi`, `spedizioni` and `pagamenti` page templates
+  that reuse the same informational-page visual system, with the shipping page
+  copy and key operational details managed through the Customizer and the
+  payments page reading active WooCommerce gateways dynamically
+- a dedicated `supporto-clienti` page template that reuses the same
+  information-page system, keeps the support email editable in the Customizer
+  and reads the support phone from the existing homepage contact settings
 
 The global shell now also includes:
 
@@ -322,6 +326,14 @@ Current implementation status:
 - implemented: a focused `page-resi-e-rimborsi.php` template now covers the
   dedicated returns/refunds page with theme-owned structured sections and
   native page-hierarchy targeting via the `resi-e-rimborsi` slug
+- implemented: a focused `page-pagamenti.php` template now covers the
+  dedicated payment-methods page with the same branded information-page system
+  and a dynamic gateway list read directly from the enabled WooCommerce
+  payment methods
+- implemented: a focused `page-supporto-clienti.php` template now covers the
+  dedicated customer-support page with direct contact channels, a Customizer-
+  managed support email and phone data reused from the existing contact
+  settings instead of duplicating another editable source
 
 ### Shop And WooCommerce Mapping
 

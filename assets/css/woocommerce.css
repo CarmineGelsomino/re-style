@@ -3142,3 +3142,38 @@ body.re-style-account-endpoint-subscriptions .woocommerce-MyAccount-navigation u
 }
 
 /* END PAGINA CARRELLO */
+
+/* START PAGINA PAGAMENTO */
+
+body.woocommerce-checkout {
+    background-color: var(--secondary-clr);
+}
+
+body.woocommerce-checkout .site-main {
+    background-color: var(--secondary-clr);
+}
+
+.wp-block-woocommerce-checkout .wc-block-components-sidebar-layout .wc-block-checkout__main,
+.wp-block-woocommerce-checkout .wc-block-components-sidebar-layout .wc-block-checkout__sidebar {
+    background: var(--bg-clr);
+    padding: 20px;
+    border-radius: var(--re-style-radius);
+}
+
+.wp-block-woocommerce-checkout .wc-block-components-sidebar-layout .wc-block-checkout__main {
+    width: 60%;
+}
+
+.wp-block-woocommerce-checkout .wc-block-components-sidebar-layout {
+    gap: 20px;
+    justify-content: space-around;
+}
+
+@media (max-width: 699px) {
+    .wp-block-woocommerce-checkout .wc-block-components-sidebar-layout .wc-block-checkout__main,
+    .wp-block-woocommerce-checkout .wc-block-components-sidebar-layout .wc-block-checkout__sidebar {
+        width: 100%;
+    }
+}
+
+/* END PAGINA PAGAMENTO */

@@ -61,6 +61,111 @@ if ( ! function_exists( 're_style_get_shop_page_url' ) ) {
 	}
 }
 
+if ( ! function_exists( 're_style_get_active_payment_methods' ) ) {
+	/**
+	 * Returns the enabled WooCommerce payment gateways for informational pages.
+	 *
+	 * @return array<int, array<string, string>>
+	 */
+	function re_style_get_active_payment_methods() {
+		if ( ! class_exists( 'WooCommerce' ) || ! function_exists( 'WC' ) || ! WC() ) {
+			return array();
+		}
+
+		$gateways_instance = WC()->payment_gateways();
+
+		if ( ! $gateways_instance || ! method_exists( $gateways_instance, 'payment_gateways' ) ) {
+			return array();
+		}
+
+		$gateways = $gateways_instance->payment_gateways();
+		$methods  = array();
+
+		foreach ( $gateways as $gateway ) {
+			if ( ! $gateway instanceof WC_Payment_Gateway ) {
+				continue;
+			}
+
+			if ( ! isset( $gateway->enabled ) || 'yes' !== $gateway->enabled ) {
+				continue;
+			}
+
+			$title = trim( wp_strip_all_tags( $gateway->get_title() ) );
+
+			if ( '' === $title ) {
+				continue;
+			}
+
+			$description = trim( wp_strip_all_tags( $gateway->get_description() ) );
+
+			if ( '' === $description ) {
+				$description = re_style_get_payment_method_marketing_description( $gateway );
+			}
+
+			$methods[] = array(
+				'id'          => sanitize_title( $gateway->id ),
+				'title'       => $title,
+				'description' => $description,
+				'icon_html'   => $gateway->get_icon(),
+			);
+		}
+
+		return $methods;
+	}
+}
+
+if ( ! function_exists( 're_style_get_payment_method_marketing_description' ) ) {
+	/**
+	 * Returns a selling-oriented fallback description for a payment gateway.
+	 *
+	 * @param WC_Payment_Gateway $gateway Payment gateway object.
+	 * @return string
+	 */
+	function re_style_get_payment_method_marketing_description( $gateway ) {
+		if ( ! $gateway instanceof WC_Payment_Gateway ) {
+			return __( "Scegli questo metodo per completare il tuo ordine in modo semplice, affidabile e in linea con il checkout sicuro di Re Style.", 're-style' );
+		}
+
+		$gateway_id    = strtolower( (string) $gateway->id );
+		$gateway_title = strtolower( trim( wp_strip_all_tags( $gateway->get_title() ) ) );
+		$lookup        = $gateway_id . ' ' . $gateway_title;
+
+		if ( false !== strpos( $lookup, 'paypal' ) ) {
+			return __( "Paga in pochi passaggi con PayPal e completa l'acquisto in modo rapido, con tutta la familiarita di uno dei wallet digitali piu utilizzati online.", 're-style' );
+		}
+
+		if ( false !== strpos( $lookup, 'stripe' ) || false !== strpos( $lookup, 'card' ) || false !== strpos( $lookup, 'credit' ) || false !== strpos( $lookup, 'debit' ) ) {
+			return __( "Perfetto per chi desidera un pagamento veloce e immediato con carta, direttamente nel checkout e con un'esperienza semplice e fluida.", 're-style' );
+		}
+
+		if ( false !== strpos( $lookup, 'apple pay' ) ) {
+			return __( "Ideale per finalizzare l'ordine in modo quasi istantaneo dai dispositivi Apple, riducendo i passaggi e rendendo il checkout ancora piu comodo.", 're-style' );
+		}
+
+		if ( false !== strpos( $lookup, 'google pay' ) ) {
+			return __( 'Una soluzione pratica e veloce per confermare il pagamento dai dispositivi compatibili, con un checkout essenziale e immediato.', 're-style' );
+		}
+
+		if ( false !== strpos( $lookup, 'klarna' ) || false !== strpos( $lookup, 'rate' ) || false !== strpos( $lookup, 'installment' ) ) {
+			return __( "Una scelta utile se desideri maggiore flessibilita nella gestione della spesa, mantenendo un processo d'acquisto chiaro e ordinato.", 're-style' );
+		}
+
+		if ( false !== strpos( $lookup, 'satispay' ) ) {
+			return __( "Comodo per chi preferisce un pagamento smart da mobile, con un'esperienza rapida e perfettamente integrata nel flusso d'acquisto.", 're-style' );
+		}
+
+		if ( false !== strpos( $lookup, 'bank' ) || false !== strpos( $lookup, 'bacs' ) || false !== strpos( $lookup, 'bonifico' ) ) {
+			return __( "Adatto a chi preferisce gestire il pagamento con un metodo tradizionale, mantenendo la sicurezza e la tracciabilita dell'ordine.", 're-style' );
+		}
+
+		if ( false !== strpos( $lookup, 'cash' ) || false !== strpos( $lookup, 'cod' ) || false !== strpos( $lookup, 'contrassegno' ) ) {
+			return __( "Pensato per chi desidera una soluzione pratica e rassicurante, con la comodita di concludere l'acquisto senza usare subito una carta online.", 're-style' );
+		}
+
+		return __( "Un metodo di pagamento affidabile pensato per offrirti un checkout semplice, scorrevole e coerente con l'esperienza premium di Re Style.", 're-style' );
+	}
+}
+
 if ( ! function_exists( 're_style_get_shop_search_term' ) ) {
 	/**
 	 * Returns the current catalog search term from the custom archive form.
