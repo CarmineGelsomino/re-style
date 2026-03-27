@@ -3544,3 +3544,13 @@ issues.
   spacing between quantity and add-to-cart button is handled explicitly on the
   button itself and reset again on mobile, so the two breakpoints stay
   independently controllable.
+
+### Additional Note 20
+
+- A later cart refinement requested the Google Pay / express-payment action to
+  feel visually consistent with the main theme CTA rather than keeping the
+  plugin-default shape.
+- The cart stylesheet now applies the same 8px radius and dark CTA background
+  language used by the single-product add-to-cart button to the common
+  WooPayments / Stripe payment-request button selectors, while keeping the
+  standard checkout button unchanged.

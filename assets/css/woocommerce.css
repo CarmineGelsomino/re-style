@@ -128,6 +128,39 @@ body.woocommerce-cart .wc-proceed-to-checkout .checkout-button.button {
     border-radius: 8px;
 }
 
+body.woocommerce-cart #wc-stripe-payment-request-wrapper,
+body.woocommerce-cart #wcpay-payment-request-wrapper,
+body.woocommerce-cart .wc-stripe-cart-payment-methods,
+body.woocommerce-cart .wc-payment-request-buttons,
+body.woocommerce-cart .wcpay-payment-request-button,
+body.woocommerce-cart .wc-stripe-payment-request-button,
+body.woocommerce-cart .wc-payment-request-button {
+    border-radius: 8px !important;
+    overflow: hidden;
+}
+
+body.woocommerce-cart .wcpay-payment-request-button,
+body.woocommerce-cart .wc-stripe-payment-request-button,
+body.woocommerce-cart .wc-payment-request-button,
+body.woocommerce-cart button.wcpay-payment-request-button,
+body.woocommerce-cart button.wc-stripe-payment-request-button,
+body.woocommerce-cart button.wc-payment-request-button {
+    min-height: 52px;
+    border: 0 !important;
+    border-radius: 8px !important;
+    background: var(--btn-bg) !important;
+    box-shadow: none !important;
+}
+
+body.woocommerce-cart .wcpay-payment-request-button:hover,
+body.woocommerce-cart .wc-stripe-payment-request-button:hover,
+body.woocommerce-cart .wc-payment-request-button:hover,
+body.woocommerce-cart button.wcpay-payment-request-button:hover,
+body.woocommerce-cart button.wc-stripe-payment-request-button:hover,
+body.woocommerce-cart button.wc-payment-request-button:hover {
+    background: var(--btn-bg-hover) !important;
+}
+
 .shop-page-main {
     padding-right: var(--re-style-shell-padding);
     padding-left: var(--re-style-shell-padding);
